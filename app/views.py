@@ -7,14 +7,14 @@ from pathlib import Path
 from datetime import date
 import pandas as pd
 
+DF_MAIN = pd.read_csv(BASE_DIR / 'data.csv', encoding='cp949')
 
 # Create your views here.
 def index(request: HttpRequest) -> HttpResponse:
-    return HttpResponse('Hello, Django!')
+    return render(request, 'index.html')
 
 def predict_elec(request: HttpRequest, month: int, district: str, town: str) -> HttpResponse:
-    df = pd.read_csv(BASE_DIR / 'data.csv', encoding='cp949')
-    df[(df['월'] == month) & (df['구'] == district) & (df['동'] == town)][['년도', '전기']]
+    df = DF_MAIN[(DF_MAIN['월'] == month) & (DF_MAIN['구'] == district) & (DF_MAIN['동'] == town)][['년도', '전기']]
 
     X = df['년도'].values
     y = df['전기'].values
