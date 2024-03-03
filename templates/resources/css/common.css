@@ -135,3 +135,48 @@
 @media (max-width: 992px) {
  .eco_forecast-N8 .contents-container { height: 40rem; }
 }
+
+/* eco_forecast-N13 [DnLTBMh2l7] */
+.eco_forecast-N13 {
+    overflow: hidden;
+  }
+  
+  .eco_forecast-N13 .contents-inner {
+    padding: 8rem 1.6rem;
+  }
+  
+  .eco_forecast-N13 .textset-tit+.textset-desc span {
+    display: inline-block;
+    margin-left: 0.8rem;
+  }
+  
+  .eco_forecast-N13 .contents-body {
+    padding: 4rem 0;
+    border-top: 1px solid var(--primary);
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .eco_forecast-N13 .contents-text {
+    font-size: var(--fs-p2);
+    line-height: var(--lh-p2);
+    color: var(--text-color3);
+  }
+  
+  .eco_forecast-N13 .contents-link {
+    margin-top: 8rem;
+    text-align: center;
+  }
+  
+  @media (max-width: 992px) {
+    .eco_forecast-N13 .contents-inner {
+      padding: 3rem 1.6rem;
+    }
+  
+    .eco_forecast-N13 .contents-body {
+      padding: 2.8rem 0;
+    }
+  
+    .eco_forecast-N13 .contents-link {
+      margin-top: 4rem;
+    }
+  }
