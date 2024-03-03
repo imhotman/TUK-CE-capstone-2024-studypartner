@@ -3,7 +3,7 @@
 /* eco_forecast-N1 [DOlTa4bF4A] */
 .eco_forecast-N1 { top: -100%; transition: .3s; width: 100%; z-index: 99; background-color: var(--white); }
 .eco_forecast-N1.header-top-active { position: fixed; top: 0; }
-.eco_forecast-N1 .header-container { position: relative; display: flex; align-items: center; justify-content: space-between; width: 100%; height: 8rem; padding: 0 5rem; background-color: var(--white); z-index: 200; }
+.eco_forecast-N1 .header-container { position: relative; display: flex; align-items: center; justify-content: space-between; width: 100%; height: 8rem; padding: 0 5rem; background-color: var(--white); z-index: 200; border-bottom: 1px solid black; /* 검정색 밑줄 추가 */}
 .eco_forecast-N1 .header-title { margin-bottom: 0; }
 .eco_forecast-N1 .header-title a { width: 16.3rem; height: 3.9rem; }
 .eco_forecast-N1 .header-title img { width: 100%; height: 100%; object-fit: contain; }
@@ -65,7 +65,7 @@
  .eco_forecast-N1.block-active .header-member { display: flex; font-size: var(--fs-p2); }
  .eco_forecast-N1.block-active .header-utils-btn, .eco_forecast-N1.block-active .btn-momenu { display: none; }
  .eco_forecast-N1.block-active .btn-moclose { display: block; }
- .eco_forecast-N1 .header-container { padding: 0 1.6rem; height: 5.6rem; }
+ .eco_forecast-N1 .header-container { padding: 0 1.6rem; height: 5.6rem; border-bottom: 1px solid black; /* 검정색 밑줄 추가 */ }
  .eco_forecast-N1 .header-title a { width: 9.8rem; height: 2.4rem; }
  .eco_forecast-N1 .header-center { top: 100%; left: 100%; transition: .3s; height: calc(100vh - 6rem); overflow-y: auto; }
  .eco_forecast-N1 .header-gnblist { display: none; width: 100%; flex-direction: column; }
