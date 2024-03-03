@@ -20,6 +20,7 @@
   <link rel="stylesheet" href="../resources/css/template.css">
   <link rel="stylesheet" href="../resources/css/common.css">
   <link rel="stylesheet" href="../resources/css/style.css">
+  <link rel="stylesheet" href="../resources/css/index_button.css">
 </head>
 
 <body>
@@ -251,15 +252,16 @@
     <div class="contents-inner">
       <div class="contents-container container-md">
         <div class="cardset cardset-hor row-rever col-rever-m cardset-lg">
-          <figure class="cardset-figure img-pc"><br><br><br><br>
+          <figure class="cardset-figure img-pc"><br><br><br><br><br><br><br><br>
             <img class="cardset-img" src="../medias/eco-logo.png" alt="PC 카드 이미지">
           </figure>
           <figure class="cardset-figure img-mobile">
             <img class="cardset-img" src="../medias/eco-logo.png" alt="모바일 카드 이미지" style="width: 25%; display: block; margin: 0 auto;">
           </figure>
-          <div class="cardset-body" style="width: 50%;"><br><br><br><br><br>
+          <div class="cardset-body" style="width: 50%;"><br><br><br><br>
+            <h1 class="cardset-tit" style="font-size: 25px;">현재 날짜: 2023년 3월</h1><br>
             <h2 class="cardset-tit">​서울시-에코마일리지<br>에너지 사용량<br>예측 서비스</h2><br>
-            <p class="cardset-desc">사용자가 선택한 지역구에 대한 다음 달 <br>에너지​사용량을 ​예측하는 서비스입니다.​<br>년도, 월, 지역(구)를 입력하시면​ 전기, 수도,​<br>가스, ​탄소 사용량을 예측 할 수 있습니다.<br>​<br><br></p>
+            <p class="cardset-desc">사용자가 예측하고자 하는 <br> 특정 년도와 월을 선택하여, <br> 에너지​ 사용량을 ​예측하는 서비스입니다.​<br><br>년도, 월, 지역(구)을 입력하시면​ 전기, 수도,​<br>가스, ​탄소 사용량을 예측 할 수 있습니다.<br>​<br><br></p>
           </div>
     
     
@@ -273,7 +275,7 @@
             <span></span>예측년도 입력
           </h5>
           <div class="inputset inputset-round">
-            <input type="text" class="inputset-input form-control" aria-label="내용" placeholder="Ex. 2025" style="width: 50%" name="year;">
+            <input type="text" class="inputset-input form-control" aria-label="내용" placeholder="Ex. 2025" style="width: 50%" name="year;" required >
           </div>
         </div>
       
@@ -282,7 +284,7 @@
             <span></span>예측 월 입력
           </h5>
           <div class="inputset inputset-round">
-            <input type="text" class="inputset-input form-control" aria-label="내용" placeholder="Ex. 3" style="width: 50%" name="month">
+            <input type="text" class="inputset-input form-control" aria-label="내용" placeholder="Ex. 3" style="width: 50%" name="month;" required>
           </div>
         </div>
       
@@ -291,7 +293,7 @@
             <span></span>지역구 입력
           </h5>
           <div class="inputset inputset-round">
-            <input type="text" class="inputset-input form-control" aria-label="내용" placeholder="Ex. 송파구" style="width: 50%" name="district;">
+            <input type="text" class="inputset-input form-control" aria-label="내용" placeholder="Ex. 송파구" style="width: 50%" name="district;" required>
           </div>
         </div>
       
@@ -300,18 +302,18 @@
             <span></span>동 입력
           </h5>
           <div class="inputset inputset-round">
-            <input type="text" class="inputset-input form-control" aria-label="내용" placeholder="Ex. 잠실2동" style="width: 50%" name="town;">
+            <input type="text" class="inputset-input form-control" aria-label="내용" placeholder="Ex. 잠실2동" style="width: 50%" name="town;" required>
           </div>
         </div>
         
         <div class="form-line">
-          <h5 class="form-tit form-tit-deco" style="padding-left: 85px;">
+          <h5 class="form-tit form-tit-deco" style="padding-left: 0px;">
             <div class="pc-buttons" ><br>
-              <!-- 제출 버튼 -->
-            <button type="submit">제출</button>
-          
-              <!-- 리셋 버튼 -->
-            <button id="resetBtn" type="reset">리셋</button>
+              <!-- 제출 버튼 및 삭제 버튼 -->
+              <div class="index_forecast_buttonlist">
+                <button>예측 하기</button>&nbsp;
+                <button class="reverse dark" id="resetBtn" style="background-color:darkcyan">모두 지우기</button>
+              </div>
             </div> 
           </h5>
                
@@ -392,12 +394,8 @@
           </div>
         </div>
       </div>
-    
-    
-    
-    
-    
-    
+
+
     </div>
     
 
@@ -577,4 +575,5 @@
   <script src="../resources/js/template.js"></script>
   <script src="../resources/js/common.js"></script>
   <script src="../resources/js/script.js"></script>
+  <script src="../resources/js/index_button.js"></script>
 </body>
