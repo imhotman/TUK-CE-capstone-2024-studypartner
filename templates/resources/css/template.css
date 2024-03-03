@@ -377,7 +377,8 @@ br.br-mo { display: none; }
 /* ========== */
 /* Imageset : Imageset */
 .imageset { position: relative; width: 100%; height: 46rem; } 
-.imageset-img { width: 100%; height: 100%; object-fit: cover; } 
+.imageset-img { width: 100%; height: 100%; object-fit: cover; }
+.imageset-img2 { position: relative; width: 100%; height: 60%; top: 67px } /* information 사진 크기 조정 */
 
 /* ========== */
 /* Iconset : Iconset */
