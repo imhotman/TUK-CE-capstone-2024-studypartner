@@ -21,5 +21,5 @@ from app import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('eco/', views.index),
-    path('eco/electricity/<int:month>/<str:district>/<str:town>/', views.predict_elec)
+    path('eco/eco_forecast/<int:year>/<int:month>/<str:district>/<str:town>/', views.forecast_eco),
 ]
