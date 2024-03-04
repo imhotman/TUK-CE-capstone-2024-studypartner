@@ -89,6 +89,9 @@ def index(request: HttpRequest) -> HttpResponse:
 def signup(request: HttpRequest) -> HttpResponse: # 회원가입 페이지
     return render(request, 'eco/signup.html')
 
+def signup_done(request: HttpRequest) -> HttpResponse: # 회원가입 페이지
+    return render(request, 'eco/signup_done.html')
+
 def login(request: HttpRequest) -> HttpResponse: # 로그인 페이지
     return render(request, 'eco/login.html')
 
