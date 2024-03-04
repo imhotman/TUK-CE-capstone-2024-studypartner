@@ -20,12 +20,17 @@ def calculate_prediction(X, y, year):
     r2 = lin_reg.score(X_poly, y)
     r2_percent = r2 * 100
     predictions = lin_reg.predict(poly_features.transform([[year]]))
+    
+    # 예측값이 음수일 경우 표시하는 에러 메시지
     if predictions[0] < 0:
-        predicted_message = "유효한 예측값이 아닙니다." # 예측값이 음수일 경우 표시하는 에러 메시지
+        predicted_message = "유효한 예측값이 아닙니다." 
         r2_percent = "측정불가"
+
+    # 예측값이 양수일 경우 표시하는 메시지
     else:
         predicted_message = f'{predictions[0]:,.2f}'
         r2_percent = f'{r2_percent:.2f}'
+
     return predicted_message, r2_percent
 
 
@@ -89,7 +94,7 @@ def index(request: HttpRequest) -> HttpResponse:
 def signup(request: HttpRequest) -> HttpResponse: # 회원가입 페이지
     return render(request, 'eco/signup.html')
 
-def signup_done(request: HttpRequest) -> HttpResponse: # 회원가입 페이지
+def signup_done(request: HttpRequest) -> HttpResponse: # 회원가입 완료 페이지
     return render(request, 'eco/signup_done.html')
 
 def login(request: HttpRequest) -> HttpResponse: # 로그인 페이지

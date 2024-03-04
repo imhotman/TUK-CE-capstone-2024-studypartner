@@ -177,7 +177,13 @@
             </figure>
             <div class="cardset-body">
               <h2 class="cardset-tit">전기 사용량 예측<br><br>
-              <a class="btnset btnset-round btnset-line">{{electric}} ㎾/h</a>
+              <a class="btnset btnset-round btnset-line">
+              {% if electric == "유효한 예측값이 아닙니다." %}
+                {{ electric }}
+              {% else %}
+                {{ electric }} kw/h
+               {% endif %}
+              </a>
               </h2>
 
             </div>
@@ -188,7 +194,13 @@
             </figure>
             <div class="cardset-body">
               <h2 class="cardset-tit">수도 사용량 예측<br><br>
-              <a class="btnset btnset-round btnset-line">{{water}} ㎥</a>
+              <a class="btnset btnset-round btnset-line">
+              {% if water == "유효한 예측값이 아닙니다." %}
+                {{ water }}
+               {% else %}
+             {{ water }} ㎥
+               {% endif %}
+              </a>
               </h2>
 
             </div>
@@ -199,7 +211,13 @@
             </figure>
             <div class="cardset-body">
               <h2 class="cardset-tit">가스 사용량 예측<br><br>
-              <a class="btnset btnset-round btnset-line">{{gas}} ㎥</a>
+              <a class="btnset btnset-round btnset-line">
+              {% if gas == "유효한 예측값이 아닙니다." %}
+                {{ gas }}
+              {% else %}
+               {{ gas }} ㎥
+             {% endif %}
+              </a>
               </h2>
           
             </div>
@@ -210,7 +228,13 @@
             </figure>
             <div class="cardset-body">
               <h2 class="cardset-tit">탄소 사용량 예측<br><br>
-              <a class="btnset btnset-round btnset-line">{{carbon}} ㎏CO₂</a>
+              <a class="btnset btnset-round btnset-line">
+              {% if carbon == "유효한 예측값이 아닙니다." %}
+                {{ carbon }}
+              {% else %}
+               {{ carbon }} ㎏CO₂
+             {% endif %}
+              </a>
               </h2>
             </div>
           </div>
