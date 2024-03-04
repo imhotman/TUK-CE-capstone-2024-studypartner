@@ -16,7 +16,7 @@
 .eco_forecast-N3 .btnset:hover { background-color: var(--white); border-color: var(--white); color: var(--text-color1); }
 .eco_forecast-N3 .contents-control { display: flex; align-items: center; position: absolute; left: 50%; transform: translateX(-50%); bottom: 4.5rem; z-index: 20; }
 .eco_forecast-N3 .swiper-button-prev { left: 8.2rem; width: 5.4rem; height: 5.4rem; background-color: rgba(var(--black-rgb), 0.8); border-radius: 50%; }
-.eco_forecast-N3 .swiper-button-prev:after { content: ""; width: 2.8rem; height: 2.8rem; background-image: url('{% static "icons/ico_arrow_right_withe.svg" %}'); background-repeat: no-repeat; background-position: center; background-size: cover; opacity: 0.5; }
+.eco_forecast-N3 .swiper-button-prev:after { content: ""; width: 2.8rem; height: 2.8rem; background-image: url('{% static "icons/ico_arrow_right_white.svg" %}'); background-repeat: no-repeat; background-position: center; background-size: cover; opacity: 0.5; }
 .eco_forecast-N3 .swiper-button-prev:hover::after { opacity: 1; }
 .eco_forecast-N3 .swiper-button-next { right: 8.2rem; width: 5.4rem; height: 5.4rem; background-color: rgba(var(--black-rgb), 0.6); border-radius: 50%; }
 .eco_forecast-N3 .swiper-button-next:after { content: ""; width: 2.8rem; height: 2.8rem; background-image: url('{% static "icons/ico_arrow_right_withe.svg" %}'); background-repeat: no-repeat; background-position: center; background-size: cover; opacity: 0.5; }
