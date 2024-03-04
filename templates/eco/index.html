@@ -47,7 +47,7 @@
           </div>
         </div>
       </div>
-      <div class="swiper-button-next"></div>
+      <div id="start" class="swiper-button-next"></div> <!-- 지금 시작하기 버튼 눌렀을 때 보이는 화면 id="start" -->
       <div class="swiper-button-prev"></div>
       <div class="contents-control">
         <div class="swiper-pagination"></div>
@@ -65,7 +65,7 @@
 <!-- [E]eco_forecast-N3 -->
 
 <!-- [S]eco_forecast-N4 -->
-<div id="start" class="contents-inner">
+<div class="contents-inner">
   <div class="contents-container container-md">
     <div class="cardset cardset-hor row-rever col-rever-m cardset-lg">
       <figure class="cardset-figure img-pc"><br><br><br><br><br><br>
@@ -117,7 +117,7 @@
       </div>
     </div>
   
-    <div class="form-line">
+    <div id="result" class="form-line"> <!-- 예측하기 눌렀을 때 보여지는 화면 id="result" -->
       <h5 class="form-tit form-tit-deco">
         <span></span>동 입력
       </h5>
@@ -132,7 +132,7 @@
       <h5 class="form-tit form-tit-deco" style="padding-left: 0px;">
         <div class="pc-buttons" ><br>
           <!-- 제출 버튼 및 삭제 버튼 -->
-          <div id="result" class="index_forecast_buttonlist">
+          <div class="index_forecast_buttonlist">
             <button type="submit">예측 하기</button>&nbsp;&nbsp;
             <button type="reset" class="reverse dark" style="background-color:darkcyan">모두 삭제</button>
           </div>
@@ -319,6 +319,7 @@
         new daum.roughmap.Lander({
           "timestamp": "1690352447500",
           "key": "2fnib",
+          "mapCenter": new daum.maps.LatLng(37.5665, 126.9780) // 서울의 위도와 경도
         }).render();
       </script>
     </div>

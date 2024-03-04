@@ -21,11 +21,11 @@ def calculate_prediction(X, y, year):
     r2_percent = r2 * 100
     predictions = lin_reg.predict(poly_features.transform([[year]]))
     if predictions[0] < 0:
-        predicted_message = "예측값이 음수입니다. 유효한 예측값이 아닙니다."
+        predicted_message = "유효한 예측값이 아닙니다." # 예측값이 음수일 경우 표시하는 에러 메시지
         r2_percent = "측정불가"
     else:
-        predicted_message = f'{predictions[0]:,.4f}'
-        r2_percent = f'{r2_percent:.4f}'
+        predicted_message = f'{predictions[0]:,.2f}'
+        r2_percent = f'{r2_percent:.2f}'
     return predicted_message, r2_percent
 
 
@@ -77,7 +77,7 @@ def index(request: HttpRequest) -> HttpResponse:
     context = {
         'date': date.today().isoformat(),
         'form': form,
-        'comment': data.get('comment', '-'),
+        'comment': data.get('comment', '예측 하기 버튼을 눌러주세요.'),
         'electric': data.get('electric', '-'),
         'water': data.get('water', '-'),
         'gas': data.get('gas', '-'),
