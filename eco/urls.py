@@ -20,6 +20,12 @@ from app import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('eco/', views.index),
-    path('eco/eco_forecast/<int:year>/<int:month>/<str:district>/<str:town>/', views.forecast_eco),
+    path('', views.index, name='index'),
+    path('login', views.login, name='login'),
+    path('logout', views.logout, name='logout'),
+    path('about', view=views.about, name='about'),
+    path('signup', views.signup, name='signup'),
+    path('mypage', views.mypage, name='mypage'),
+    path('notice', views.notice, name='notice'),
+    path('qna', views.qna, name='qna'),
 ]
