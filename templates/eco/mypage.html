@@ -2,7 +2,7 @@
 {% load static %}
 {% block title %}마이페이지 | 에코포어캐스트{% endblock %}
 {% block content %}
-{% include 'common/navbar.html' %}
+
 
 <!-- [E]eco_forecast-N1 -->
 
@@ -18,15 +18,31 @@
             <div class="imageset">
               <img class="imageset-img" src="{% static 'images/img_profile.png' %}" alt="프로필 이미지">
             </div>
-            <p class="contents-name">홍길동</p>
+            <p class="contents-name">-</p>  <!-- 로그인 한 사용자 이름 --> 
           </li>
           <li class="contents-profile-item">
             <a href="javascript:void(0);" class="btnset btnset-round">내 정보 관리</a>
           </li>
         </ul>
         <div class="contents-group contents-reservation">
-          <h2 class="contents-tit"> 최근 예약내역 <a href="javascipt:void(0);" class="contents-more">더보기</a>
+          <h2 class="contents-tit"> 최근 이용내역 <a href="javascipt:void(0);" class="contents-more">더보기</a>
           </h2>
+
+          <!-- 임시로 띄어쓰기 한 부분. 나중에 삭제 예정 -->
+          
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+          
+          <!--
+
           <div class="cardset cardset-hor cardset-sm">
             <figure class="cardset-figure">
               <img class="cardset-img" src="{% static 'images/img_campland_N19_1.png' %}" alt="카드 이미지">
@@ -73,9 +89,12 @@
             </div>
           </div>
         </div>
+
+        -->
+
         <div class="contents-group contents-notice">
-          <a href="javascipt:void(0)" class="contents-notice-link">공지사항</a>
-          <a href="qna.html" class="contents-notice-link">자주묻는질문</a>
+          <a href="{% url 'notice' %}" class="contents-notice-link">공지사항</a>
+          <a href="{% url 'qna' %}" class="contents-notice-link">자주묻는질문</a>
           <a href="javascipt:void(0)" class="contents-notice-link"> 상담원 연결 <span>
               <em>상담시간</em> : 평일 09:00 ~ 18:00 (점심시간 12:00 ~ 13:00) </span>
           </a>
@@ -87,4 +106,4 @@
     </div>
   </div>
   <!-- [E]eco_forecast-N23 -->
-
+  {% endblock %}
