@@ -82,7 +82,7 @@ def index(request: HttpRequest) -> HttpResponse:
     context = {
         'date': date.today().isoformat(),
         'form': form,
-        'comment': data.get('comment', '예측 하기 버튼을 눌러주세요.'),
+        'comment': "현재 날짜보다 예측 년도/월이 높아야 합니다." if form.errors else data.get('comment', '예측 하기 버튼을 눌러주세요.'),
         'electric': data.get('electric', '-'),
         'water': data.get('water', '-'),
         'gas': data.get('gas', '-'),
