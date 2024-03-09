@@ -1,4 +1,5 @@
-회원가입 페이지
+{% extends 'common/base.html' %}
+<!-- 회원가입 페이지
 <br>
 
 <form action="" method="POST">
@@ -11,7 +12,113 @@
     <input name="email" type="email">
 
     <input type="submit"  value="회원가입">
-</form>
+</form> -->
 
+{% load static %}
+{% block title %}회원가입 | 에코포어캐스트{% endblock %}
+{% block content %}
+<!-- [E]eco_forecast-N1 -->
+
+  <!-- [S]eco_forecast-N25 -->
+  <div class="eco_forecast-N25" data-bid="NOLTa4Llcp">
+    <form action="" method="POST">
+        {% csrf_token %}
+    <div class="contents-inner">
+      <div class="contents-container">
+        <div class="textset textset-sub textset-center">
+          <h2 class="textset-tit">회원가입</h2>
+        </div>
+        <ul class="contents-list">
+          <li class="contents-item">
+            <h6 class="form-tit form-tit-deco">
+              <span></span>아이디
+            </h6>
+            <div class="form-wrap">
+              <div class="inputset inputset-round">
+                <input type="text" name="username" class="inputset-input form-control" aria-label="내용" placeholder="아이디를 입력해주세요." required>  <!-- 아이디 입력 하는 곳-->
+              </div>
+              <button type="button" class="btnset btnset-round">중복확인</button>
+            </div>
+          </li>
+          <li class="contents-item">
+            <h6 class="form-tit form-tit-deco">
+              <span></span>비밀번호
+            </h6>
+            <div class="form-wrap">
+              <div class="inputset inputset-round">
+                <input name="password" type="password" class="inputset-input form-control" aria-label="내용" placeholder="영문 대소문자/숫자 포함 10~16자" required> <!-- 비밀번호 입력 하는 곳-->
+              </div>
+            </div>
+          </li>
+          <li class="contents-item">
+            <h6 class="form-tit form-tit-deco">
+              <span></span>비밀번호 확인
+            </h6>
+            <div class="form-wrap">
+              <div class="inputset inputset-round">
+                <input type="password" class="inputset-input form-control" aria-label="내용" placeholder="비밀번호를 다시 입력해주세요.">   <!-- 비밀번호 확인 입력 하는 곳-->
+              </div>
+            </div>
+          </li>
+          
+          <!-- <li class="contents-item">
+            <h6 class="form-tit form-tit-deco">
+              <span></span>휴대폰 번호
+            </h6>
+            <div class="form-wrap">
+              <div class="inputset inputset-round">
+                <input type="text" class="inputset-input form-control" aria-label="내용" placeholder="- 없이 입력해주세요.">
+              </div>
+            </div>
+          </li> -->
+          <li class="contents-item">
+            <h6 class="form-tit form-tit-deco">
+              <span></span>이메일
+            </h6>
+            <div class="form-wrap">
+              <div class="inputset inputset-round">
+                <input name="email" type="email" class="inputset-input form-control" aria-label="내용" placeholder="이메일을 다시 입력해주세요." required>
+              </div>
+              <em>@</em>
+              <!-- <div class="selectset selectset-round">
+                <button class="selectset-toggle btn" type="button">
+                  <span>선택해주세요</span>
+                </button>
+                <ul class="selectset-list">
+                  <li class="selectset-item">
+                    <button class="selectset-link btn" type="button" data-value="옵션1">
+                      <span>옵션1</span>
+                    </button>
+                  </li>
+                  <li class="selectset-item">
+                    <button class="selectset-link btn" type="button" data-value="옵션2">
+                      <span>옵션2</span>
+                    </button>
+                  </li>
+                </ul>
+               </div> -->
+            </div>
+          </li>
+        </ul>
+        <div class="contents-bottom">
+          <h2 class="contents-tit">개인정보수집 및 이용동의</h2>
+          <div class="contents-board"> - 수집하는 개인정보 항목 : 이메일 <br> 작성해주시는 개인 정보는 문의 접수 및 고객 불만 해결을 위해 5년간 보관됩니다. <br>이용자는 본 동의를 거부할 수 있으나, 미동의시 문의 접수가 불가능합니다. </div>
+          <div class="checkset">
+            <input id="checkset-a-1-1" class="checkset-input input-fill input-round" type="checkbox" value="">
+            <label class="checkset-label" for="checkset-a-1-1"></label>
+            <span class="checkset-text">위 내용을 읽었으며, 내용에 동의합니다. <em class="checkset-acc">(필수)</em>
+            </span>
+          </div>
+        </div>
+        <div class="contents-confirm">
+          <a href="{% url 'index' %}" class="btnset btnset-round btnset-line btnset-black">돌아가기</a>
+          <input type="submit" value="회원가입" class="btnset btnset-round">
+        </div>
+      </div>
+    </div>
+  </form>
+  </div>
+  <!-- [E]eco_forecast-N25 -->
+  {% endblock %}
 
 
