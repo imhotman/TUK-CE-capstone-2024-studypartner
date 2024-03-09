@@ -37,6 +37,6 @@ def signup_view(request):
         user.save()
         messages.success(request, "회원가입 성공!")
         print("회원가입 성공")
-        return redirect("user:login")
+        return redirect("signup_done")
 
     return render(request, "user/signup.html")
