@@ -95,7 +95,14 @@
             </li>
           </ul>
         </div>
+    
+
+        
         <div class="header-right">
+          {% if request.user.is_authenticated %}  <!-- 로그인 되었을 때 보이는 화면 -->
+          <div>
+            <span>{{ request.user.username }}님</span>
+          </div>&nbsp;&nbsp;&nbsp;
           <div class="header-utils">
             <a href="{% url 'mypage' %}" class="btn-profile header-utils-btn">
               <img src="{% static 'icons/ico_profile_black.svg' %}" alt="검색">
@@ -114,6 +121,26 @@
             </button>
           </div>
         </div>
+        {% else %}  <!-- 로그아웃 되었을 때 보이는 화면 -->
+          <div class="header-utils">
+            <a href="{% url 'mypage' %}" class="btn-profile header-utils-btn">
+              <img src="{% static 'icons/ico_profile_black.svg' %}" alt="검색">
+            </a>
+            <button class="btn-search header-utils-btn">
+              <img src="{% static 'icons/ico_search_black.svg' %}" alt="검색">
+            </button>
+            <button class="btn-allmenu header-utils-btn">
+              <img src="{% static 'icons/ico_menu_black.svg' %}" alt="PC메뉴">
+            </button>
+            <button class="btn-momenu header-utils-btn">
+              <img src="{% static 'icons/ico_menu_black.svg' %}" alt="모바일메뉴">
+            </button>
+            <button class="btn-moclose header-utils-btn">
+              <img src="{% static 'icons/ico_close_m_black.svg' %}" alt="닫기">
+            </button>
+          </div>
+        </div>
+        {% endif %} 
       </div>
       <div class="header-fullmenu fullmenu-top">
         <div class="fullmenu-wrapper">
@@ -124,12 +151,18 @@
               </a>
             </h4>
             <ul class="fullmenu-member">
+              {% if request.user.is_authenticated %}  <!-- 로그인 되었을 때 보이는 화면 -->
+                <li>
+                  <a href="{% url 'user:logout' %}">로그아웃</a>  
+                </li>
+              {% else %}  <!-- 로그아웃 되었을 때 보이는 화면 -->
               <li>
                 <a href="{% url 'user:login' %}">로그인</a>
               </li>
               <li>
                 <a href="{% url 'user:signup' %}">회원가입</a>
               </li>
+              {% endif %}
             </ul>
           </div>
           <ul class="fullmenu-gnblist">

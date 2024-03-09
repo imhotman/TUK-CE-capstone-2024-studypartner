@@ -11,19 +11,20 @@ def login_view(request):
         user = authenticate(username=username, password=password)
 
         if user is not None:
-            print("인증성공")
+            print("로그인 성공")
             messages.success(request, "로그인 성공!")
             login(request, user)
+            return redirect("index")  # 로그인 성공 시 index 페이지로 리다이렉트
         else:
-            messages.error(request, "인증 실패")
-            print("인증실패")
+            messages.error(request, "로그인 실패")
+            print("로그인 실패")
 
     return render(request, "user/login.html")
 
 def logout_view(request):
     logout(request)
     print("로그아웃")
-    return redirect("user:login")
+    return redirect("index")
 
 def signup_view(request):
     if request.method == "POST":

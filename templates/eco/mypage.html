@@ -18,7 +18,13 @@
             <div class="imageset">
               <img class="imageset-img" src="{% static 'images/img_profile.png' %}" alt="프로필 이미지">
             </div>
-            <p class="contents-name">-</p>  <!-- 로그인 한 사용자 이름 --> 
+            <p class="contents-name">
+              {% if request.user.is_authenticated %}  <!-- 로그인 되었을 때 보이는 화면 -->
+              {{ request.user.username }}님
+              {% else %}  <!-- 로그아웃 되었을 때 보이는 화면 -->
+                <p class="contents-name">로그인 후 이용하세요.</p>
+              {% endif %}
+            </p>  <!-- 로그인 한 사용자 이름 --> 
           </li>
           <li class="contents-profile-item">
             <a href="javascript:void(0);" class="btnset btnset-round">내 정보 관리</a>
@@ -100,7 +106,12 @@
           </a>
         </div>
         <div class="contents-button">
-          <button class="btnset btnset-round" type="button">로그아웃</button>
+          {% if request.user.is_authenticated %}  <!-- 로그인 되었을 때 보이는 화면 -->
+          <a href="{% url 'user:logout' %}" class="btnset btnset-round">로그아웃</a>
+          {% else %}  <!-- 로그아웃 되었을 때 보이는 화면 -->
+          <a href="{% url 'user:login' %}" class="btnset btnset-round">로그인</a>
+          {% endif %}
+          
         </div>
       </div>
     </div>
