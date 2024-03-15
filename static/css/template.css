@@ -7,7 +7,7 @@
 
 /* ========== */
 /* Variable */
-:root {
+:root { /* 색깔 지정하는 곳*/
   --primary: #F96C21;
   --secondary: #0c0c0b;
   --success: #198754;
