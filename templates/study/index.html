@@ -1,0 +1,356 @@
+{% extends 'common/base.html' %}
+{% load static %}
+{% block title %}메인 페이지 | 에코포어캐스트{% endblock %}
+{% block content %}
+<!-- [S]eco_forecast-N3 -->
+<div class="eco_forecast-N3" data-bid="hylTa4BFAR" id="">
+  <div class="contents-container">
+    <div class="contents-swiper">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide">
+          <img class="contents-backimg img-pc" src="{% static 'images/img_mainvisual_1.png' %}" alt="PC 메인 비주얼 이미지">
+          <img class="contents-backimg img-mobile" src="{% static 'images/img_mainvisual_mobile_1.png' %}" alt="모바일 메인 비주얼 이미지">
+          <div class="contents-slide-group container-md">
+            <div class="textset textset-visual">
+              <h2 class="textset-tit">
+                <span class="text-deco">Eco</span>
+                <br>Forecast
+              </h2>
+            </div>
+            <a class="btnset btnset-round btnset-line" href="{% url 'index' %}#start">지금 시작하기</a>
+          </div>
+        </div>
+        <div class="swiper-slide">
+          <img class="contents-backimg img-pc" src="{% static 'images/img_mainvisual_1.png' %}" alt="PC 메인 비주얼 이미지">
+          <img class="contents-backimg img-mobile" src="{% static 'images/img_mainvisual_mobile_1.png' %}" alt="모바일 메인 비주얼 이미지">
+          <div class="contents-slide-group container-md">
+            <div class="textset textset-visual">
+              <h2 class="textset-tit">
+                <span class="text-deco">Eco</span>
+                <br>Forecast
+              </h2>
+            </div>
+            <a class="btnset btnset-round btnset-line" href="{% url 'index' %}#start">지금 시작하기</a>
+          </div>
+        </div>
+        <div class="swiper-slide">
+          <img class="contents-backimg img-pc" src="{% static 'images/img_mainvisual_1.png' %}" alt="PC 메인 비주얼 이미지">
+          <img class="contents-backimg img-mobile" src="{% static 'images/img_mainvisual_mobile_1.png' %}" alt="모바일 메인 비주얼 이미지">
+          <div class="contents-slide-group container-md">
+            <div class="textset textset-visual">
+              <h2 class="textset-tit">
+                <span class="text-deco">Eco</span>
+                <br>Forecast
+              </h2>
+            </div>
+            <a class="btnset btnset-round btnset-line" href="{% url 'index' %}#start">지금 시작하기</a>
+          </div>
+        </div>
+      </div>
+      <div id="start" class="swiper-button-next" ><img src="{% static 'icons/ico_right_circle_white.svg' %}" alt="next 화살표" ></div> <!-- 지금 시작하기 버튼 눌렀을 때 보이는 화면 id="start" -->
+      <div class="swiper-button-prev"><img src="{% static 'icons/ico_left_circle_white.svg' %}" alt="next 화살표" ></div>
+      <div class="contents-control">
+        <div class="swiper-pagination"></div>
+        <div class="swiper-button-pause">
+          <img src="{% static 'icons/ico_pause_white.svg' %}" alt="스와이퍼 멈춤버튼">
+        </div>
+        <div class="swiper-button-play">
+          <img src="{% static 'icons/ico_play_white.svg' %}" alt="스와이퍼 재생버튼">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- [E]eco_forecast-N3 -->
+
+<!-- [S]eco_forecast-N4 -->
+<div class="contents-inner">
+  <div class="contents-container container-md">
+    <div class="cardset cardset-hor row-rever col-rever-m cardset-lg">
+      <figure class="cardset-figure img-pc"><br><br><br><br><br><br>
+        <img class="cardset-img" src="{% static 'images/eco-logo.png' %}" alt="PC 카드 이미지">
+      </figure>
+      <figure class="cardset-figure img-mobile">
+        <img class="cardset-img" src="{% static 'images/eco-logo.png' %}" alt="모바일 카드 이미지" style="width: 25%; display: block; margin: 0 auto;">
+      </figure>
+      <div class="cardset-body" style="width: 50%;"><br><br>
+        <h1 class="cardset-tit" style="font-size: 25px;">현재 날짜: {{date}}</h1><br>
+        <h2 class="cardset-tit">​서울시-에코마일리지<br>에너지 사용량<br>예측 서비스</h2><br>
+        <p class="cardset-desc">사용자가 예측하고자 하는 <br> 특정 년도와 월을 선택하여, <br> 에너지​ 사용량을 ​예측하는 서비스입니다.​<br><br>년도, 월, 지역(구)을 입력하시면​ 전기, 수도,​<br>가스, ​탄소 사용량을 예측 할 수 있습니다.<br>​<br><br></p>
+      </div>
+
+
+  <!-- 여러 개의 폼 랩 -->
+  
+  <div class="form-wrap" style="padding-left: 170px; text-align: center; display: flex; flex-direction: column;">
+    <form id="ecoForm" action="{% url 'index' %}#result" method="post">
+    {% csrf_token %}
+    <div class="form-line">
+      <h5 class="form-tit form-tit-deco">
+        <span></span>예측년도 입력
+      </h5>
+      <div class="inputset inputset-round">
+        {{ form.year }}
+      </div>
+    </div>
+  
+    <div class="form-line">
+      <h5 class="form-tit form-tit-deco">
+        <span></span>예측 월 입력
+      </h5>
+      <div class="inputset inputset-round">
+        <!-- <input type="number" id="month" class="inputset-input form-control" placeholder="Ex. 3" style="width: 50%" name="month;" required
+          value="{{ form.month.value }}"> -->
+          {{ form.month }}
+      </div>
+    </div>
+  
+    <div class="form-line">
+      <h5 class="form-tit form-tit-deco">
+        <span></span>지역구 입력
+      </h5>
+      <div class="inputset inputset-round">
+        <!-- <input type="text" id="district" class="inputset-input form-control" aria-label="내용" placeholder="Ex. 송파구" style="width: 50%" name="district;" required
+          value="{{ form.district.value }}"> -->
+          {{ form.district }}
+      </div>
+    </div>
+  
+    <div id="result" class="form-line"> <!-- 예측하기 눌렀을 때 보여지는 화면 id="result" -->
+      <h5 class="form-tit form-tit-deco">
+        <span></span>동 입력
+      </h5>
+      <div class="inputset inputset-round">
+        <!-- <input type="text" id="town" class="inputset-input form-control" aria-label="내용" placeholder=""  required
+          value="{{ form.town.value }}"> -->
+          {{ form.town }}
+      </div>
+    </div>
+
+    <div class="form-line">
+      <h5 class="form-tit form-tit-deco" style="padding-left: 0px;">
+        <div class="pc-buttons" ><br>
+          <!-- 제출 버튼 및 삭제 버튼 -->
+          {% if request.user.is_authenticated %}  <!-- 로그인 했을 때 보이는 버튼 -->
+          <div class="index_forecast_buttonlist">     
+            <button type="submit">예측 하기</button>&nbsp;&nbsp;
+            <button type="reset" class="reverse dark" style="background-color:darkcyan">모두 삭제</button>    
+          </div>
+          {% else %}  <!-- 로그아웃 했을 때 보이는 버튼 -->
+          <div class="index_forecast_buttonlist">
+            <p style="white-space: pre;">          </p>
+            <a href="{% url 'user:login' %}" class="btnset btnset-round" >로그인 하러가기</a> 
+          </div>
+          {% endif %}
+        </div> 
+      </h5>          
+    </div>
+    
+    <style>
+      @media only screen and (max-width: 767px) {
+        .pc-buttons {
+          display: none;
+        }
+      }
+    </style>
+  </div>
+
+
+    <script>
+      // 이벤트 핸들러 등록 확인
+      document.getElementById("resetBtn").addEventListener("click", function() {
+        console.log("리셋 버튼 클릭됨");
+        document.getElementById("ecoForm").reset(); // 폼 초기화
+      });
+    </script>
+  </form>
+
+</div>
+
+
+  <div class="eco_forecast-N5" data-bid="FhLTa4BFpO">
+    <div class="contents-inner">
+      {% if request.user.is_authenticated %}  <!-- 로그인 했을 경우 보이는 화면 -->
+      <h1 class="cardset-tit" style="position: relative; font-size: 23px; text-align: center; bottom: 60px;">{{comment}}</h1>
+      {% else %}  <!-- 로그아웃 했을 경우 보이는 화면 -->
+      <h1 class="cardset-tit" style="position: relative; font-size: 23px; text-align: center; bottom: 60px;">로그인 후 이용해주세요.</h1>
+      {% endif %}
+      <div class="contents-container container-md">
+        <div class="cardset-wrap">
+          <div class="cardset cardset-center">
+            <figure class="cardset-figure">
+              <img class="cardset-img" src="{% static 'images/electric-logo.png' %}" alt="전기-로고 사진">
+            </figure>
+            <div class="cardset-body">
+              <h2 class="cardset-tit">전기 사용량 예측<br><br>
+              <a class="btnset btnset-round btnset-line">
+              {% if electric == "유효한 예측값이 아닙니다." %}
+                {{ electric }}
+              {% else %}
+                {{ electric }} kw/h
+               {% endif %}
+              </a>
+              </h2>
+
+            </div>
+          </div>
+          <div class="cardset cardset-center">
+            <figure class="cardset-figure">
+              <img class="cardset-img" src="{% static 'images/water-logo.png' %}" alt="수도-로고 사진">
+            </figure>
+            <div class="cardset-body">
+              <h2 class="cardset-tit">수도 사용량 예측<br><br>
+              <a class="btnset btnset-round btnset-line">
+              {% if water == "유효한 예측값이 아닙니다." %}
+                {{ water }}
+               {% else %}
+             {{ water }} ㎥
+               {% endif %}
+              </a>
+              </h2>
+
+            </div>
+          </div>
+          <div class="cardset cardset-center">
+            <figure class="cardset-figure">
+              <img class="cardset-img" src="{% static 'images/gas-logo.png' %}" alt="가스-로고 사진">
+            </figure>
+            <div class="cardset-body">
+              <h2 class="cardset-tit">가스 사용량 예측<br><br>
+              <a class="btnset btnset-round btnset-line">
+              {% if gas == "유효한 예측값이 아닙니다." %}
+                {{ gas }}
+              {% else %}
+               {{ gas }} ㎥
+             {% endif %}
+              </a>
+              </h2>
+          
+            </div>
+          </div>
+          <div class="cardset cardset-center">
+            <figure class="cardset-figure">
+              <img class="cardset-img" src="{% static 'images/co2-logo.png' %}" alt="탄소-로고 사진">
+            </figure>
+            <div class="cardset-body">
+              <h2 class="cardset-tit">탄소 사용량 예측<br><br>
+              <a class="btnset btnset-round btnset-line">
+              {% if carbon == "유효한 예측값이 아닙니다." %}
+                {{ carbon }}
+              {% else %}
+               {{ carbon }} ㎏CO₂
+             {% endif %}
+              </a>
+              </h2>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+
+
+
+  
+  <!-- [E]eco_forecast-N4 -->
+  <!-- [S]eco_forecast-N5 -->
+  <div class="eco_forecast-N5" data-bid="FhLTa4BFpO" style="margin-top: 150px;">
+    <div class="contents-inner">
+      <div class="contents-container container-md">
+        <div class="cardset-wrap">
+          <div class="cardset cardset-center">
+            <figure class="cardset-figure">
+              <img class="cardset-img" src="{% static 'images/tumbler-logo.png' %}" alt="텀블러 이미지">
+            </figure>
+            <div class="cardset-body">
+              <h2 class="cardset-tit">텀블러 사용하기</h2>
+              <p class="cardset-desc"> 텀블러 사용은 일회용 플라스틱 사용을 줄이고 <br> 환경 보호에 기여하는 소중한 습관입니다. </p>
+            </div>
+          </div>
+          <div class="cardset cardset-center">
+            <figure class="cardset-figure">
+              <img class="cardset-img" src="{% static 'images/ecobag-logo.png' %}" alt="에코백 이미지">
+            </figure>
+            <div class="cardset-body">
+              <h2 class="cardset-tit">에코백 사용하기</h2>
+              <p class="cardset-desc"> 에코백은 재사용이 가능하고 <br> 환경에 미치는 부담을 줄여줄 수 있습니다. </p>
+            </div>
+          </div>
+          <div class="cardset cardset-center">
+            <figure class="cardset-figure">
+              <img class="cardset-img" src="{% static 'images/recycling-logo.png' %}" alt="재활용 이미지">
+            </figure>
+            <div class="cardset-body">
+              <h2 class="cardset-tit">재활용 하기</h2>
+              <p class="cardset-desc"> 플라스틱, 종이, 비닐 등을 올바르게 분리수거하여 <br> 지구 환경을 지키는데 동참해주세요. </p>
+            </div>
+          </div>
+          <div class="cardset cardset-center">
+            <figure class="cardset-figure">
+              <img class="cardset-img" src="{% static 'images/energy-logo.png' %}" alt="에너지 이미지">
+            </figure>
+            <div class="cardset-body">
+              <h2 class="cardset-tit">낭비전력 줄이기</h2>
+              <p class="cardset-desc"> 전등, 콘센트 등 불필요한 전기 소모를 줄이고 <br> 에너지 사용량을 효율적으로 관리해보세요. </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- [E]eco_forecast-N5 -->
+  <!-- [S]eco_forecast-N6 -->
+  <div class="eco_forecast-N6" data-bid="IILtA4bFS3">
+    <div class="contents-inner">
+      <div class="contents-container container-md">
+        <div class="imageset img-pc">
+          <img class="imageset-img2" src="{% static 'images/information-logo.png' %}" alt="information-logo 이미지">
+        </div>
+        <div class="contents-swiper">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <img class="contents-backimg img-pc" src="{% static 'images/img_campland_N6_1.png' %}" alt="PC 이미지">
+              <img class="contents-backimg img-mobile" src="{% static 'images/img_campland_mobile_N6_1.png' %}" alt="모바일 이미지">
+              <div class="contents-slide-group container-md">
+                <div class="textset">
+                  <h2 class="textset-tit"> Eco-Forecast <br> 사이트 소개 </h2>
+                  <p class="textset-desc"> Eco-Forecast에서 소개하는 <br> 여러 정보들을 확인하세요. </p>
+                </div>
+                <a class="btnset btnset-round btnset-line btnset-white" href="{% url 'about' %}">사이트 소개 바로가기</a>
+              </div>
+            </div>
+          </div>
+          <div class="swiper-button-next"><img src="{% static 'icons/ico_right_circle_white.svg' %}" alt="information-logo 이미지"></div>
+          <div class="swiper-button-prev"><img src="{% static 'icons/ico_left_circle_white.svg' %}" alt="information-logo 이미지"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- [E]eco_forecast-N6 -->
+  <!-- [S]eco_forecast-N7 -->
+  <div class="eco_forecast-N7" data-bid="Lvlta4bfvv">
+    <div class="contents-container">
+      <!-- * 카카오맵 - 지도퍼가기 -->
+      <!-- 1. 지도 노드 -->
+      <div id="daumRoughmapContainer1690352447500" class="root_daum_roughmap root_daum_roughmap_landing"></div>
+      <!--
+        2. 설치 스크립트
+        * 지도 퍼가기 서비스를 2개 이상 넣을 경우, 설치 스크립트는 하나만 삽입합니다.
+      -->
+      <script charset="UTF-8" class="daum_roughmap_loader_script" src="https://ssl.daumcdn.net/dmaps/map_js_init/roughmapLoader.js"></script>
+      <!-- 3. 실행 스크립트 -->
+      <script charset="UTF-8">
+        new daum.roughmap.Lander({
+          "timestamp": "1690352447500",
+          "key": "2fnib",
+          "mapCenter": new daum.maps.LatLng(37.5665, 126.9780) // 서울의 위도와 경도
+        }).render();
+      </script>
+    </div>
+  </div>
+  <!-- [E]eco_forecast-N7 -->
+{% endblock %}
