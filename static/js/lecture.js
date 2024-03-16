@@ -54,16 +54,111 @@ document.getElementById('collapse-link').addEventListener('click', function() {
     collapseMenu.appendChild(newMenuItem);
 });
 
+// /* 내 강의 이름 변경하는 코드 */
+// document.addEventListener('DOMContentLoaded', function() {
+//     // 내 강의 클릭 시 동작
+//     document.getElementById('my-courses').addEventListener('click', function() {
+//         const newName = prompt("변경할 강의의 이름을 입력하세요:", this.textContent);
+//         if (!newName) return;
+
+//         this.textContent = newName; // 내 강의 요소의 이름 변경
+//     });
+// });
+
 /* 내 강의 이름 변경하는 코드 */
 document.addEventListener('DOMContentLoaded', function() {
     // 내 강의 클릭 시 동작
-    document.getElementById('my-courses').addEventListener('click', function() {
+    const myCoursesElement = document.getElementById('my-courses');
+    let isPromptShown = false; // 한 번만 prompt가 보이도록 하기 위한 변수
+
+    myCoursesElement.addEventListener('click', function() {
+        if (!isPromptShown) {
+            const newName = prompt("변경할 강의의 이름을 입력하세요:", this.textContent);
+            if (!newName) return;
+
+            this.textContent = newName; // 내 강의 요소의 이름 변경
+            isPromptShown = true; // prompt가 한 번 보였음을 표시
+        }
+    });
+});
+
+/* 강의 추가하기 (+) 버튼 누르면 새로운 강의 생성하는 코드 */
+document.getElementById('add_button').addEventListener('click', function() {
+    const confirmation = confirm("새로운 강의를 추가하시겠습니까?");
+    if (!confirmation) return; // 사용자가 취소를 선택하면 함수 종료
+
+    const collapseMenu = document.getElementById('collapse-menu');
+
+    // 내 강의 요소 생성
+    const courseId = 'course-' + Date.now(); // 강의별 고유한 ID 생성
+
+    const newCourseElement = document.createElement('div');
+    newCourseElement.classList.add('nav__link', 'collapse');
+
+    const folderIcon = document.createElement('ion-icon');
+    folderIcon.setAttribute('name', 'folder-outline');
+    folderIcon.classList.add('nav__icon');
+    newCourseElement.appendChild(folderIcon);
+
+    const spanElement = document.createElement('span');
+    spanElement.classList.add('nav_name');
+    spanElement.textContent = "새로운 강의"; // 새로운 강의 추가
+    spanElement.id = courseId;
+    newCourseElement.appendChild(spanElement);
+
+    const collapseLink = document.createElement('div');
+    collapseLink.classList.add('collapse__link');
+
+    const addIcon = document.createElement('ion-icon');
+    addIcon.setAttribute('name', 'add');
+    collapseLink.appendChild(addIcon);
+
+    const space = document.createTextNode(" "); // 공백 추가
+    collapseLink.appendChild(space);
+
+    const chevronIcon = document.createElement('ion-icon');
+    chevronIcon.setAttribute('name', 'chevron-down-outline');
+    chevronIcon.id = 'collapse-link2-' + courseId; // 강의별 고유한 ID 생성
+    collapseLink.appendChild(chevronIcon);
+
+    newCourseElement.appendChild(collapseLink);
+
+    const ulElement = document.createElement('ul');
+    ulElement.classList.add('collapse__menu', 'text_element');
+    ulElement.id = 'collapse-menu2-' + courseId; // 강의별 고유한 ID 생성
+    newCourseElement.appendChild(ulElement);
+
+    // 새로 생성한 내 강의 요소를 문서에 추가
+    const navList = document.querySelector('.nav__list');
+    navList.insertBefore(newCourseElement, navList.children[2]); // 내 강의 바로 위에 삽입
+
+    // "^" 아이콘 클릭 시 동작
+    document.getElementById('collapse-link2-' + courseId).addEventListener('click', function() {
+        const collapseMenu = document.getElementById('collapse-menu2-' + courseId); // 해당 강의의 하위 메뉴를 선택
+        collapseMenu.classList.toggle('showCollapse');
+
+        // 방향 전환을 위한 클래스 추가/제거
+        this.classList.toggle('rotate');
+    });
+
+    // 내 강의 클릭 시 동작
+    const newCourseSpan = document.getElementById(courseId);
+    newCourseSpan.addEventListener('click', function() {
         const newName = prompt("변경할 강의의 이름을 입력하세요:", this.textContent);
-        if (!newName) return;
+        if (!newName || newName === "새로운 강의") return;
 
         this.textContent = newName; // 내 강의 요소의 이름 변경
     });
 });
+
+
+
+
+
+
+
+
+
 
 
 

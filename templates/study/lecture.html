@@ -37,9 +37,10 @@
                         <ion-icon name="folder-outline" class="nav__icon"></ion-icon>
                         <span class="nav_name">강의 추가하기</span>
                         <div class="collapse__link">
-                            <ion-icon name="add" class="collapse__link"></ion-icon>
+                            <ion-icon id="add_button" name="add" class="collapse__link"></ion-icon>
                         </div>
                     </div>
+                    
 
                     <div class="nav__link collapse"> <!-- id 추가 -->
                         <ion-icon name="folder-outline" class="nav__icon"></ion-icon>
@@ -53,6 +54,8 @@
                             <!-- 여기에 동적으로 추가될 항목들이 들어감. -->
                         </ul>
                     </div>
+
+
                     
                 </div>
                 <a href="{% url 'user:logout' %}" class="nav__link">
