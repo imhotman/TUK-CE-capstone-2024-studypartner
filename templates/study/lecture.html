@@ -1,7 +1,7 @@
 {% load static %}
 {% block content %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,10 +17,11 @@
             <div>
                 <div class="nav__brand">
                     <ion-icon name="menu-outline" class="nav__toggle" id="nav-toggle"></ion-icon>
-                    <a href="{% url 'user:login' %}" class="nav__logo">
-                        {% if request.user.is_authenticated %}  <!-- 로그인 되었을 때 보이는 화면 -->
+                    {% if request.user.is_authenticated %}  <!-- 로그인 되었을 때 보이는 화면 -->
+                        <a href="#" class="nav__logo">    
                             <span>{{ request.user.username }} 님</span>
                         {% else %}  <!-- 로그아웃 되었을 때 보이는 화면 -->
+                        <a href="{% url 'user:login' %}" class="nav__logo">
                             <span>로그인 후 이용하세요.</span>
                         {% endif %} 
                     </a>
@@ -36,9 +37,16 @@
                         <span class="nav_name">Messenger</span>
                     </a> -->
 
-                    <div href="#" class="nav__link collapse">
+
+
+
+
+
+
+
+                    <!-- <div href="#" class="nav__link collapse">
                         <ion-icon name="folder-outline" class="nav__icon"></ion-icon>
-                        <span class="nav_name">강의 추가하기</span>
+                        <span class="nav_name">내 강의</span>
 
                         <ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
 
@@ -47,9 +55,30 @@
                             <a href="#" class="collapse__sublink">Group</a>
                             <a href="#" class="collapse__sublink">Members</a>
                         </ul>
-                    </div>
+                    </div> -->
 
-                    <a href="#" class="nav__link">
+                    <div class="nav__link collapse">
+                        <ion-icon name="folder-outline" class="nav__icon"></ion-icon>
+                        <span class="nav_name">내 강의</span>
+                        <div class="collapse__link">
+                            <ion-icon name="add" id="collapse-link"></ion-icon>
+                            <ion-icon name="chevron-down-outline"></ion-icon>
+                        </div>
+                        <!-- 내 강의 하위 메뉴 -->
+                        <ul class="collapse__menu" id="collapse-menu">
+                            <!-- 여기에 동적으로 추가될 항목들이 들어감. -->
+                        </ul>
+                    </div>
+                    
+
+
+
+
+
+
+
+
+                    <!-- <a href="#" class="nav__link">
                         <ion-icon name="pie-chart-outline" class="nav__icon"></ion-icon>
                         <span class="nav_name">Analytics</span>
                     </a>
@@ -65,12 +94,12 @@
                             <a href="#" class="collapse__sublink">Group</a>
                             <a href="#" class="collapse__sublink">Members</a>
                         </ul>
-                    </div>
+                    </div> -->
 
-                    <a href="#" class="nav__link">
+                    <!-- <a href="#" class="nav__link">
                         <ion-icon name="settings-outline" class="nav__icon"></ion-icon>
                         <span class="nav_name">Settings</span>
-                    </a>
+                    </a> -->
                 </div>
                 <a href="{% url 'user:logout' %}" class="nav__link">
                     <ion-icon name="log-out-outline" class="nav__icon"></ion-icon>
@@ -88,7 +117,7 @@
         </nav>
     </div>
 
-    <h1>Componentes</h1>
+    <h1>Study Partner</h1>
     <!-- IONICONS -->
     <script src="https://unpkg.com/ionicons@5.2.3/dist/ionicons.js"></script>
     <!-- JS -->

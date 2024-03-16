@@ -24,15 +24,43 @@ function colorLink() {
 linkColor.forEach(l=> l.addEventListener('click', colorLink))
 
 /* COLLAPSE MENU */
-const linkCollapse = document.getElementsByClassName('collapse__link')
-var i
+const linkCollapse = document.querySelectorAll('.collapse__link ion-icon[name="chevron-down-outline"]');
 
-for(i=0;i<linkCollapse.length;i++) {
-    linkCollapse[i].addEventListener('click', function(){
-        const collapseMenu = this.nextElementSibling
-        collapseMenu.classList.toggle('showCollapse')
+linkCollapse.forEach(icon => {
+    icon.addEventListener('click', function() {
+        const collapseMenu = this.parentElement.nextElementSibling;
+        collapseMenu.classList.toggle('showCollapse');
 
-        const rotate = collapseMenu.previousElementSibling
-        rotate.classList.toggle('rotate')
+        const rotate = this;
+        rotate.classList.toggle('rotate');
     });
-}
+});
+
+
+
+
+
+
+
+document.getElementById('collapse-link').addEventListener('click', function() {
+    const collapseMenu = document.getElementById('collapse-menu');
+    
+    // 사용자로부터 입력 받기
+    const newItemName = prompt("새로운 항목의 이름을 입력하세요:");
+    if (!newItemName) return; // 입력이 없으면 동작하지 않음
+    
+    // 새로운 항목 추가
+    const newMenuItem = document.createElement('li');
+    const newLink = document.createElement('a');
+    newLink.href = '#';
+    newLink.classList.add('collapse__sublink');
+    newLink.textContent = newItemName; // 사용자가 입력한 문자열을 그대로 항목에 추가
+    newMenuItem.appendChild(newLink);
+    collapseMenu.appendChild(newMenuItem);
+});
+
+
+
+
+
+
