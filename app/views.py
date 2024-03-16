@@ -115,20 +115,6 @@ def notice(request: HttpRequest) -> HttpResponse: # 공지사항
 def qna(request: HttpRequest) -> HttpResponse: # Q&A
     return render(request, 'study/qna.html')
 
-
-'''
-# 전기 사용량과 수도 사용량 예측값과 R2 값을 튜플로 묶어서 반환
-# python manage.py runserver --> 테스트 용
-return HttpResponse((f'현재 년도: {date.today().year} 년, 현재 월: {date.today().month} 월',
-                        f'<br>예측 년도: {year} 년, 예측 월: {month} 월',
-                        f'<br>Predicted electricity usage for {town} in {district} in {month} is {predicted_elec_message}',  # 전기 예측값 표시
-                        f'<br>R2 score for electricity: {r2_percent_elec}',  # 전기 예측 정확도 표시
-                        f'<br><br>Predicted water usage for {town} in {district} in {month} is {predicted_water_message}', # 수도 예측값 표시
-                        f'<br>R2 score for water: {r2_percent_water}'    # 수도 예측 정확도 표시
-                        f'<br><br>Predicted gas usage for {town} in {district} in {month} is {predicted_gas_message}', # 도시가스 예측값 표시
-                        f'<br>R2 score for gas: {r2_percent_gas}'    # 도시가스 예측 정확도 표시
-                        f'<br><br>Predicted carbon usage for {town} in {district} in {month} is {predicted_carbon_message}', # 탄소 예측값 표시
-                        f'<br>R2 score for carbon: {r2_percent_carbon}'))    # 탄소 예측 정확도 표시
-'''
-
+def lecture(request: HttpRequest) -> HttpResponse: # Q&A
+    return render(request, 'study/lecture.html')
 
