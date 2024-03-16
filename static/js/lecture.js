@@ -36,12 +36,7 @@ linkCollapse.forEach(icon => {
     });
 });
 
-
-
-
-
-
-
+/* 내 강의 하위메뉴 추가하는 코드 */
 document.getElementById('collapse-link').addEventListener('click', function() {
     const collapseMenu = document.getElementById('collapse-menu');
     
@@ -59,6 +54,16 @@ document.getElementById('collapse-link').addEventListener('click', function() {
     collapseMenu.appendChild(newMenuItem);
 });
 
+/* 내 강의 이름 변경하는 코드 */
+document.addEventListener('DOMContentLoaded', function() {
+    // 내 강의 클릭 시 동작
+    document.getElementById('my-courses').addEventListener('click', function() {
+        const newName = prompt("변경할 강의의 이름을 입력하세요:", this.textContent);
+        if (!newName) return;
+
+        this.textContent = newName; // 내 강의 요소의 이름 변경
+    });
+});
 
 
 
