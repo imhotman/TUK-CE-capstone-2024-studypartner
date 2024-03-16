@@ -1,4 +1,5 @@
 {% load static %}
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,21 +17,28 @@
             <div>
                 <div class="nav__brand">
                     <ion-icon name="menu-outline" class="nav__toggle" id="nav-toggle"></ion-icon>
-                    <a href="#" class="nav__logo">Bedimcode</a>
-                </div>
-                <div class="nav__list">
-                    <a href="#" class="nav__link active">
-                        <ion-icon name="home-outline" class="nav__icon"></ion-icon>
-                        <span class="nav_name">Dashboard</span>
+                    <a href="{% url 'user:login' %}" class="nav__logo">
+                        {% if request.user.is_authenticated %}  <!-- 로그인 되었을 때 보이는 화면 -->
+                            <span>{{ request.user.username }} 님</span>
+                        {% else %}  <!-- 로그아웃 되었을 때 보이는 화면 -->
+                            <span>로그인 후 이용하세요.</span>
+                        {% endif %} 
                     </a>
-                    <a href="#" class="nav__link">
+                </div>
+                {% if request.user.is_authenticated %}  <!-- 로그인 되었을 때 보이는 화면 -->
+                <div class="nav__list">
+                    <a href="{% url 'index' %}" class="nav__link active">
+                        <ion-icon name="home-outline" class="nav__icon"></ion-icon>
+                        <span class="nav_name">메인화면</span>
+                    </a>
+                    <!-- <a href="#" class="nav__link">
                         <ion-icon name="chatbubbles-outline" class="nav__icon"></ion-icon>
                         <span class="nav_name">Messenger</span>
-                    </a>
+                    </a> -->
 
                     <div href="#" class="nav__link collapse">
                         <ion-icon name="folder-outline" class="nav__icon"></ion-icon>
-                        <span class="nav_name">Projects</span>
+                        <span class="nav_name">강의 추가하기</span>
 
                         <ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
 
@@ -64,11 +72,19 @@
                         <span class="nav_name">Settings</span>
                     </a>
                 </div>
-                <a href="#" class="nav__link">
+                <a href="{% url 'user:logout' %}" class="nav__link">
                     <ion-icon name="log-out-outline" class="nav__icon"></ion-icon>
-                    <span class="nav_name">Log out</span>
+                    <span class="nav_name">로그아웃</span>
                 </a>
             </div>
+            {% else %}  <!-- 로그아웃 되었을 때 보이는 화면 -->
+            <div class="nav__list">
+                <a href="{% url 'index' %}" class="nav__link active">
+                    <ion-icon name="home-outline" class="nav__icon"></ion-icon>
+                    <span class="nav_name">메인화면</span>
+                </a>
+            </div>
+            {% endif %} 
         </nav>
     </div>
 
@@ -79,3 +95,4 @@
     <script src="{% static 'js/lecture.js' %}"></script>
 </body>
 </html>
+{% endblock %}
