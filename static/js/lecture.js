@@ -46,7 +46,7 @@ document.getElementById('collapse-link').addEventListener('click', function() {
     const collapseMenu = document.getElementById('collapse-menu');
     
     // 사용자로부터 입력 받기
-    const newItemName = prompt("새로운 항목의 이름을 입력하세요:");
+    const newItemName = prompt("새로운 강의명을 입력하세요:");
     if (!newItemName) return; // 입력이 없으면 동작하지 않음
     
     // 새로운 항목 추가

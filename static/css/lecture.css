@@ -165,5 +165,8 @@ a {
     transition: .5s;
 }
 
-
+/* Text row*/
+.text_element {
+    white-space: nowrap;
+}
 
