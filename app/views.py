@@ -115,6 +115,10 @@ def notice(request: HttpRequest) -> HttpResponse: # 공지사항
 def qna(request: HttpRequest) -> HttpResponse: # Q&A
     return render(request, 'study/qna.html')
 
-def lecture(request: HttpRequest) -> HttpResponse: # Q&A
+def lecture(request: HttpRequest) -> HttpResponse: # 강의실
     return render(request, 'study/lecture.html')
+
+def chapter(request: HttpRequest) -> HttpResponse: # 강의실_각 챕터
+    return render(request, 'study/chapter.html')
+
 

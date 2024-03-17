@@ -48,7 +48,7 @@ document.getElementById('collapse-link').addEventListener('click', function () {
     // 새로운 항목 추가
     const newMenuItem = document.createElement('li');
     const newLink = document.createElement('a');
-    newLink.href = '#';
+    newLink.href = chapterUrl; // Django 템플릿에서 가져온 URL 적용
     newLink.classList.add('collapse__sublink');
     newLink.textContent = newItemName; // 사용자가 입력한 문자열을 그대로 항목에 추가
     newMenuItem.appendChild(newLink);
@@ -151,29 +151,45 @@ document.getElementById('add_button').addEventListener('click', function () {
         this.textContent = newName; // 내 강의 요소의 이름 변경
     });
 
-    // "+" 아이콘 클릭 시 동작
+    // "+" 아이콘 클릭 시 동작(새로운 강의 추가하는 코드)
     addIcon.addEventListener('click', function () {
         const newItemName = prompt("추가할 항목의 이름을 입력하세요:");
 
         // 새로운 항목명이 비어있거나 취소를 누르면 종료
         if (!newItemName) return;
 
-        // 새로운 항목 추가
+        // 새로운 강의 하위목록 추가
         const newMenuItem = document.createElement('li');
         const newLink = document.createElement('a');
-        newLink.href = '#'; // 여기를 원하는 링크로 수정하세요
+        newLink.href = chapterUrl; // Django 템플릿에서 가져온 URL 적용
         newLink.textContent = newItemName; // 사용자가 입력한 문자열을 그대로 항목에 추가
         newLink.classList.add('collapse__sublink'); // collapse__sublink 클래스 추가
         newMenuItem.appendChild(newLink); // a 요소를 li 요소에 추가
         const collapseMenu = document.getElementById('collapse-menu2-' + courseId);
         collapseMenu.appendChild(newMenuItem);
 
-
         // 새로 생성된 링크에 클릭 이벤트 핸들러 추가
-         newLink.addEventListener('click', function(event) {
+        newLink.addEventListener('click', function(event) {
             event.preventDefault(); // 링크의 기본 동작 취소
-            window.location.href = newLink.href; // 네이버로 이동
+
+        // 클릭된 강의의 이름과 하위 목록 이름을 가져와서 URL에 포함시킴
+        const chapterTitle = spanElement.textContent;
+        const chapterContent = newLink.textContent;
+        const queryString = `?title=${encodeURIComponent(chapterTitle)}&content=${encodeURIComponent(chapterContent)}`;
+
+        // chapter.html로 이동하면서 쿼리 문자열 전달
+        window.location.href = `chapter${queryString}`;
         });
+
+        
+
+        // // 강의 하위목록을 변경할 수 있는 기능 추가
+        // newLink.addEventListener('click', function () {
+        //     const newName = prompt("변경할 강의 하위목록의 이름을 입력하세요:", this.textContent);
+        //     if (newName === null || newName === "") return; // 취소 또는 빈 문자열 처리
+
+        //     this.textContent = newName; // 강의 하위목록 이름 변경
+        // });
     });
 });
 

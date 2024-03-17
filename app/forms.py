@@ -2,6 +2,7 @@
 from django import forms
 from datetime import date
 
+
 class ForecastForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -55,4 +56,7 @@ class ForecastForm(forms.Form):
         if selected_date <= self.today:
             raise forms.ValidationError("현재 날짜보다 예측 년도/월이 높아야 합니다.")
         return cleaned_data
+
+
+
 

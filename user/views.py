@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from .models import User
+from .models import User, Lecture, LectureChapter
+from django.contrib.auth.decorators import login_required
+from .forms import LectureChapterForm
 
 def login_view(request):
     if request.method == "POST":
@@ -40,3 +42,66 @@ def signup_view(request):
         return redirect("signup_done")
 
     return render(request, "user/signup.html")
+
+
+
+
+
+
+@login_required
+def lecture_list_view(request):
+    user = request.user  # 현재 로그인한 사용자 정보 가져오기
+    chapters = LectureChapter.objects.filter(user=user)
+
+    context = {
+        'chapters': chapters,  # 사용자의 LectureChapter 객체 목록을 전달
+    }
+
+    return render(request, "user/lecture_list.html", context)
+
+
+
+@login_required
+def add_lecture_chapter(request):
+    if request.method == 'POST':
+        form = LectureChapterForm(request.POST)
+        if form.is_valid():
+            # 폼에서 입력한 데이터 가져오기
+            lecture_name = form.cleaned_data.get('lecture_name')
+            chapter_name = form.cleaned_data.get('chapter_name')
+            
+            # 터미널에 출력
+            print("User:", request.user)
+            print("Lecture:", lecture_name)
+            print("Chapter Name:", chapter_name)
+
+            # Lecture 모델에서 해당 강의를 가져오거나 생성
+            lecture, created = Lecture.objects.get_or_create(title=lecture_name)
+
+            # 새로운 LectureChapter 객체 생성 및 저장
+            chapter = form.save(commit=False)
+            chapter.user = request.user
+            chapter.lecture = lecture  # Lecture 객체 할당
+            chapter.save()
+
+            messages.success(request, '강의 챕터가 성공적으로 추가되었습니다.')
+            return render(request, "user/add_lecture_chapter.html")
+    else:
+        form = LectureChapterForm()
+
+    # 폼 유효성 검사 실패 시에도 폼과 함께 에러 메시지를 전달
+    if form.errors:
+        # 폼에서 입력한 데이터 가져오기
+        lecture_name = form.cleaned_data.get('lecture_name')
+        chapter_name = form.cleaned_data.get('chapter_name')
+        
+        # 터미널에 출력
+        print("User:", request.user)
+        print("Lecture:", lecture_name)
+        print("Chapter Name:", chapter_name)
+        messages.error(request, '강의 챕터 추가에 실패했습니다. 입력을 다시 확인해주세요.')
+
+    return render(request, 'user/add_lecture_chapter.html')
+
+
+

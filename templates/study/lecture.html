@@ -83,9 +83,14 @@
     <div class="custom-body">
         <div class="lecture-box">
             <h2>Study Partner</h2>
+
+
+
+            <!-- 강의 별 form -->
             <form>
             <div class="user-box">
                 <input type="text" name="" required="">
+                <span></span>
                 <label>강의 이름</label>
             </div>
             <div class="user-box">
@@ -97,7 +102,7 @@
                 <span></span>
                 <span></span>
                 <span></span>
-                음성녹음 업로드
+                파일 업로드
             </a>
             <a href="#">
                 <span></span>
@@ -115,38 +120,12 @@
                 요약하기
                 </a>
             </form>
+
+
+
         </div>
     </div>
     
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- 
-
-
-
-
-
 
 
 
@@ -163,6 +142,10 @@
     <script src="https://unpkg.com/ionicons@5.2.3/dist/ionicons.js"></script>
     <!-- JS -->
     <script src="{% static 'js/lecture.js' %}"></script>
+
+    <script>
+        const chapterUrl = "{% url 'chapter' %}";
+    </script>    
 </body>
 </html>
 {% endblock %}

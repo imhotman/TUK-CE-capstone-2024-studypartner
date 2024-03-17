@@ -1,0 +1,40 @@
+<!-- <!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecture List</title>
+</head>
+<body>
+    <h1>Lecture List</h1>
+    <ul>
+        {% for chapter in chapters %}
+            <li>{{ chapter.lecture.title }} - {{ chapter.chapter_name }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecture List</title>
+</head>
+<body>
+    <h1>Lecture List</h1>
+    {% regroup chapters by lecture.title as lecture_list %}
+    <ul>
+        {% for lecture_group in lecture_list %}
+            <li>{{ lecture_group.grouper }} <!-- 과목명 -->
+                <ul>
+                    {% for chapter in lecture_group.list %}
+                    <li>{{ chapter.chapter_name }}</li> <!-- 챕터명 -->
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
