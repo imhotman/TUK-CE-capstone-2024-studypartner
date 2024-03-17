@@ -85,14 +85,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-
-
-
-
-
-
-
-
+/* 새로운 강의 추가하는 코드 */
 document.getElementById('add_button').addEventListener('click', function () {
     const confirmation = confirm("새로운 강의를 추가하시겠습니까?");
     if (!confirmation) return; // 사용자가 취소를 선택하면 함수 종료
@@ -167,10 +160,21 @@ document.getElementById('add_button').addEventListener('click', function () {
 
         // 새로운 항목 추가
         const newMenuItem = document.createElement('li');
-        newMenuItem.textContent = newItemName;
-        newMenuItem.classList.add('collapse__sublink'); // text_element와 collapse__menu 클래스 추가
+        const newLink = document.createElement('a');
+        newLink.href = '#'; // 여기를 원하는 링크로 수정하세요
+        newLink.textContent = newItemName; // 사용자가 입력한 문자열을 그대로 항목에 추가
+        newLink.classList.add('collapse__sublink'); // collapse__sublink 클래스 추가
+        newMenuItem.appendChild(newLink); // a 요소를 li 요소에 추가
         const collapseMenu = document.getElementById('collapse-menu2-' + courseId);
         collapseMenu.appendChild(newMenuItem);
+
+
+        // 새로 생성된 링크에 클릭 이벤트 핸들러 추가
+         newLink.addEventListener('click', function(event) {
+            event.preventDefault(); // 링크의 기본 동작 취소
+            window.location.href = newLink.href; // 네이버로 이동
+        });
     });
 });
+
 
