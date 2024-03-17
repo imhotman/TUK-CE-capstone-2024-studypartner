@@ -1,0 +1,163 @@
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'css/lecture.css' %}">
+    <link rel="stylesheet" href="{% static 'css/lecture_form.css' %}">
+
+
+    <title>내 강의실 | 스터디파트너</title>
+</head>
+<body id="body-pd">
+
+<!-- 사이드 네비게이션 바 -->
+<div class="l-navbar" id="navbar">
+    <nav class="nav">
+        <div>
+            <div class="nav__brand">
+                <ion-icon name="menu-outline" class="nav__toggle" id="nav-toggle"></ion-icon>
+                {% if request.user.is_authenticated %}  <!-- 로그인 되었을 때 보이는 화면 -->
+                    <a href="#" class="nav__logo">    
+                        <span>{{ request.user.username }} 님</span>
+                    </a>
+                {% else %}  <!-- 로그아웃 되었을 때 보이는 화면 -->
+                    <a href="{% url 'user:login' %}" class="nav__logo">
+                        <span>로그인 후 이용하세요.</span>
+                    </a>
+                {% endif %} 
+            </div>
+
+            {% if request.user.is_authenticated %}  <!-- 로그인 되었을 때 보이는 화면 -->
+                <div class="nav__list">
+                    <a href="{% url 'index' %}" class="nav__link active">
+                        <ion-icon name="home-outline" class="nav__icon"></ion-icon>
+                        <span class="nav_name">메인화면</span>
+                    </a>
+
+                    {% regroup chapters by lecture.title as lecture_list %}
+                    {% for lecture_group in lecture_list %}
+                        <div class="nav__link collapse">
+                            <ion-icon name="folder-outline" class="nav__icon"></ion-icon>
+                            <span class="nav_name" id="my-courses">{{ lecture_group.grouper }}</span>
+                            <div class="collapse__link">
+                                <ion-icon name="add" id="collapse-link"></ion-icon>
+                                <ion-icon name="chevron-down-outline"></ion-icon>
+                            </div>
+                            <!-- 내 강의 하위 메뉴 -->
+                            <ul class="collapse__menu text_element" id="collapse-menu">
+                                {% for chapter in lecture_group.list %}
+                                    <li class="collapse__sublink">{{ chapter.chapter_name }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endfor %}
+
+
+
+
+
+
+
+
+                    
+                    <a href="{% url 'user:logout' %}" class="nav__link">
+                        <ion-icon name="log-out-outline" class="nav__icon"></ion-icon>
+                        <span class="nav_name">로그아웃</span>
+                    </a>
+                </div>
+            {% else %}  <!-- 로그아웃 되었을 때 보이는 화면 -->
+                <div class="nav__list">
+                    <a href="{% url 'index' %}" class="nav__link active">
+                        <ion-icon name="home-outline" class="nav__icon"></ion-icon>
+                        <span class="nav_name">메인화면</span>
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </nav>
+</div>
+
+
+
+
+
+
+
+
+
+    <h1>Study Partner</h1>
+
+    <div class="custom-body">
+        <div class="lecture-box">
+            <h2>Study Partner</h2>
+
+
+
+            <!-- 강의 별 form -->
+            <form>
+            <div class="user-box">
+                <input type="text" name="" required="">
+                <span></span>
+                <label>강의 이름</label>
+            </div>
+            <div class="user-box">
+                <input type="password" name="" required="">
+                <label>강의 하위목록</label>
+            </div>
+            <a href="#">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                파일 업로드
+            </a>
+            <a href="#">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                전체 텍스트
+            </a>
+            </a>
+                <a href="#">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                요약하기
+                </a>
+            </form>
+
+
+
+        </div>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- IONICONS -->
+    <script src="https://unpkg.com/ionicons@5.2.3/dist/ionicons.js"></script>
+    <!-- JS -->
+    <script src="{% static 'js/lecture.js' %}"></script>
+
+    <script>
+        const chapterUrl = "{% url 'chapter' %}";
+    </script>    
+</body>
+</html>
+{% endblock %}

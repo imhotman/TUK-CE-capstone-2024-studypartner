@@ -62,7 +62,21 @@ def lecture_list_view(request):
 
 
 @login_required
-def add_lecture_chapter(request):
+def lecture_view(request):
+    user = request.user  # 현재 로그인한 사용자 정보 가져오기
+    chapters = LectureChapter.objects.filter(user=user)
+
+    context = {
+        'chapters': chapters,  # 사용자의 LectureChapter 객체 목록을 전달
+    }
+
+    return render(request, "user/lecture.html", context)
+
+
+
+
+@login_required
+def add_lecture_chapter_view(request):
     if request.method == 'POST':
         form = LectureChapterForm(request.POST)
         if form.is_valid():

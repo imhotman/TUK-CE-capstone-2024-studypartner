@@ -55,10 +55,16 @@
                 <span>사이트 소개</span>
               </a>
             </li>
+
+            
             <li class="header-gnbitem">
-              <a class="header-gnblink" href="{% url 'lecture' %}">
+              {% if request.user.is_authenticated %}
+              <a class="header-gnblink" href="{% url 'user:lecture' %}">
                 <span>내 강의실</span>
               </a>
+              {% else %}
+
+              {% endif %}
               <ul class="header-sublist">
                 <li class="header-subitem">
                   <a class="header-sublink" href="{% url 'user:lecture_list' %}">
@@ -177,7 +183,7 @@
               </a>
             </li>
             <li class="fullmenu-gnbitem">
-              <a class="fullmenu-gnblink" href="{% url 'lecture' %}">
+              <a class="fullmenu-gnblink" href="{% url 'user:lecture' %}">
                 <span>내 강의실</span>
               </a>
               <ul class="fullmenu-sublist">

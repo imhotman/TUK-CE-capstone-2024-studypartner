@@ -29,7 +29,7 @@ urlpatterns = [
     path('mypage', views.mypage, name='mypage'),
     path('notice', views.notice, name='notice'),
     path('qna', views.qna, name='qna'),
-    path('lecture', views.lecture, name='lecture'),
+    # path('lecture', views.lecture, name='lecture'),
     path('chapter/', views.chapter, name='chapter'),
     path('user/', include('user.urls')),
 ]
