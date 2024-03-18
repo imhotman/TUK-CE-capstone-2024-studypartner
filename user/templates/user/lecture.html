@@ -9,6 +9,7 @@
     <!-- CSS -->
     <link rel="stylesheet" href="{% static 'css/lecture.css' %}">
     <link rel="stylesheet" href="{% static 'css/lecture_form.css' %}">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
 
 
     <title>내 강의실 | 스터디파트너</title>
@@ -109,28 +110,12 @@
                 <input type="password" name="" required="">
                 <label>강의 하위목록</label>
             </div>
-            <a href="#">
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                파일 업로드
-            </a>
-            <a href="#">
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                전체 텍스트
-            </a>
-            </a>
-                <a href="#">
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                요약하기
-                </a>
+            <div class="index_forecast_buttonlist" style="text-align: center;">     
+                <button type="submit" style="margin-left: 115px;">강의 추가</button>&nbsp;&nbsp;
+                <button type="reset" class="reverse dark" style="background-color: darkcyan;">모두 삭제</button>    
+            </div>
+            
+            
             </form>
 
 
