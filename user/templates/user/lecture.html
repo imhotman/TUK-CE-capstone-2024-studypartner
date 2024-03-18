@@ -16,82 +16,77 @@
 </head>
 <body id="body-pd">
 
-<!-- 사이드 네비게이션 바 -->
-<div class="l-navbar" id="navbar">
-    <nav class="nav">
-        <div>
-            <div class="nav__brand">
-                <ion-icon name="menu-outline" class="nav__toggle" id="nav-toggle"></ion-icon>
+    <a href="{% url 'user:lecture' %}">
+        <img src="{% static 'images/study_logo.png' %}" alt="스터디파트너 로고사진" style="width: 75px">
+    </a>
+    <!-- <h2>Study Partner</h2> -->
+
+
+    <!-- 사이드 네비게이션 바 -->
+    <div class="l-navbar" id="navbar">
+        <nav class="nav">
+            <div>
+                <div class="nav__brand">
+                    <ion-icon name="menu-outline" class="nav__toggle" id="nav-toggle"></ion-icon>
+                    {% if request.user.is_authenticated %}  <!-- 로그인 되었을 때 보이는 화면 -->
+                        <a href="#" class="nav__logo">    
+                            <span>{{ request.user.username }} 님</span>
+                        </a>
+                    {% else %}  <!-- 로그아웃 되었을 때 보이는 화면 -->
+                        <a href="{% url 'user:login' %}" class="nav__logo">
+                            <span>로그인 후 이용하세요.</span>
+                        </a>
+                    {% endif %} 
+                </div>
+
                 {% if request.user.is_authenticated %}  <!-- 로그인 되었을 때 보이는 화면 -->
-                    <a href="#" class="nav__logo">    
-                        <span>{{ request.user.username }} 님</span>
-                    </a>
-                {% else %}  <!-- 로그아웃 되었을 때 보이는 화면 -->
-                    <a href="{% url 'user:login' %}" class="nav__logo">
-                        <span>로그인 후 이용하세요.</span>
-                    </a>
-                {% endif %} 
-            </div>
+                    <div class="nav__list">
+                        <a href="{% url 'index' %}" class="nav__link active">
+                            <ion-icon name="home-outline" class="nav__icon"></ion-icon>
+                            <span class="nav_name">메인화면</span>
+                        </a>
 
-            {% if request.user.is_authenticated %}  <!-- 로그인 되었을 때 보이는 화면 -->
-                <div class="nav__list">
-                    <a href="{% url 'index' %}" class="nav__link active">
-                        <ion-icon name="home-outline" class="nav__icon"></ion-icon>
-                        <span class="nav_name">메인화면</span>
-                    </a>
-
-                    {% regroup chapters by lecture.title as lecture_list %}
-                    {% for lecture_group in lecture_list %}
-                        <div class="nav__link collapse">
-                            <ion-icon name="folder-outline" class="nav__icon"></ion-icon>
-                            <span class="nav_name" id="my-courses">{{ lecture_group.grouper }}</span>
-                            <div class="collapse__link">
-                                <ion-icon name="add" id="collapse-link"></ion-icon>
-                                <ion-icon name="chevron-down-outline"></ion-icon>
+                        <!-- {% regroup chapters by lecture.title as lecture_list %} -->
+                        {% for lecture in lectures %}
+                            <div class="nav__link collapse">
+                                <ion-icon name="folder-outline" class="nav__icon"></ion-icon>
+                                <span class="nav_name" id="my-courses">{{ lecture.lecture }}</span>
+                                <div class="collapse__link">
+                                    <ion-icon name="add" id="collapse-link"></ion-icon>
+                                    <ion-icon name="chevron-down-outline"></ion-icon>
+                                </div>
+                                <!-- 내 강의 하위 메뉴 -->
+                                <ul class="collapse__menu text_element" id="collapse-menu">
+                                    {% for chapter in lecture.chapters %}
+                                        <li class="collapse__sublink">{{ chapter }}</li>
+                                    {% endfor %}
+                                </ul>
                             </div>
-                            <!-- 내 강의 하위 메뉴 -->
-                            <ul class="collapse__menu text_element" id="collapse-menu">
-                                {% for chapter in lecture_group.list %}
-                                    <li class="collapse__sublink">{{ chapter.chapter_name }}</li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    {% endfor %}
+                        {% endfor %}
+
+                        <a href="{% url 'user:logout' %}" class="nav__link">
+                            <ion-icon name="log-out-outline" class="nav__icon"></ion-icon>
+                            <span class="nav_name">로그아웃</span>
+                        </a>
+                    </div>
+                {% else %}  <!-- 로그아웃 되었을 때 보이는 화면 -->
+                    <div class="nav__list">
+                        <a href="{% url 'index' %}" class="nav__link active">
+                            <ion-icon name="home-outline" class="nav__icon"></ion-icon>
+                            <span class="nav_name">메인화면</span>
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </nav>
+    </div>
+    <!-- 사이드 네비게이션 바 끝부분 -->
 
 
 
 
 
-
-
-
-                    
-                    <a href="{% url 'user:logout' %}" class="nav__link">
-                        <ion-icon name="log-out-outline" class="nav__icon"></ion-icon>
-                        <span class="nav_name">로그아웃</span>
-                    </a>
-                </div>
-            {% else %}  <!-- 로그아웃 되었을 때 보이는 화면 -->
-                <div class="nav__list">
-                    <a href="{% url 'index' %}" class="nav__link active">
-                        <ion-icon name="home-outline" class="nav__icon"></ion-icon>
-                        <span class="nav_name">메인화면</span>
-                    </a>
-                </div>
-            {% endif %}
-        </div>
-    </nav>
-</div>
-
-
-
-
-
-
-
-
-
-    <h1>Study Partner</h1>
+    
 
     <div class="custom-body">
         <div class="lecture-box">
@@ -99,16 +94,20 @@
 
 
 
+
             <!-- 강의 별 form -->
-            <form>
+            <form method="post" action="{% url 'user:add_lecture_chapter' %}">
+                {% csrf_token %}
+                
+
             <div class="user-box">
-                <input type="text" name="" required="">
+                <input name="lecture_name" type="text" name="" required="">
                 <span></span>
-                <label>강의 이름</label>
+                <label>강의 이름 (필수)</label>
             </div>
             <div class="user-box">
-                <input type="password" name="" required="">
-                <label>강의 하위목록</label>
+                <input name="chapter_name" type="text" name="" required="">
+                <label>강의 하위목록 (필수)</label>
             </div>
             <div class="index_forecast_buttonlist" style="text-align: center;">     
                 <button type="submit" style="margin-left: 115px;">강의 추가</button>&nbsp;&nbsp;
@@ -117,9 +116,7 @@
             
             
             </form>
-
-
-
+            
         </div>
     </div>
     
@@ -143,6 +140,8 @@
     <script>
         const chapterUrl = "{% url 'chapter' %}";
     </script>    
+    <!-- JavaScript 코드 -->
+
 </body>
 </html>
 {% endblock %}

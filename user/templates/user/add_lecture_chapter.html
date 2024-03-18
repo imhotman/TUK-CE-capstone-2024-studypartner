@@ -1,19 +1,19 @@
 {% load static %}
 {% block content %}
 
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Lecture Chapter</title>
 </head>
-<body>
-    {% if request.user.is_authenticated %}  <!-- 로그인 되었을 때 보이는 화면 -->
-    <span>{{ request.user.username }}님</span>
-    {% else %}  <!-- 로그아웃 되었을 때 보이는 화면 -->
-    {% endif %} 
-    <form method="post" action="{% url 'user:add_lecture_chapter' %}">
+<body> -->
+    <!-- {% if request.user.is_authenticated %}  로그인 되었을 때 보이는 화면 -->
+    <!-- <span>{{ request.user.username }}님</span> -->
+    <!-- {% else %}  로그아웃 되었을 때 보이는 화면 -->
+    <!-- {% endif %} 
+    <form method="post" action="{% url 'user:lecture' %}">
         {% csrf_token %}
         <li class="contents-item">
             <h6 class="form-tit form-tit-deco">
@@ -48,6 +48,28 @@
         </ul>
     {% endif %}
 </body>
+</html> -->
+
+<!-- 리다이렉트 하는 화면(이 페이지에 접속하면 다른 주소로 바로 넘어갈 수 있게 서버로 요청하는 코드) -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="0; URL='{% url 'user:lecture' %}'">
+    <title>Redirecting...</title>
+</head>
+<body>
+    <!-- 리다이렉션 메시지를 여기에 추가할 수도 있습니다. -->
+    <p>이동 중입니다...</p>
+
+
+
+</body>
 </html>
+
+
+
+
+
 
 {% endblock %}
