@@ -15,6 +15,14 @@
 </body>
 </html> -->
 
+
+
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -26,10 +34,10 @@
     <h1>Lecture List</h1>
     <ul>
         {% for lecture in lectures %}
-            <li>{{ lecture.lecture }} <!-- 과목명 -->
+            <li><a>{{ lecture.lecture }}</a> <!-- 강의명 링크 -->
                 <ul>
                     {% for chapter in lecture.chapters %}
-                        <li>{{ chapter }}</li> <!-- 챕터명 -->
+                        <li><a href="{{ chapter.chapter_url }}">{{ chapter.chapter_name }}</a></li> <!-- 챕터명 링크 -->
                     {% endfor %}
                 </ul>
             </li>
@@ -37,3 +45,9 @@
     </ul>
 </body>
 </html>
+
+
+
+
+
+

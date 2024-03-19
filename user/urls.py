@@ -11,4 +11,16 @@ urlpatterns = [
     path('lecture_list/', views.lecture_list_view, name='lecture_list'),
     path('lecture/', views.lecture_view, name='lecture'),
     path('add_lecture_chapter/', views.add_lecture_chapter_view, name='add_lecture_chapter'),
+    
+    # lecture에 대한 URL 패턴
+    path('lecture_detail/<str:lecture_name>/', views.lecture_detail_view, name='lecture_detail'),  # lecture_detail_view로 수정
+    # chapter에 대한 URL 패턴
+    path('chapter_detail/<str:lecture_name>/<str:chapter_name>/', views.chapter_detail_view, name='chapter_detail'),  # chapter_detail_view로 수정
+
 ]
+
+
+
+
+
+

@@ -1,0 +1,18 @@
+<!-- lecture_detail.html -->
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ lecture_title }}</title>
+</head>
+<body>
+    <h1>{{ lecture_title }}</h1>
+    <ul>
+        {% for chapter in lecture_chapters %}
+            <li><a href="{% url 'chapter_detail' lecture_title=lecture_title chapter_name=chapter.chapter_name %}">{{ chapter.chapter_name }}</a></li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

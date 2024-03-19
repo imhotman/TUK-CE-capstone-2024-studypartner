@@ -59,6 +59,13 @@ def signup_view(request):
 
 #     return render(request, "user/lecture_list.html", context)
 
+
+
+from django.urls import reverse
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from .models import LectureChapter
+
 @login_required
 def lecture_list_view(request):
     user = request.user
@@ -70,12 +77,18 @@ def lecture_list_view(request):
         if current_lecture != chapter.lecture.title:
             lectures.append({'lecture': chapter.lecture.title, 'chapters': []})
             current_lecture = chapter.lecture.title
-        lectures[-1]['chapters'].append(chapter.chapter_name)
+        # 각 챕터에 대한 URL을 생성하여 추가
+        kwargs={'lecture_name': chapter.lecture.title, 'chapter_name': chapter.chapter_name}    
+        chapter_url = reverse('chapter_detail', kwargs=kwargs )
+        lectures[-1]['chapters'].append({'chapter_name': chapter.chapter_name, 'chapter_url': chapter_url}) 
 
     context = {
         'lectures': lectures,
     }
     return render(request, "user/lecture_list.html", context)
+
+
+
 
 
 
@@ -219,3 +232,18 @@ def add_lecture_chapter_view(request):
         print("강의 챕터 추가에 실패했습니다.")
 
     return render(request, 'user/add_lecture_chapter.html')
+
+
+
+
+def lecture_detail_view(request, lecture_title):
+    # lecture_title에 해당하는 LectureChapter 객체 가져오기
+    lecture_chapters = LectureChapter.objects.filter(lecture__title=lecture_title)
+    return render(request, 'lecture_detail.html', {'lecture_title': lecture_title, 'lecture_chapters': lecture_chapters})
+
+def chapter_detail_view(request, lecture_title, chapter_name):
+    # lecture_title과 chapter_name에 해당하는 LectureChapter 객체 가져오기
+    lecture_chapter = LectureChapter.objects.filter(lecture__title=lecture_title, chapter_name=chapter_name).first()
+    return render(request, 'chapter_detail.html', {'lecture_chapter': lecture_chapter})
+
+
