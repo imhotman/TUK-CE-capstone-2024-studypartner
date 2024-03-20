@@ -8,11 +8,11 @@
 .eco_forecast-N3 .contents-backimg { width: 100%; height: 100%; object-fit: cover; }
 .eco_forecast-N3 .contents-slide-group { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 1; padding: 0 2.4rem; text-align: center; }
 .eco_forecast-N3 .textset { text-align: left; }
-.eco_forecast-N3 .textset-tit { color: var(--text-color6); }
+.eco_forecast-N3 .textset-tit { color: darkslateblue }    /* 메인페이지 글자 색깔 바꾸는 코드 */
 .eco_forecast-N3 .textset-tit+.textset-desc { margin-top: 2rem; color: var(--text-color6); }
 .eco_forecast-N3 .textset-tit .text-deco { position: relative; }
 .eco_forecast-N3 .textset-tit .text-deco::after { content: ""; position: absolute; top: 50%; left: calc(100% + 4rem); transform: translateY(-50%); width: 100%; max-width: 10.8rem; height: 0.8rem; background-color: var(--primary); } /* AI 학습 도우미 옆 - 길이 수정하는 코드 */
-.eco_forecast-N3 .btnset { margin-top: 4rem; border-color: var(--white); color: var(--white); }
+.eco_forecast-N3 .btnset { margin-top: 4rem; border-color: var(--darkslateblue); color: var(--darkslateblue); } /* 버튼 색깔 바꾸는 코드 */
 .eco_forecast-N3 .btnset:hover { background-color: var(--white); border-color: var(--white); color: var(--text-color1); }
 .eco_forecast-N3 .contents-control { display: flex; align-items: center; position: absolute; left: 50%; transform: translateX(-50%); bottom: 4.5rem; z-index: 20; }
 .eco_forecast-N3 .swiper-button-prev { left: 8.2rem; width: 5.4rem; height: 5.4rem; background-color: rgba(var(--black-rgb), 0.8); border-radius: 50%; }
