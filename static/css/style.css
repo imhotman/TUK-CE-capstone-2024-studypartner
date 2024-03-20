@@ -11,7 +11,7 @@
 .eco_forecast-N3 .textset-tit { color: var(--text-color6); }
 .eco_forecast-N3 .textset-tit+.textset-desc { margin-top: 2rem; color: var(--text-color6); }
 .eco_forecast-N3 .textset-tit .text-deco { position: relative; }
-.eco_forecast-N3 .textset-tit .text-deco::after { content: ""; position: absolute; top: 50%; left: calc(100% + 4rem); transform: translateY(-50%); width: 100%; max-width: 15.8rem; height: 0.8rem; background-color: var(--primary); }
+.eco_forecast-N3 .textset-tit .text-deco::after { content: ""; position: absolute; top: 50%; left: calc(100% + 4rem); transform: translateY(-50%); width: 100%; max-width: 10.8rem; height: 0.8rem; background-color: var(--primary); } /* AI 학습 도우미 옆 - 길이 수정하는 코드 */
 .eco_forecast-N3 .btnset { margin-top: 4rem; border-color: var(--white); color: var(--white); }
 .eco_forecast-N3 .btnset:hover { background-color: var(--white); border-color: var(--white); color: var(--text-color1); }
 .eco_forecast-N3 .contents-control { display: flex; align-items: center; position: absolute; left: 50%; transform: translateX(-50%); bottom: 4.5rem; z-index: 20; }

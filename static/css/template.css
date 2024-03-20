@@ -51,7 +51,7 @@
   --ff-en: "Roboto", sans-serif;
   --ff-mo: monospace;
   --ff-ico: "Temha-Icon";
-  --fs-h1: 10rem;
+  --fs-h1: 7.7rem;  /* AI 학습 도우미 - 스터디파트너 글씨 사이즈 조정 */
   --fs-h2: 8rem;
   --fs-h3: 3rem;
   --fs-h4: 2.8rem;
@@ -60,7 +60,7 @@
   --fs-p1: 1.8rem;
   --fs-p2: 1.6rem; 
   --fs-p3: 1.4rem;
-  --lh-h1: 11rem;
+  --lh-h1: 9.5rem;  /* AI 학습 도우미 - 스터디파트너 글씨 간격 조정 */
   --lh-h2: 9rem;
   --lh-h3: 4rem;
   --lh-h4: 3.8rem;
