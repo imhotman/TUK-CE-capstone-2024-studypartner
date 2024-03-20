@@ -172,8 +172,11 @@ a {
 }
 
 
-
-
+/* 링크 색깔 기존과 같도록 하는 CSS 코드 */
+.lecture_urllink {
+    color: inherit; /* 부모 요소의 색상을 상속받음 */
+    text-decoration: none; /* 링크에 밑줄 제거 */
+}
 
 
 
