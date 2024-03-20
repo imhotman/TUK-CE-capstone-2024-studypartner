@@ -4,6 +4,7 @@ from django.contrib import messages
 from .models import User, Lecture, LectureChapter
 from django.contrib.auth.decorators import login_required
 from .forms import LectureChapterForm
+from django.urls import reverse
 
 def login_view(request):
     if request.method == "POST":
@@ -61,10 +62,17 @@ def signup_view(request):
 
 
 
-from django.urls import reverse
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
-from .models import LectureChapter
+
+
+
+
+
+
+
+# 수정할 페이지
+
+
+
 
 @login_required
 def lecture_list_view(request):
@@ -72,20 +80,33 @@ def lecture_list_view(request):
     lecture_chapters = LectureChapter.objects.filter(user=user).select_related('lecture').order_by('lecture__title')
 
     lectures = []
-    current_lecture = None
     for chapter in lecture_chapters:
-        if current_lecture != chapter.lecture.title:
-            lectures.append({'lecture': chapter.lecture.title, 'chapters': []})
-            current_lecture = chapter.lecture.title
-        # 각 챕터에 대한 URL을 생성하여 추가
-        kwargs={'lecture_name': chapter.lecture.title, 'chapter_name': chapter.chapter_name}    
-        chapter_url = reverse('chapter_detail', kwargs=kwargs )
-        lectures[-1]['chapters'].append({'chapter_name': chapter.chapter_name, 'chapter_url': chapter_url}) 
+        lecture_title = chapter.lecture.title
+        chapter_name = chapter.chapter_name
+        lecture_url = reverse('user:lecture_detail', kwargs={'lecture_name': lecture_title})
+        chapter_url = reverse('user:chapter_detail', kwargs={'lecture_name': lecture_title, 'chapter_name': chapter_name})
+
+        # 현재 강의가 lectures 리스트에 없으면 추가
+        if not any(lecture['lecture'] == lecture_title for lecture in lectures):
+            lectures.append({'lecture': lecture_title, 'chapters': []})
+
+        # 현재 챕터 추가
+        lectures[-1]['chapters'].append({'chapter_name': chapter_name, 'chapter_url': chapter_url, 'lecture_url': lecture_url})
 
     context = {
         'lectures': lectures,
     }
     return render(request, "user/lecture_list.html", context)
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -114,12 +135,18 @@ def lecture_view(request):
     lecture_chapters = LectureChapter.objects.filter(user=user).select_related('lecture').order_by('lecture__title')
 
     lectures = []
-    current_lecture = None
     for chapter in lecture_chapters:
-        if current_lecture != chapter.lecture.title:
-            lectures.append({'lecture': chapter.lecture.title, 'chapters': []})
-            current_lecture = chapter.lecture.title
-        lectures[-1]['chapters'].append(chapter.chapter_name)
+        lecture_title = chapter.lecture.title
+        chapter_name = chapter.chapter_name
+        lecture_url = reverse('user:lecture_detail', kwargs={'lecture_name': lecture_title})
+        chapter_url = reverse('user:chapter_detail', kwargs={'lecture_name': lecture_title, 'chapter_name': chapter_name})
+
+        # 현재 강의가 lectures 리스트에 없으면 추가
+        if not any(lecture['lecture'] == lecture_title for lecture in lectures):
+            lectures.append({'lecture': lecture_title, 'chapters': []})
+
+        # 현재 챕터 추가
+        lectures[-1]['chapters'].append({'chapter_name': chapter_name, 'chapter_url': chapter_url, 'lecture_url': lecture_url})
 
     context = {
         'lectures': lectures,
@@ -241,9 +268,14 @@ def lecture_detail_view(request, lecture_title):
     lecture_chapters = LectureChapter.objects.filter(lecture__title=lecture_title)
     return render(request, 'lecture_detail.html', {'lecture_title': lecture_title, 'lecture_chapters': lecture_chapters})
 
-def chapter_detail_view(request, lecture_title, chapter_name):
-    # lecture_title과 chapter_name에 해당하는 LectureChapter 객체 가져오기
-    lecture_chapter = LectureChapter.objects.filter(lecture__title=lecture_title, chapter_name=chapter_name).first()
+# def chapter_detail_view(request, lecture_title, chapter_name):
+#     # lecture_title과 chapter_name에 해당하는 LectureChapter 객체 가져오기
+#     lecture_chapter = LectureChapter.objects.filter(lecture__title=lecture_title, chapter_name=chapter_name).first()
+#     return render(request, 'chapter_detail.html', {'lecture_chapter': lecture_chapter})
+
+def chapter_detail_view(request, lecture_name, chapter_name):
+    # lecture_name과 chapter_name에 해당하는 LectureChapter 객체 가져오기
+    lecture_chapter = LectureChapter.objects.filter(lecture__title=lecture_name, chapter_name=chapter_name).first()
     return render(request, 'chapter_detail.html', {'lecture_chapter': lecture_chapter})
 
 

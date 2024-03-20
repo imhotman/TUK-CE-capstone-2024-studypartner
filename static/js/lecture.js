@@ -37,34 +37,34 @@ linkCollapse.forEach(icon => {
     });
 });
 
-/* 내 강의 하위메뉴 추가하는 코드 */
-document.getElementById('collapse-link').addEventListener('click', function () {
-    const collapseMenu = document.getElementById('collapse-menu');
+// /* 내 강의 하위메뉴 추가하는 코드 */
+// document.getElementById('collapse-link').addEventListener('click', function () {
+//     const collapseMenu = document.getElementById('collapse-menu');
 
-    // 사용자로부터 입력 받기
-    const newItemName = prompt("새로운 강의명을 입력하세요:");
-    if (!newItemName) return; // 입력이 없으면 동작하지 않음
+//     // 사용자로부터 입력 받기
+//     const newItemName = prompt("새로운 강의명을 입력하세요:");
+//     if (!newItemName) return; // 입력이 없으면 동작하지 않음
 
-    // 새로운 항목 추가
-    const newMenuItem = document.createElement('li');
-    const newLink = document.createElement('a');
-    newLink.href = chapterUrl; // Django 템플릿에서 가져온 URL 적용
-    newLink.classList.add('collapse__sublink');
-    newLink.textContent = newItemName; // 사용자가 입력한 문자열을 그대로 항목에 추가
-    newMenuItem.appendChild(newLink);
-    collapseMenu.appendChild(newMenuItem);
-});
+//     // 새로운 항목 추가
+//     const newMenuItem = document.createElement('li');
+//     const newLink = document.createElement('a');
+//     newLink.href = chapterUrl; // Django 템플릿에서 가져온 URL 적용
+//     newLink.classList.add('collapse__sublink');
+//     newLink.textContent = newItemName; // 사용자가 입력한 문자열을 그대로 항목에 추가
+//     newMenuItem.appendChild(newLink);
+//     collapseMenu.appendChild(newMenuItem);
+// });
 
-/* 내 강의 이름 변경하는 코드 */
-document.addEventListener('DOMContentLoaded', function() {
-    // 내 강의 클릭 시 동작
-    document.getElementById('my-courses').addEventListener('click', function() {
-        const newName = prompt("변경할 강의의 이름을 입력하세요:", this.textContent);
-        if (!newName) return;
+// /* 내 강의 이름 변경하는 코드 */
+// document.addEventListener('DOMContentLoaded', function() {
+//     // 내 강의 클릭 시 동작
+//     document.getElementById('my-courses').addEventListener('click', function() {
+//         const newName = prompt("변경할 강의의 이름을 입력하세요:", this.textContent);
+//         if (!newName) return;
 
-        this.textContent = newName; // 내 강의 요소의 이름 변경
-    });
-});
+//         this.textContent = newName; // 내 강의 요소의 이름 변경
+//     });
+// });
 
 // /* 내 강의 이름 변경하는 코드 */
 // document.addEventListener('DOMContentLoaded', function () {
