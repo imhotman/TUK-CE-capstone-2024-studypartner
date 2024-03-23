@@ -1,7 +1,7 @@
-// eco_forecast-N1 [DOlTa4bF4A]
+// study_partner-N1 [DOlTa4bF4A]
 (function() {
   $(function() {
-    $(".eco_forecast-N1").each(function() {
+    $(".study_partner-N1").each(function() {
       const $block = $(this);
       // Header Scroll
       $(window).on("load scroll", function() {

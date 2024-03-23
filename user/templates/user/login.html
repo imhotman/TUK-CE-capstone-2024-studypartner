@@ -19,10 +19,10 @@
 {% load static %}
 {% block title %}로그인 | 스터디파트너{% endblock %}
 {% block content %}
-<!-- [E]eco_forecast-N1 -->
+<!-- [E]study_partner-N1 -->
 
-  <!-- [S]eco_forecast-N24 -->
-  <div class="eco_forecast-N24" data-bid="dAlta550GS">
+  <!-- [S]study_partner-N24 -->
+  <div class="study_partner-N24" data-bid="dAlta550GS">
     <form action="{% url 'user:login' %}" method="post">
         {% csrf_token %}
     <div class="contents-inner">
@@ -74,6 +74,6 @@
     </div>
     </form>
   </div>
-  <!-- [E]eco_forecast-N24 -->
+  <!-- [E]study_partner-N24 -->
 
 {% endblock %}
