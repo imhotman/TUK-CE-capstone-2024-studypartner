@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, Http404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .models import User, Lecture, LectureChapter
@@ -263,19 +263,68 @@ def add_lecture_chapter_view(request):
 
 
 
-def lecture_detail_view(request, lecture_title):
-    # lecture_title에 해당하는 LectureChapter 객체 가져오기
-    lecture_chapters = LectureChapter.objects.filter(lecture__title=lecture_title)
-    return render(request, 'lecture_detail.html', {'lecture_title': lecture_title, 'lecture_chapters': lecture_chapters})
 
-# def chapter_detail_view(request, lecture_title, chapter_name):
-#     # lecture_title과 chapter_name에 해당하는 LectureChapter 객체 가져오기
-#     lecture_chapter = LectureChapter.objects.filter(lecture__title=lecture_title, chapter_name=chapter_name).first()
-#     return render(request, 'chapter_detail.html', {'lecture_chapter': lecture_chapter})
+
+# def lecture_detail_view(request, lecture_name):
+#     # 강의명이 주어진 문자열을 포함하는 모든 LectureChapter 객체를 가져옴
+#     lecture_chapters = LectureChapter.objects.filter(lecture__title__contains=lecture_name)
+
+#     # LectureChapter가 없는 경우 404 에러 반환
+#     if not lecture_chapters.exists():
+#         raise Http404("강의를 찾을 수 없습니다.")
+
+#     # 만약 LectureChapter가 여러 개인 경우 첫 번째 LectureChapter를 선택
+#     lecture_chapter = lecture_chapters.first()
+
+#     # 강의에 대한 추가적인 정보를 가져오거나 생성하는 코드 작성
+
+#     context = {
+#         'lecture_chapter': lecture_chapter,
+#         # 강의에 관련된 다른 정보를 추가할 수 있음
+#     }
+
+#     return render(request, "user/lecture_detail.html", context)
+
+
+
+def lecture_detail_view(request, lecture_name):
+    # 강의명에 해당하는 모든 LectureChapter 객체를 가져옴
+    lecture_chapters = LectureChapter.objects.filter(lecture__title=lecture_name)
+
+    # LectureChapter가 없는 경우 404 에러 반환
+    if not lecture_chapters.exists():
+        raise Http404("해당 강의에 대한 챕터를 찾을 수 없습니다.")
+
+    context = {
+        'lecture_name': lecture_name,
+        'lecture_chapters': lecture_chapters,
+    }
+
+    return render(request, "user/lecture_detail.html", context)
+
+
+
+
+
+
+
+
 
 def chapter_detail_view(request, lecture_name, chapter_name):
-    # lecture_name과 chapter_name에 해당하는 LectureChapter 객체 가져오기
-    lecture_chapter = LectureChapter.objects.filter(lecture__title=lecture_name, chapter_name=chapter_name).first()
-    return render(request, 'chapter_detail.html', {'lecture_chapter': lecture_chapter})
+    # 강의명과 챕터명이 일치하는 LectureChapter 객체를 가져옴
+    chapter = LectureChapter.objects.filter(lecture__title=lecture_name, chapter_name=chapter_name).first()
+
+    # LectureChapter가 없는 경우 404 에러 반환
+    if not chapter:
+        raise Http404("챕터를 찾을 수 없습니다.")
+
+    # 강의에 대한 추가적인 정보를 가져오거나 생성하는 코드 작성
+
+    context = {
+        'chapter': chapter,
+        # 챕터에 관련된 다른 정보를 추가할 수 있음
+    }
+
+    return render(request, "user/chapter_detail.html", context)
 
 

@@ -5,14 +5,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ lecture_title }}</title>
+    <title>{{ lecture_name }} 강의 상세 정보</title>
 </head>
 <body>
-    <h1>{{ lecture_title }}</h1>
+    <h1>{{ lecture_name }} 강의 상세 정보</h1>
+    <h2>챕터 목록</h2>
     <ul>
         {% for chapter in lecture_chapters %}
-            <li><a href="{% url 'chapter_detail' lecture_title=lecture_title chapter_name=chapter.chapter_name %}">{{ chapter.chapter_name }}</a></li>
+            <li>{{ chapter.chapter_name }}</li>
         {% endfor %}
     </ul>
+    <!-- 현재 로그인한 사용자 출력 -->
+    <p>현재 로그인한 사용자: {{ user.username }}</p>
 </body>
 </html>
+
