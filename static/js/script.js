@@ -1,10 +1,10 @@
-// eco_forecast-N3 [hylTa4BFAR]
+// study_partner-N3 [hylTa4BFAR]
 (function() {
   $(function() {
-    $(".eco_forecast-N3").each(function() {
+    $(".study_partner-N3").each(function() {
       const $block = $(this);
       // Swiper
-      const swiper = new Swiper(".eco_forecast-N3 .contents-swiper", {
+      const swiper = new Swiper(".study_partner-N3 .contents-swiper", {
         slidesPerView: 1,
         spaceBetween: 0,
         allowTouchMove: false,
@@ -13,12 +13,12 @@
           delay: 5000,
         },
         pagination: {
-          el: ".eco_forecast-N3 .swiper-pagination",
+          el: ".study_partner-N3 .swiper-pagination",
           clickable: true,
         },
         navigation: {
-          nextEl: ".eco_forecast-N3 .swiper-button-next",
-          prevEl: ".eco_forecast-N3 .swiper-button-prev",
+          nextEl: ".study_partner-N3 .swiper-button-next",
+          prevEl: ".study_partner-N3 .swiper-button-prev",
         },
       });
       // Swiper Play, Pause Button
@@ -39,13 +39,13 @@
     });
   });
 })();
-// eco_forecast-N6 [IILtA4bFS3]
+// study_partner-N6 [IILtA4bFS3]
 (function() {
   $(function() {
-    $(".eco_forecast-N6").each(function() {
+    $(".study_partner-N6").each(function() {
       const $block = $(this);
       // Swiper
-      const swiper = new Swiper(".eco_forecast-N6 .contents-swiper", {
+      const swiper = new Swiper(".study_partner-N6 .contents-swiper", {
         slidesPerView: 1,
         spaceBetween: 0,
         allowTouchMove: false,
@@ -54,8 +54,8 @@
           delay: 5000,
         },
         navigation: {
-          nextEl: ".eco_forecast-N6 .swiper-button-next",
-          prevEl: ".eco_forecast-N6 .swiper-button-prev",
+          nextEl: ".study_partner-N6 .swiper-button-next",
+          prevEl: ".study_partner-N6 .swiper-button-prev",
         },
       });
     });
