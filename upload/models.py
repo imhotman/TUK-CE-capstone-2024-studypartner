@@ -1,6 +1,5 @@
 from django.contrib.auth.models import User
 from django.db import models
-from user.models import Lecture, LectureChapter
 
 class UploadFile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
@@ -9,9 +8,7 @@ class UploadFile(models.Model):
     file_name = models.FileField(null=True)
 
     def __str__(self):
-        lecture_title = self.lecture.title if self.lecture else 'No Lecture'
-        chapter_name = self.chapter.chapter_name if self.chapter else 'No Chapter'
-        return f"사용자={self.user}, 강의명={lecture_title}, 챕터명={chapter_name}, 파일 제목={self.file_title}, 파일 이름={self.file_name}"
+        return f"사용자={self.user}, 강의&챕터명={self.lecture_chapter}, 파일 제목={self.file_title}, 파일 이름={self.file_name}"
 
 
 
