@@ -1,9 +1,7 @@
 from django.shortcuts import render, Http404
 from django.contrib.auth.models import User
 from user.models import LectureChapter
-from .forms import UploadFileForm
-
-# Create your views here.
+from .forms import UploadFileForm  # UploadFileForm을 가져옴
 
 def chapter_detail_view(request, lecture_name, chapter_name):
     # 강의명과 챕터명이 일치하는 LectureChapter 객체를 가져옴
@@ -13,15 +11,14 @@ def chapter_detail_view(request, lecture_name, chapter_name):
     if not chapter:
         raise Http404("챕터를 찾을 수 없습니다.")
 
-    # 강의에 대한 추가적인 정보를 가져오거나 생성하는 코드 작성
+    # UploadFileForm 인스턴스 생성
+    form = UploadFileForm()
 
     context = {
         'chapter': chapter,
-        # 챕터에 관련된 다른 정보를 추가할 수 있음
+        'form': form,  # UploadFileForm을 context에 추가
     }
 
     return render(request, "upload/chapter_detail.html", context)
 
 
-
-def upload_view(request)
