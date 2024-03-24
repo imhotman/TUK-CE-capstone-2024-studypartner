@@ -1,5 +1,6 @@
-from django.shortcuts import render, redirect, Http404
-from .models import User, LectureChapter
+from django.shortcuts import render, Http404
+from django.contrib.auth.models import User
+from user.models import LectureChapter
 # Create your views here.
 
 def chapter_detail_view(request, lecture_name, chapter_name):

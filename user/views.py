@@ -84,7 +84,7 @@ def lecture_list_view(request):
         lecture_title = chapter.lecture.title
         chapter_name = chapter.chapter_name
         lecture_url = reverse('user:lecture_detail', kwargs={'lecture_name': lecture_title})
-        chapter_url = reverse('user:chapter_detail', kwargs={'lecture_name': lecture_title, 'chapter_name': chapter_name})
+        chapter_url = reverse('upload:chapter_detail', kwargs={'lecture_name': lecture_title, 'chapter_name': chapter_name})
 
         # 현재 강의가 lectures 리스트에 없으면 추가
         if not any(lecture['lecture'] == lecture_title for lecture in lectures):
@@ -139,7 +139,7 @@ def lecture_view(request):
         lecture_title = chapter.lecture.title
         chapter_name = chapter.chapter_name
         lecture_url = reverse('user:lecture_detail', kwargs={'lecture_name': lecture_title})
-        chapter_url = reverse('user:chapter_detail', kwargs={'lecture_name': lecture_title, 'chapter_name': chapter_name})
+        chapter_url = reverse('upload:chapter_detail', kwargs={'lecture_name': lecture_title, 'chapter_name': chapter_name})
 
         # 현재 강의가 lectures 리스트에 없으면 추가
         if not any(lecture['lecture'] == lecture_title for lecture in lectures):
