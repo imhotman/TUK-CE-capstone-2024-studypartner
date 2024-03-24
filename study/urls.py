@@ -32,4 +32,5 @@ urlpatterns = [
     # path('lecture', views.lecture, name='lecture'),
     path('chapter/', views.chapter, name='chapter'),
     path('user/', include('user.urls')),
+    path('upload/', include('upload.urls')),
 ]
