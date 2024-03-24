@@ -4,8 +4,7 @@ from user.models import Lecture, LectureChapter
 
 class UploadFile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    lecture = models.ForeignKey(Lecture, related_name='uploaded_files', on_delete=models.CASCADE, null=True)
-    chapter = models.ForeignKey(LectureChapter, on_delete=models.CASCADE, null=True)
+    lecture_chapter = models.CharField(max_length=200, default="")
     file_title = models.CharField(max_length=50, default="")
     file_name = models.FileField(null=True)
 
