@@ -8,3 +8,4 @@ urlpatterns = [
     path('chapter_detail/<str:lecture_name>/<str:chapter_name>/', views.chapter_detail_view, name='chapter_detail'),  # chapter_detail_view
 
 ]
+
