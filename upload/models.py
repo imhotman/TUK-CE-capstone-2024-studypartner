@@ -10,7 +10,10 @@ class UploadFile(models.Model):
     file_name = models.FileField(null=True)
 
     def __str__(self):
-        return f"사용자={self.user}, 강의명={self.lecture}, 챕터명={self.chapter}, 파일 제목={self.file_title}, 파일 이름={self.file_name}"
+        lecture_title = self.lecture.title if self.lecture else 'No Lecture'
+        chapter_name = self.chapter.chapter_name if self.chapter else 'No Chapter'
+        return f"사용자={self.user}, 강의명={self.lecture.title}, 챕터명={self.chapter_name}, 파일 제목={self.file_title}, 파일 이름={self.file_name}"
+
 
 
 
