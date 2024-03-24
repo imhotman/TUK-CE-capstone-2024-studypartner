@@ -36,7 +36,7 @@
             <li><a href="{% url 'user:lecture_detail' lecture_name=lecture.lecture %}">{{ lecture.lecture }}</a> <!-- 강의명 링크 -->
                 <ul>
                     {% for chapter in lecture.chapters %}
-                        <li><a href="{% url 'user:chapter_detail' lecture_name=lecture.lecture chapter_name=chapter.chapter_name %}">{{ chapter.chapter_name }}</a></li> <!-- 챕터명 링크 -->
+                        <li><a href="{% url 'upload:chapter_detail' lecture_name=lecture.lecture chapter_name=chapter.chapter_name %}">{{ chapter.chapter_name }}</a></li> <!-- 챕터명 링크 -->
                     {% endfor %}
                 </ul>
             </li>
