@@ -58,12 +58,13 @@ def upload_file(request, lecture_name, chapter_name):
             # 업로드된 파일의 lecture 필드를 해당 챕터의 강의로 설정
             upload_file = form.save(commit=False)
             upload_file.chapter = chapter
+            upload_file.lecture = chapter.lecture  # 해당 챕터의 강의 정보 할당
             upload_file.user = request.user  # 현재 로그인한 사용자 정보 할당
             upload_file.save()
 
             # 파일 업로드 성공 시 해당 챕터 세부 정보 페이지로 리디렉션
             print("파일 업로드 성공하였습니다.")
-            return redirect('chapter_detail', lecture_name=lecture_name, chapter_name=chapter_name)
+            return render(request, "upload/chapter_detail.html", {'chapter': chapter})
         
     # 파일 업로드 실패 시 현재 페이지를 다시 렌더링하여 업로드 폼을 표시
     print("파일 업로드 실패하였습니다.")
