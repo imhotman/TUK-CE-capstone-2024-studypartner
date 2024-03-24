@@ -44,7 +44,6 @@ def chapter_detail_view(request, lecture_name, chapter_name):
 
 
 
-@login_required
 def upload_file(request, lecture_name, chapter_name):
     # 강의명과 챕터명이 일치하는 LectureChapter 객체를 가져옴
     chapter = LectureChapter.objects.filter(lecture__title=lecture_name, chapter_name=chapter_name).first()
@@ -59,15 +58,12 @@ def upload_file(request, lecture_name, chapter_name):
             # 업로드된 파일의 lecture 필드를 해당 챕터의 강의로 설정
             upload_file = form.save(commit=False)
             upload_file.chapter = chapter
-
-            # 현재 로그인한 사용자 정보를 가져와서 업로드 파일의 user 필드에 설정
-            upload_file.user = request.user
-            
+            upload_file.user = request.user  # 현재 로그인한 사용자 정보 할당
             upload_file.save()
 
             # 파일 업로드 성공 시 해당 챕터 세부 정보 페이지로 리디렉션
             print("파일 업로드 성공하였습니다.")
-            return redirect('upload:chapter_detail', lecture_name=lecture_name, chapter_name=chapter_name)
+            return redirect('chapter_detail', lecture_name=lecture_name, chapter_name=chapter_name)
         
     # 파일 업로드 실패 시 현재 페이지를 다시 렌더링하여 업로드 폼을 표시
     print("파일 업로드 실패하였습니다.")
@@ -77,3 +73,4 @@ def upload_file(request, lecture_name, chapter_name):
     }
     print("모두 실패")
     return render(request, "upload/chapter_detail.html", context)
+
