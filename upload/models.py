@@ -2,19 +2,18 @@ from django.contrib.auth.models import User
 from django.db import models
 from user.models import Lecture, LectureChapter
 
-# Create your models here.
-
 class UploadFile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    lecture = models.ForeignKey(LectureChapter, related_name='uploaded_files', on_delete=models.CASCADE, null=True)
+    lecture = models.ForeignKey(Lecture, related_name='uploaded_files', on_delete=models.CASCADE, null=True)
     chapter = models.ForeignKey(LectureChapter, on_delete=models.CASCADE, null=True)
     file_title = models.CharField(max_length=50, default="")
     file_name = models.FileField(null=True)
 
     def __str__(self):
-        lecture_title = self.lecture.lecture.title if self.lecture else 'No Lecture'
+        lecture_title = self.lecture.title if self.lecture else 'No Lecture'
         chapter_name = self.chapter.chapter_name if self.chapter else 'No Chapter'
         return f"사용자={self.user}, 강의명={lecture_title}, 챕터명={chapter_name}, 파일 제목={self.file_title}, 파일 이름={self.file_name}"
+
 
 
 
