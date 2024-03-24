@@ -4,6 +4,9 @@ from django.db import models
 class Lecture(models.Model):
     title = models.CharField(max_length=100)
 
+    def __str__(self):
+        return f"강의명: {self.title}" 
+
 class LectureChapter(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)  # 사용자와의 외부 키 연결
     lecture = models.ForeignKey(Lecture, related_name='chapters', on_delete=models.CASCADE)

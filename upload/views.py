@@ -48,7 +48,7 @@ def chapter_detail_view(request, lecture_name, chapter_name):
 def upload_file(request, lecture_name, chapter_name):
     try:
         # 강의명과 챕터명이 일치하는 LectureChapter 객체를 가져옴
-        lecture_chapter = LectureChapter.objects.get(lecture__title=lecture_name, chapter_name=chapter_name)
+        chapter = LectureChapter.objects.get(lecture__title=lecture_name, chapter_name=chapter_name)
     except LectureChapter.DoesNotExist:
         raise Http404("챕터를 찾을 수 없습니다.")
 
@@ -57,23 +57,23 @@ def upload_file(request, lecture_name, chapter_name):
         if form.is_valid():
             # 업로드된 파일의 lecture 및 chapter 필드를 해당 챕터의 강의 및 챕터로 설정
             upload_file = form.save(commit=False)
-            print(lecture_chapter)
-            upload_file.lecture_chapter = lecture_chapter # 강의와 챕터 이름 저장
+            print(chapter)
+            upload_file.chapter = chapter # 강의와 챕터 이름 저장
             upload_file.user = request.user  # 현재 로그인한 사용자 정보 할당
             upload_file.save()
 
             # 파일 업로드 성공 시 해당 챕터 세부 정보 페이지로 이동
             print("파일 업로드 성공하였습니다.")
-            return render(request, "upload/chapter_detail.html")
+            return redirect('upload:chapter_detail', lecture_name=lecture_name, chapter_name=chapter_name)
     else:
         form = UploadFileForm()  # 업로드 폼 생성
 
-    # 파일 업로드 실패 시 현재 페이지를 다시 렌더링하여 업로드 폼을 표시
-    print("파일 업로드 실패하였습니다.")
-    context = {
-        'chapter': lecture_chapter,
-        'form': form
-    }
+        # 파일 업로드 실패 시 현재 페이지를 다시 렌더링하여 업로드 폼을 표시
+        print("파일 업로드 실패하였습니다.")
+        context = {
+            'chapter': chapter,
+            'form': form
+        }
     return render(request, "upload/chapter_detail.html", context)
 
 
