@@ -1,6 +1,8 @@
 from django.shortcuts import render, Http404
 from django.contrib.auth.models import User
 from user.models import LectureChapter
+from .forms import UploadFileForm
+
 # Create your views here.
 
 def chapter_detail_view(request, lecture_name, chapter_name):
@@ -21,3 +23,5 @@ def chapter_detail_view(request, lecture_name, chapter_name):
     return render(request, "upload/chapter_detail.html", context)
 
 
+
+def upload_view(request)
