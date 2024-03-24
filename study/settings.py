@@ -126,3 +126,10 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# 업로드 된 파일에 대한 요청 URL
+MEDIA_URL = '/'
+
+# MEDIA_URL에 매핑될 폴더 경로
+MEDIA_ROOT = BASE_DIR
