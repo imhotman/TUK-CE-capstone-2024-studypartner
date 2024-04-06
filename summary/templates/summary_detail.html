@@ -22,7 +22,7 @@
 
     <!-- 파일 업로드 폼 -->
     <h2>파일 업로드</h2>
-    <form method="post" action="{% url 'upload:upload_file' lecture_name=chapter.lecture.title chapter_name=chapter.chapter_name %}" enctype="multipart/form-data">
+    <form method="post" action="{% url 'summary:upload_file_summary' lecture_name=chapter.lecture.title chapter_name=chapter.chapter_name %}" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">파일 업로드</button>

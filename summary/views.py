@@ -9,7 +9,7 @@ from .forms import UploadFile_summaryForm  # UploadFileForm을 가져옴
 # Create your views here.
 
 
-def summary_view(request, lecture_name, chapter_name):
+def summary_detail_view(request, lecture_name, chapter_name):
     # 강의명과 챕터명이 일치하는 LectureChapter 객체를 가져옴
     chapter = LectureChapter.objects.filter(lecture__title=lecture_name, chapter_name=chapter_name).first()
 
