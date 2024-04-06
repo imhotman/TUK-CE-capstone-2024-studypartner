@@ -1,6 +1,5 @@
 {% load static %}
 {% block content %}
-
 <!-- chapter_detail.html -->
 
 <!-- <!DOCTYPE html>
@@ -33,17 +32,17 @@
     <link rel="stylesheet" href="{% static 'css/lecture.css' %}">
     <link rel="stylesheet" href="{% static 'css/lecture_form.css' %}">
     <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+
 
     <title>{{ chapter.lecture.title }} 챕터 상세 정보</title>
 </head>
-<body>
-
-    <body id="body-pd">
-
-        <a href="{% url 'user:lecture' %}">
-            <img src="{% static 'images/study_logo.png' %}" alt="스터디파트너 로고사진" style="width: 75px">
-        </a>
+<body id="body-pd">
     
+    <a href="{% url 'user:lecture' %}">
+        <img src="{% static 'images/study_logo.png' %}" alt="스터디파트너 로고사진" style="width: 75px">
+    </a>
+
     <!-- 사이드 네비게이션 바 -->
     <div class="l-navbar" id="navbar">
         <nav class="nav">
@@ -60,14 +59,14 @@
                         </a>
                     {% endif %}
                 </div>
-    
+
                 {% if request.user.is_authenticated %}
                     <div class="nav__list">
                         <a href="{% url 'index' %}" class="nav__link active">
                             <ion-icon name="home-outline" class="nav__icon"></ion-icon>
                             <span class="nav_name">메인화면</span>
                         </a>
-    
+
                         {% for lecture in lectures %}
                             <div class="nav__link collapse">
                                 <ion-icon name="folder-outline" class="nav__icon"></ion-icon>
@@ -92,7 +91,7 @@
                                 </ul>
                             </div>
                         {% endfor %}
-    
+
                         <a href="{% url 'user:logout' %}" class="nav__link">
                             <ion-icon name="log-out-outline" class="nav__icon"></ion-icon>
                             <span class="nav_name">로그아웃</span>
@@ -111,12 +110,15 @@
     </div>
     <!-- 사이드 네비게이션 바 끝부분 -->
 
-
-
     <!-- 사용자의 챕터 상세정보 -->
     <div class="custom-body">
         <div class="lecture-box">
-            <h2>Study Partner</h2>
+            <h2>        
+                <span>Study Partner</span>
+                <a href="{% url 'user:lecture' %}">
+                    <ion-icon name="arrow-back-outline" class="lecture_urllink2 nav__toggle2 study-partner-backion" id="back-toggle"></ion-icon>
+                </a>
+            </h2>
 
             <div class="user-box">
                 <p style="color:white">사용자: {{ user.username }} </p>
@@ -141,6 +143,16 @@
         </div>
     </div>
     <!-- 사용자의 챕터 상세정보 끝부분-->
+
+    <!-- IONICONS -->
+    <script src="https://unpkg.com/ionicons@5.2.3/dist/ionicons.js"></script>
+    <!-- JS -->
+    <script src="{% static 'js/lecture.js' %}"></script>
+
+    <script>
+        const chapterUrl = "{% url 'chapter' %}";
+    </script>    
+
 
 </body>
 </html>
