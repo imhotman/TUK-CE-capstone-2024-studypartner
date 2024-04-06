@@ -32,7 +32,7 @@ def summary_detail_view(request, lecture_name, chapter_name):
         'form': form,  # 폼을 context에 추가
     }
 
-    return render(request, "upload/chapter_detail.html", context)
+    return render(request, "summary/summary_detail.html", context)
 
 
 
@@ -49,7 +49,7 @@ def upload_file_summary(request, lecture_name, chapter_name):
             upload_file.chapter = chapter
             upload_file.user = request.user
             upload_file.save()
-            return redirect('summary:summary', lecture_name=lecture_name, chapter_name=chapter_name)
+            return redirect('summary:summary_detail', lecture_name=lecture_name, chapter_name=chapter_name)
     else:
         form = UploadFile_summaryForm()
     
@@ -57,4 +57,4 @@ def upload_file_summary(request, lecture_name, chapter_name):
         'chapter': chapter,
         'form': form
     }
-    return render(request, "summary/summary.html", context)
+    return render(request, "summary/summary_detail.html", context)
