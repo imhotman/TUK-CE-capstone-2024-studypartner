@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>타이머</title>
+</head>
+<body>
+<h1>타이머</h1>
+<div>
+  <p id="timer">00:00:00</p>
+  <button id="startBtn">시작</button>
+  <button id="stopBtn">중지</button>
+  <button id="recordBtn">기록</button>
+</div>
+<div id="recordList">
+  <h2>기록 목록</h2>
+  <ul id="records"></ul>
+</div>
+
+<script>
+let timerInterval;
+let startTime;
+let elapsedTime = 0;
+let records = [];
+
+const timerElement = document.getElementById('timer');
+const startButton = document.getElementById('startBtn');
+const stopButton = document.getElementById('stopBtn');
+const recordButton = document.getElementById('recordBtn');
+const recordsList = document.getElementById('records');
+
+function startTimer() {
+  startTime = Date.now() - elapsedTime;
+  timerInterval = setInterval(updateTimer, 1000);
+  startButton.disabled = true;
+}
+
+function stopTimer() {
+  clearInterval(timerInterval);
+  startButton.disabled = false;
+}
+
+function updateTimer() {
+  const currentTime = Date.now();
+  elapsedTime = currentTime - startTime;
+  const formattedTime = formatTime(elapsedTime);
+  timerElement.textContent = formattedTime;
+}
+
+function formatTime(milliseconds) {
+  const hours = Math.floor(milliseconds / (1000 * 60 * 60));
+  const minutes = Math.floor((milliseconds % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((milliseconds % (1000 * 60)) / 1000);
+  return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+}
+
+function recordTime() {
+  const formattedTime = formatTime(elapsedTime);
+  records.push(formattedTime);
+  const listItem = document.createElement('li');
+  listItem.textContent = formattedTime;
+  recordsList.appendChild(listItem);
+}
+
+startButton.addEventListener('click', startTimer);
+stopButton.addEventListener('click', stopTimer);
+recordButton.addEventListener('click', recordTime);
+</script>
+</body>
+</html>

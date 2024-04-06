@@ -2,8 +2,6 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, Http404, redirect
 from django.contrib.auth.models import User
 from user.models import Lecture, LectureChapter
-from .models import UploadFile
-from .forms import UploadFileForm  # UploadFileForm을 가져옴
 from django.urls import reverse
 
 
@@ -46,4 +44,64 @@ def chapter_detail_view(request, lecture_name, chapter_name):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+from django.shortcuts import render
+from django.http import JsonResponse
+from datetime import datetime
+
+# 타이머 변수
+timer_running = False
+start_time = None
+elapsed_time = 0
+records = []
+
+# 타이머 시작
+def start_timer(request):
+    global timer_running, start_time, elapsed_time
+    if not timer_running:
+        timer_running = True
+        start_time = datetime.now()
+    return JsonResponse({'message': 'Timer started.'})
+
+# 타이머 중지
+def stop_timer(request):
+    global timer_running, start_time, elapsed_time
+    if timer_running:
+        timer_running = False
+        elapsed_time += (datetime.now() - start_time).total_seconds()
+    return JsonResponse({'message': 'Timer stopped.'})
+
+# 기록 저장
+def record_time(request):
+    global records, elapsed_time
+    if elapsed_time > 0:
+        records.append(elapsed_time)
+        elapsed_time = 0
+    return JsonResponse({'message': 'Time recorded.'})
+
+
+# HTML 페이지 렌더링
+def timer_view(request):
+    global timer_running, start_time, elapsed_time, records
+    context = {'timer_running': timer_running, 'elapsed_time': elapsed_time, 'records': records}
+    return render(request, 'timer_page.html', context)
 
