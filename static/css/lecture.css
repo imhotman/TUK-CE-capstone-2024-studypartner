@@ -85,6 +85,13 @@ a {
     cursor: pointer;
 }
 
+.nav__toggle2 {
+    font-size: 1.25rem;
+    padding: 0;
+    cursor: pointer;
+    margin-left: auto; /* 아이콘을 가장 오른쪽으로 이동시킵니다. */
+}
+
 .nav__logo {
     color: var(--white-color);
     font-weight: 600;
@@ -178,11 +185,18 @@ a {
     text-decoration: none; /* 링크에 밑줄 제거 */
 }
 
+.lecture_urllink2 {
+    color: white; /* 부모 요소의 색상을 상속받음 */
+    text-decoration: none; /* 링크에 밑줄 제거 */
+}
 
-
-
-
-
+/* 화살표 오른쪽으로 이동시키기 위한 코드 */
+.study-partner-backion {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: -25px;
+}
 
 
 
