@@ -103,5 +103,5 @@ def record_time(request):
 def timer_view(request):
     global timer_running, start_time, elapsed_time, records
     context = {'timer_running': timer_running, 'elapsed_time': elapsed_time, 'records': records}
-    return render(request, 'timer_page.html', context)
+    return render(request, 'upload/timer.html', context)
 
