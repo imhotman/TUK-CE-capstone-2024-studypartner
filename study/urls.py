@@ -33,6 +33,7 @@ urlpatterns = [
     path('chapter/', views.chapter, name='chapter'),
     path('user/', include('user.urls')),
     path('upload/', include('upload.urls')),
+    path('summary/', include('summary.urls')),
 ]
 
 from django.conf import settings
