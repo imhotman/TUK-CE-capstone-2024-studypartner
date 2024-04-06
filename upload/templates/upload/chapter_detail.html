@@ -1,3 +1,6 @@
+{% load static %}
+{% block content %}
+
 <!-- chapter_detail.html -->
 
 <!-- <!DOCTYPE html>
@@ -25,6 +28,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'css/lecture.css' %}">
+    <link rel="stylesheet" href="{% static 'css/lecture_form.css' %}">
+
     <title>{{ chapter.lecture.title }} 챕터 상세 정보</title>
 </head>
 <body>
@@ -49,5 +57,40 @@
         {{ form.as_p }}
         <button type="submit">파일 업로드</button>
     </form>
+
+    <div class="custom-body">
+        <div class="lecture-box">
+            <h2>Study Partner</h2>
+
+
+
+
+            <!-- 강의 별 form -->
+            <div method="post" action="{% url 'user:add_lecture_chapter' %}">
+                {% csrf_token %}
+                
+
+            <div class="user-box">
+                <p style="color:white">사용자: {{ user.username }} </p>
+            </div>
+            <div class="user-box">
+                <p style="color:white">강의명: {{ chapter.lecture.title }} </p>
+            </div>
+            <div class="user-box">
+                <p style="color:white">챕터명: {{ chapter.chapter_name }} </p>
+            </div>
+            <div class="index_forecast_buttonlist" style="text-align: center;">     
+                <button type="submit" style="margin-left: 115px;">강의 추가</button>&nbsp;&nbsp;
+                <button type="reset" class="reverse dark" style="background-color: darkcyan;">모두 삭제</button>    
+            </div>
+            
+            
+            </div>
+            
+        </div>
+    </div>
+
 </body>
 </html>
+
+{% endblock %}

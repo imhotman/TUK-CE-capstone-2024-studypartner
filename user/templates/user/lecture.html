@@ -59,7 +59,10 @@
                             <ul class="collapse__menu text_element" id="collapse-menu">
                                 {% for chapter in lecture.chapters %}
                                     <li class="collapse__sublink">
-                                        <a class="lecture_urllink" href="{% url 'upload:chapter_detail' lecture_name=lecture.lecture chapter_name=chapter.chapter_name %}">
+                                        <!-- <a class="lecture_urllink" href="{% url 'upload:chapter_detail' lecture_name=lecture.lecture chapter_name=chapter.chapter_name %}">
+                                            {{ chapter.chapter_name }}
+                                        </a> -->
+                                        <a class="lecture_urllink" href="{% url 'summary:summary_detail' lecture_name=lecture.lecture chapter_name=chapter.chapter_name %}">
                                             {{ chapter.chapter_name }}
                                         </a>
                                     </li>
