@@ -112,7 +112,9 @@
                 const formattedPastTime = formatTime(elapsedTime);
                 elapsedTimeElement.textContent = `지난 시간: ${formattedPastTime}`;
 
-                remainingTime = (goalTime - currentTime - elapsedTime + 1000 * Math.floor(elapsedTime / 1000));
+                // remainingTime = (goalTime - currentTime - elapsedTime + 1000 * Math.floor(elapsedTime / 1000));
+                elapsedTime = currentTime - startTime;
+                remainingTime = (goalTime - currentTime);
 
                 if (remainingTime >= 0) {
                     const formattedRemainingTime = formatTime(remainingTime);
