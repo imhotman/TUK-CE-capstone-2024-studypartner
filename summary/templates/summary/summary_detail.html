@@ -110,12 +110,10 @@
                 <ul>
                     {% for file in uploaded_files %}
                         <li>
-                            <a href="{{ file.file_name.url }}" class="lecture_urllink" style="color: rgb(190, 119, 220)">{{ file.file_title }}</a>
-                        
+                            <a href="{{ file.file_name.url }}" class="lecture_urllink" style="color: rgb(190, 119, 220)">{{ file.file_title }}</a>    
                                 <a style="margin-left: 25px; color: rgb(92, 194, 107);" class="lecture_urllink" href="#">
                                     AI 요약하기
                                 </a>
-                            
                         </li>
                     {% endfor %}
                 </ul>

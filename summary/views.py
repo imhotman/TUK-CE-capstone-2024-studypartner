@@ -81,13 +81,6 @@ def summary_detail_view(request, lecture_name, chapter_name):
     return render(request, "summary/summary_detail.html", context)
 
 
-
-
-
-
-
-
-
 def upload_file_summary(request, lecture_name, chapter_name):
     try:
         chapter = LectureChapter.objects.get(lecture__title=lecture_name, chapter_name=chapter_name)
