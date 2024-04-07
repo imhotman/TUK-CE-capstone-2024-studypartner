@@ -40,7 +40,6 @@
         let elapsedTime = 0;
         let records = [];
         let goalTime = 0;
-        let isStopped = false;
 
         const timerElement = document.getElementById('timer');
         const elapsedTimeElement = document.getElementById('elapsedTime'); // 지난 시간 요소
@@ -57,19 +56,6 @@
         const secondInput = document.getElementById('second');
         const setGoalButton = document.getElementById('setGoalBtn');
 
-
-
-        function stopTimer() {
-            clearInterval(timerInterval);
-            elapsedTime = Date.now() - startTime; // 타이머가 중지된 후 경과한 시간
-            startButton.style.display = 'none'; // 시작 버튼 숨기기
-            stopButton.style.display = 'none'; // 중지 버튼 숨기기
-            resetButton.style.display = 'inline'; // 초기화 버튼 보이기
-            continueButton.style.display = 'inline'; // 계속 버튼 보이기
-            recordButton.style.display = 'inline'; // 기록 버튼 보이기
-            isStopped = true; // 중지 상태 설정
-        }
-
         function startTimer() {
             if (elapsedTime === 0) {
                 // 타이머가 처음 시작하거나 초기화 후 다시 시작하는 경우
@@ -79,13 +65,23 @@
                 // 중지된 시점의 시간을 기록
                 startTime = Date.now() - elapsedTime; // 현재 시간에서 타이머가 중지된 후 경과한 시간을 뺀 시간
             }
-            // 중단된 시점부터 다시 시작하는 경우에는 goalTime을 업데이트하지 않음
+            // 중단된 시점부터 다시 시작하는 경우에는 goalTime을 업데이트
+            goalTime = startTime + (parseInt(hourInput.value) * 60 * 60 * 1000) + (parseInt(minuteInput.value) * 60 * 1000) + (parseInt(secondInput.value) * 1000);
             timerInterval = setInterval(updateTimer, 1000);
             startButton.style.display = 'none'; // 시작 버튼 숨기기
             stopButton.style.display = 'inline'; // 중지 버튼 보이기
             setGoalButton.style.display = 'none'; // 목표 시간 설정 버튼 숨기기
             continueButton.style.display = 'none'; // 계속 버튼 숨기기
-            isStopped = false; // 중지 상태 해제
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+            elapsedTime = Date.now() - startTime; // 타이머가 중지된 후 경과한 시간
+            startButton.style.display = 'none'; // 시작 버튼 숨기기
+            stopButton.style.display = 'none'; // 중지 버튼 숨기기
+            resetButton.style.display = 'inline'; // 초기화 버튼 보이기
+            continueButton.style.display = 'inline'; // 계속 버튼 보이기
+            recordButton.style.display = 'inline'; // 기록 버튼 보이기
         }
 
         function resetTimer() {
@@ -108,7 +104,7 @@
 
         function updateTimer() {
             const currentTime = Date.now();
-            elapsedTime = currentTime - startTime; // 타이머가 중지된 후 경과한 시간
+            elapsedTime = currentTime - startTime;  // 타이머가 중지된 후 경과한 시간
             const formattedTime = formatTime(elapsedTime);
             timerElement.textContent = formattedTime;
 
@@ -116,14 +112,7 @@
                 const formattedPastTime = formatTime(elapsedTime);
                 elapsedTimeElement.textContent = `지난 시간: ${formattedPastTime}`;
 
-                let remainingTime;
-
-                if (isStopped) {
-                    // 중지 상태인 경우에는 목표까지 남은 시간을 이전의 상태로 설정
-                    remainingTime = goalTime - elapsedTime;
-                } else {
-                    remainingTime = goalTime - currentTime;
-                }
+                remainingTime = (goalTime - currentTime - elapsedTime + 1000 * Math.floor(elapsedTime / 1000));
 
                 if (remainingTime >= 0) {
                     const formattedRemainingTime = formatTime(remainingTime);
@@ -186,5 +175,4 @@
 </body>
 
 </html>
-
 
