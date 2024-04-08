@@ -1,4 +1,7 @@
 <!-- test2.html -->
+{% load static %}
+{% block content %}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,15 +12,17 @@
 </head>
 
 <body>
-    <!-- 페이지 내용 -->
     <h2>Test2.html 페이지입니다.</h2><br>
+    {% if request.user.is_authenticated %}
+        <span>{{ request.user.username }} 님</span><br><br>
+    {% else %}
+        <span>로그인 되지 않았습니다.</span><br><br>
+    {% endif %}
     <a href="{% url 'user:test1' %}">바로가기</a>
-    
-    <!-- 타이머를 포함할 부분 -->
-    {% include "user/timer.html" %}
-    
-   
 
+    {% include "user/timer.html" %}
 </body>
 
 </html>
+
+{% endblock %}
