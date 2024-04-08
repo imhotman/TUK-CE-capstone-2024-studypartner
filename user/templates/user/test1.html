@@ -11,13 +11,29 @@
 <body>
     <!-- 페이지 내용 -->
     <h2>Test1.html 페이지입니다.</h2><br>
-    <a href="{% url 'user:test2' %}">바로가기</a>
+    <a href="{% url 'user:test2' %}" id="test2Link">바로가기</a>
 
     <!-- 타이머를 포함할 부분 -->
     {% include "user/timer.html" %}
-    
-   
 
+    <script>
+        // test2.html로 이동할 때 세션 데이터 업데이트
+        document.getElementById('test2Link').addEventListener('click', function () {
+            fetch('/update-session/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    'timer_running': '{{ timer_running }}',
+                    'elapsed_time': '{{ elapsed_time }}',
+                    'records': '{{ records|join:"," }}',
+                    'goal_time': '{{ goal_time }}'
+                })
+            });
+        });
+    </script>
 </body>
 
 </html>

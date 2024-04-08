@@ -14,6 +14,7 @@ urlpatterns = [
     path('timer/', views.timer_view, name='timer'),
     path('test1/', views.test1_view, name='test1'),
     path('test2/', views.test2_view, name='test2'),
+    path('update-session/', views.update_session_view, name='update_session'),  # /update-session/ URL에 대한 경로
     
     # lecture에 대한 URL 패턴
     path('lecture_detail/<str:lecture_name>/', views.lecture_detail_view, name='lecture_detail'),  # lecture_detail_view
