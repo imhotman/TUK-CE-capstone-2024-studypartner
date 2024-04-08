@@ -398,20 +398,6 @@ def test2_view(request):
     }
     return render(request, "user/test2.html", context)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 def start_timer(request):
     if not request.session.get('timer_running', False):
         request.session['timer_running'] = True
@@ -451,7 +437,6 @@ def timer_view(request):
         'goal_time': request.session.get('goal_time', 0)
     }
     return render(request, 'user/timer.html', context)
-
 
 def update_session_view(request):
     if request.method == 'POST':
