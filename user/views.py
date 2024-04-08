@@ -7,6 +7,7 @@ from .forms import LectureChapterForm
 from django.urls import reverse
 from django.http import JsonResponse
 from datetime import datetime, timedelta
+import json
 
 
 
@@ -454,11 +455,13 @@ def timer_view(request):
 
 def update_session_view(request):
     if request.method == 'POST':
-        # 클라이언트로부터 전달받은 데이터를 사용하여 세션 업데이트
-        request.session['timer_running'] = request.POST.get('timer_running', False)
-        request.session['elapsed_time'] = request.POST.get('elapsed_time', 0)
-        request.session['records'] = request.POST.get('records', [])
-        request.session['goal_time'] = request.POST.get('goal_time', 0)
+        # 클라이언트로부터 전달받은 JSON 데이터 파싱
+        data = json.loads(request.body)
+        # 세션 업데이트
+        request.session['timer_running'] = data.get('timer_running', False)
+        request.session['elapsed_time'] = data.get('elapsed_time', 0)
+        request.session['records'] = data.get('records', [])
+        request.session['goal_time'] = data.get('goal_time', 0)
         return JsonResponse({'message': 'Session updated successfully.'})
     else:
-        return JsonResponse({'message': 'Invalid request method.'}, status=405)  # POST 요청이 아닌 경우 에러 메시지 반환
+        return JsonResponse({'error': 'Invalid request method.'}, status=405)
