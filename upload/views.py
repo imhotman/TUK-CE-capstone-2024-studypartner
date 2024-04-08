@@ -3,6 +3,7 @@ from django.shortcuts import render, Http404, redirect
 from django.contrib.auth.models import User
 from user.models import Lecture, LectureChapter
 from django.urls import reverse
+from django.http import HttpResponse
 
 
 
@@ -51,12 +52,13 @@ def chapter_detail_view(request, lecture_name, chapter_name):
 
 
 
-def test1(request):
-    return render(request, 'upload/test1.html')
 
 
+def test1_view(request):
+    return render(request, "upload/test1.html")
 
-
+def test2_view(request):
+    return render(request, "upload/test2.html")
 
 
 
