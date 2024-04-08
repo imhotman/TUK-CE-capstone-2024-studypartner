@@ -21,6 +21,29 @@
     <a href="{% url 'user:test1' %}">바로가기</a>
 
     {% include "user/timer.html" %}
+
+    <script>
+        // CSRF 토큰 가져오기
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        // test2.html에서 test1.html로 이동할 때 세션 데이터 업데이트
+        document.querySelector('[href="{% url "user:test1" %}"]').addEventListener('click', function () {
+            fetch('/update-session/', {
+                method: 'POST',  // POST 메서드로 변경
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken  // CSRF 토큰 설정
+                },
+                body: JSON.stringify({
+                    'timer_running': '{{ timer_running }}',
+                    'elapsed_time': '{{ elapsed_time }}',
+                    'records': '{{ records|join:"," }}',
+                    'goal_time': '{{ goal_time }}'
+                })
+            });
+        });
+
+    </script>
 </body>
 
 </html>
