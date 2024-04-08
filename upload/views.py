@@ -51,6 +51,9 @@ def chapter_detail_view(request, lecture_name, chapter_name):
 
 
 
+def test1(request):
+    return render(request, 'upload/test1.html')
+
 
 
 
