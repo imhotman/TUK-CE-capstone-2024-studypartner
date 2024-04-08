@@ -5,6 +5,10 @@ from .models import User, Lecture, LectureChapter
 from django.contrib.auth.decorators import login_required
 from .forms import LectureChapterForm
 from django.urls import reverse
+from django.http import JsonResponse
+from datetime import datetime
+
+
 
 def login_view(request):
     if request.method == "POST":
@@ -328,3 +332,53 @@ def lecture_detail_view(request, lecture_name):
 #     return render(request, "user/chapter_detail.html", context)
 
 
+
+
+
+
+
+
+# 타이머 변수
+timer_running = False
+start_time = None
+elapsed_time = 0
+records = []
+
+# 타이머 시작
+def start_timer(request):
+    global timer_running, start_time, elapsed_time
+    if not timer_running:
+        timer_running = True
+        start_time = datetime.now()
+    return JsonResponse({'message': 'Timer started.'})
+
+# 타이머 중지
+def stop_timer(request):
+    global timer_running, start_time, elapsed_time
+    if timer_running:
+        timer_running = False
+        elapsed_time += (datetime.now() - start_time).total_seconds()
+    return JsonResponse({'message': 'Timer stopped.'})
+
+# 기록 저장
+def record_time(request):
+    global records, elapsed_time
+    if elapsed_time > 0:
+        records.append(elapsed_time)
+        elapsed_time = 0
+    return JsonResponse({'message': 'Time recorded.'})
+
+
+# HTML 페이지 렌더링
+def timer_view(request):
+    global timer_running, start_time, elapsed_time, records
+    context = {'timer_running': timer_running, 'elapsed_time': elapsed_time, 'records': records}
+    return render(request, 'user/timer.html', context)
+
+
+
+def test1_view(request):
+    return render(request, "user/test1.html")
+
+def test2_view(request):
+    return render(request, "user/test2.html")
