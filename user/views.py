@@ -438,15 +438,28 @@ def timer_view(request):
     }
     return render(request, 'user/timer.html', context)
 
+from django.http import JsonResponse
+
 def update_session_view(request):
     if request.method == 'POST':
-        # 클라이언트로부터 전달받은 JSON 데이터 파싱
-        data = json.loads(request.body)
-        # 세션 업데이트
-        request.session['timer_running'] = data.get('timer_running', False)
-        request.session['elapsed_time'] = data.get('elapsed_time', 0)
-        request.session['records'] = data.get('records', [])
-        request.session['goal_time'] = data.get('goal_time', 0)
-        return JsonResponse({'message': 'Session updated successfully.'})
+        try:
+            data = json.loads(request.body)
+            # 세션 업데이트
+            request.session['timer_running'] = data.get('timer_running', False)
+            request.session['elapsed_time'] = data.get('elapsed_time', 0)
+            request.session['records'] = data.get('records', [])
+            request.session['goal_time'] = data.get('goal_time', 0)
+            return JsonResponse({'message': 'Session updated successfully.'})
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON format.'}, status=400)  # 잘못된 JSON 형식일 경우 에러 응답 반환
+    elif request.method == 'GET':
+        # GET 요청에 대한 처리 추가
+        context = {
+            'timer_running': request.session.get('timer_running', False),
+            'elapsed_time': request.session.get('elapsed_time', 0),
+            'records': request.session.get('records', []),
+            'goal_time': request.session.get('goal_time', 0)
+        }
+        return JsonResponse(context)
     else:
-        return JsonResponse({'error': 'Invalid request method.'}, status=405)
+        return JsonResponse({'error': 'Invalid request method.'}, status=405)  # POST 요청이 아닌 경우 에러 응답 반환
