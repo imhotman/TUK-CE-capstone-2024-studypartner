@@ -117,7 +117,7 @@
                 remainingTime = (goalTime - currentTime);
 
                 if (remainingTime >= 0) {
-                    const formattedRemainingTime = formatTime(remainingTime);
+                    const formattedRemainingTime = formatTime(remainingTime + 1000);
                     remainingTimeElement.textContent = `목표까지 남은 시간: ${formattedRemainingTime}`;
                 } else {
                     remainingTimeElement.textContent = '목표 시간에 도달했습니다!';
