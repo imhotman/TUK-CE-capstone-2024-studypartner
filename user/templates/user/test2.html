@@ -1,4 +1,3 @@
-<!-- test2.html -->
 {% load static %}
 {% block content %}
 
@@ -8,42 +7,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Page</title>
+    <title>Test Page 2</title>
 </head>
 
 <body>
     <h2>Test2.html 페이지입니다.</h2><br>
+
+    <a href="{% url 'user:test1' %}">Test1 페이지로 이동</a><br><br>
+
+
     {% if request.user.is_authenticated %}
         <span>{{ request.user.username }} 님</span><br><br>
     {% else %}
         <span>로그인 되지 않았습니다.</span><br><br>
     {% endif %}
-    <a href="{% url 'user:test1' %}">바로가기</a>
 
+    <!-- 타이머를 포함할 부분 -->
     {% include "user/timer.html" %}
 
-    <script>
-        // CSRF 토큰 가져오기
-        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-
-        // test2.html에서 test1.html로 이동할 때 세션 데이터 업데이트
-        document.querySelector('[href="{% url "user:test1" %}"]').addEventListener('click', function () {
-            fetch('/update-session/', {
-                method: 'POST',  // POST 메서드로 변경
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrftoken  // CSRF 토큰 설정
-                },
-                body: JSON.stringify({
-                    'timer_running': '{{ timer_running }}',
-                    'elapsed_time': '{{ elapsed_time }}',
-                    'records': '{{ records|join:"," }}',
-                    'goal_time': '{{ goal_time }}'
-                })
-            });
-        });
-
-    </script>
+    
 </body>
 
 </html>
