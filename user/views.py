@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import LectureChapterForm
 from django.urls import reverse
 from django.http import JsonResponse
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import json
 
 
@@ -378,67 +378,72 @@ def lecture_detail_view(request, lecture_name):
 
 
 
-def test1_view(request):
-    # 세션 데이터를 함께 전달
-    context = {
-        'timer_running': request.session.get('timer_running', False),
-        'elapsed_time': request.session.get('elapsed_time', 0),
-        'records': request.session.get('records', []),
-        'goal_time': request.session.get('goal_time', 0)
-    }
-    return render(request, "user/test1.html", context)
+# def test1_view(request):
+#     # 세션 데이터를 함께 전달
+#     context = {
+#         'timer_running': request.session.get('timer_running', False),
+#         'elapsed_time': request.session.get('elapsed_time', 0),
+#         'records': request.session.get('records', []),
+#         'goal_time': request.session.get('goal_time', 0)
+#     }
+#     return render(request, "user/test1.html", context)
 
-def test2_view(request):
-    # 세션 데이터를 함께 전달
-    context = {
-        'timer_running': request.session.get('timer_running', False),
-        'elapsed_time': request.session.get('elapsed_time', 0),
-        'records': request.session.get('records', []),
-        'goal_time': request.session.get('goal_time', 0)
-    }
-    return render(request, "user/test2.html", context)
+# def test2_view(request):
+#     # 세션 데이터를 함께 전달
+#     context = {
+#         'timer_running': request.session.get('timer_running', False),
+#         'elapsed_time': request.session.get('elapsed_time', 0),
+#         'records': request.session.get('records', []),
+#         'goal_time': request.session.get('goal_time', 0)
+#     }
+#     return render(request, "user/test2.html", context)
 
-def start_timer(request):
-    if not request.session.get('timer_running', False):
-        request.session['timer_running'] = True
-        request.session['start_time'] = datetime.now()  # 현재 시간을 datetime 객체로 저장
-        request.session['goal_time'] = calculate_goal_time(request)
-        request.session['elapsed_time'] = 0
-        request.session['records'] = []
-    return JsonResponse({'message': 'Timer started.'})
+# def start_timer(request):
+#     if not request.session.get('timer_running', False):
+#         request.session['timer_running'] = True
+#         request.session['start_time'] = datetime.now()  # 현재 시간을 datetime 객체로 저장
+#         request.session['goal_time'] = calculate_goal_time(request)
+#         request.session['elapsed_time'] = 0
+#         request.session['records'] = []
+#     return JsonResponse({'message': 'Timer started.'})
 
-def stop_timer(request):
-    if request.session.get('timer_running', False):
-        elapsed_time = datetime.now() - request.session['start_time']
-        request.session['elapsed_time'] = request.session.get('elapsed_time', 0) + elapsed_time.total_seconds()
-        request.session['timer_running'] = False
-    return JsonResponse({'message': 'Timer stopped.'})
+# def stop_timer(request):
+#     if request.session.get('timer_running', False):
+#         elapsed_time = datetime.now() - request.session['start_time']
+#         request.session['elapsed_time'] = request.session.get('elapsed_time', 0) + elapsed_time.total_seconds()
+#         request.session['timer_running'] = False
+#     return JsonResponse({'message': 'Timer stopped.'})
 
-def calculate_goal_time(request):
-    start_time = request.session['start_time']
-    hours = int(request.POST.get('hour', 0))
-    minutes = int(request.POST.get('minute', 0))
-    seconds = int(request.POST.get('second', 0))
-    goal_time = start_time + timedelta(hours=hours, minutes=minutes, seconds=seconds)
-    return goal_time
+# def calculate_goal_time(request):
+#     start_time = request.session['start_time']
+#     hours = int(request.POST.get('hour', 0))
+#     minutes = int(request.POST.get('minute', 0))
+#     seconds = int(request.POST.get('second', 0))
+#     goal_time = start_time + timedelta(hours=hours, minutes=minutes, seconds=seconds)
+#     return goal_time
 
-def record_time(request):
-    elapsed_time = request.session.get('elapsed_time', 0)
-    if elapsed_time > 0:
-        request.session.setdefault('records', []).append(elapsed_time)
-        request.session['elapsed_time'] = 0
-    return JsonResponse({'message': 'Time recorded.'})
+# def record_time(request):
+#     elapsed_time = request.session.get('elapsed_time', 0)
+#     if elapsed_time > 0:
+#         request.session.setdefault('records', []).append(elapsed_time)
+#         request.session['elapsed_time'] = 0
+#     return JsonResponse({'message': 'Time recorded.'})
 
-def timer_view(request):
-    context = {
-        'timer_running': request.session.get('timer_running', False),
-        'elapsed_time': request.session.get('elapsed_time', 0),
-        'records': request.session.get('records', []),
-        'goal_time': request.session.get('goal_time', 0)
-    }
-    return render(request, 'user/timer.html', context)
+# def timer_view(request):
+#     context = {
+#         'timer_running': request.session.get('timer_running', False),
+#         'elapsed_time': request.session.get('elapsed_time', 0),
+#         'records': request.session.get('records', []),
+#         'goal_time': request.session.get('goal_time', 0)
+#     }
+#     return render(request, 'user/timer.html', context)
 
-from django.http import JsonResponse
+
+
+
+
+
+
 
 def update_session_view(request):
     if request.method == 'POST':
@@ -463,3 +468,56 @@ def update_session_view(request):
         return JsonResponse(context)
     else:
         return JsonResponse({'error': 'Invalid request method.'}, status=405)  # POST 요청이 아닌 경우 에러 응답 반환
+
+def test1_view(request):
+    # 세션 데이터를 함께 전달
+    return render(request, "user/test1.html")
+
+def test2_view(request):
+    # 세션 데이터를 함께 전달
+    return render(request, "user/test2.html")
+
+# def start_timer(request):
+#     if not request.session.get('timer_running', False):
+#         request.session['timer_running'] = True
+#         request.session['start_time'] = timezone.now()  # 현재 시간을 datetime 객체로 저장
+#         request.session['goal_time'] = calculate_goal_time(request)
+#         request.session['elapsed_time'] = 0
+#         request.session['records'] = []
+#     return JsonResponse({'message': 'Timer started.', 'timer_running': True})
+
+# def stop_timer(request):
+#     if request.session.get('timer_running', False):
+#         elapsed_time = timezone.now() - request.session['start_time']
+#         request.session['elapsed_time'] = request.session.get('elapsed_time', 0) + elapsed_time.total_seconds()
+#         request.session['timer_running'] = False
+#     return JsonResponse({'message': 'Timer stopped.', 'timer_running': False})
+
+# def calculate_goal_time(request):
+#     start_time = request.session['start_time']
+#     hours = int(request.POST.get('hour', 0))
+#     minutes = int(request.POST.get('minute', 0))
+#     seconds = int(request.POST.get('second', 0))
+#     goal_time = start_time + timedelta(hours=hours, minutes=minutes, seconds=seconds)
+#     return goal_time
+
+# def record_time(request):
+#     elapsed_time = request.session.get('elapsed_time', 0)
+#     if elapsed_time > 0:
+#         request.session.setdefault('records', []).append(elapsed_time)
+#         request.session['elapsed_time'] = 0
+#     return JsonResponse({'message': 'Time recorded.'})
+
+def timer_view(request):
+    context = {
+        'timer_running': request.session.get('timer_running', False),
+        'elapsed_time': request.session.get('elapsed_time', 0),
+        'records': request.session.get('records', []),
+        'goal_time': request.session.get('goal_time', 0)
+    }
+    return render(request, 'user/timer.html', context)
+
+
+
+
+
