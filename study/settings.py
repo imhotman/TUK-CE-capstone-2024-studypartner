@@ -134,3 +134,15 @@ MEDIA_URL = '/'
 
 # MEDIA_URL에 매핑될 폴더 경로
 MEDIA_ROOT = BASE_DIR
+
+
+
+
+# 세션 관련 설정 추가
+# SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # 데이터베이스를 세션 저장소로 사용
+# SESSION_COOKIE_NAME = 'sessionid'  # 세션 쿠키의 이름
+# SESSION_COOKIE_AGE = 3600  # 세션 쿠키의 유효 시간 (초 단위)
+# SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # 브라우저 닫을 때 세션 만료 여부
+# SESSION_SAVE_EVERY_REQUEST = True  # 모든 요청마다 세션 저장 여부
+
+

@@ -1,5 +1,4 @@
 from django.urls import path
-from .views import lecture_list_view
 from . import views
 
 app_name = "user"
@@ -14,8 +13,9 @@ urlpatterns = [
     path('timer/', views.timer_view, name='timer'),
     path('test1/', views.test1_view, name='test1'),
     path('test2/', views.test2_view, name='test2'),
+    path('timer_test1/', views.timer_test1_view, name='timer_test1'),
     path('update-session/', views.update_session_view, name='update_session'), # 새로운 URL 패턴 추가
-    
+
     # lecture에 대한 URL 패턴
     path('lecture_detail/<str:lecture_name>/', views.lecture_detail_view, name='lecture_detail'),  # lecture_detail_view
     # chapter에 대한 URL 패턴
