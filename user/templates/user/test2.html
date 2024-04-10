@@ -1,33 +1,19 @@
-{% load static %}
-{% block content %}
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test Page 2</title>
 </head>
-
 <body>
     <h2>Test2.html 페이지입니다.</h2><br>
-
     <a href="{% url 'user:test1' %}">Test1 페이지로 이동</a><br><br>
-
-
     {% if request.user.is_authenticated %}
         <span>{{ request.user.username }} 님</span><br><br>
     {% else %}
         <span>로그인 되지 않았습니다.</span><br><br>
     {% endif %}
-
     <!-- 타이머를 포함할 부분 -->
-    {% include "user/timer.html" %}
-
-    
+    {% include "user/timer_test1.html" %}
 </body>
-
 </html>
-
-{% endblock %}

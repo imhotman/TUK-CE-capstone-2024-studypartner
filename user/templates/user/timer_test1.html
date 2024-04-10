@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>타이머</title>
+</head>
+
+<body>
+    <h1>타이머</h1>
+    <div>
+        <label for="hour">시:</label>
+        <input type="number" id="hour" min="0" max="23" value="0">
+        <label for="minute">분:</label>
+        <input type="number" id="minute" min="0" max="59" value="0">
+        <label for="second">초:</label>
+        <input type="number" id="second" min="0" max="59" value="0">
+        <button id="setGoalBtn">목표 시간 설정</button>
+        <p id="timer">00:00:00</p>
+        <button id="startBtn" style="display:none;">시작</button>
+        <button id="continueBtn" style="display:none;">계속</button>
+        <button id="stopBtn" style="display:none;">중지</button>
+        <button id="recordBtn" style="display:none;">기록</button>
+        <button id="resetBtn" style="display:none;">초기화</button>
+    </div>
+    <div>
+        <p id="goalTime">목표 시간:</p>
+        <p id="elapsedTime">지난 시간: </p>
+        <p id="remainingTime">목표까지 남은 시간: </p>
+    </div>
+    <div id="recordList">
+        <h2>오늘의 공부 기록</h2>
+        <ul id="records"></ul>
+    </div>
+
+    <script>
+        let timerInterval;
+        let startTime;
+        let elapsedTime = 0;
+        let records = [];
+        let goalTime = 0;
+
+        const timerElement = document.getElementById('timer');
+        const elapsedTimeElement = document.getElementById('elapsedTime'); // 지난 시간 요소
+        const remainingTimeElement = document.getElementById('remainingTime'); // 목표까지 남은 시간 요소
+        const goalTimeElement = document.getElementById('goalTime'); // 목표 시간 요소
+        const startButton = document.getElementById('startBtn');
+        const stopButton = document.getElementById('stopBtn');
+        const resetButton = document.getElementById('resetBtn');
+        const recordButton = document.getElementById('recordBtn');
+        const continueButton = document.getElementById('continueBtn');
+        const recordsList = document.getElementById('records');
+        const hourInput = document.getElementById('hour');
+        const minuteInput = document.getElementById('minute');
+        const secondInput = document.getElementById('second');
+        const setGoalButton = document.getElementById('setGoalBtn');
+
+        function startTimer() {
+            if (elapsedTime === 0) {
+                // 타이머가 처음 시작하거나 초기화 후 다시 시작하는 경우
+                startTime = Date.now();
+            } else {
+                // 중지하고 계속 진행하는 경우
+                // 중지된 시점의 시간을 기록
+                startTime = Date.now() - elapsedTime; // 현재 시간에서 타이머가 중지된 후 경과한 시간을 뺀 시간
+            }
+            // 중단된 시점부터 다시 시작하는 경우에는 goalTime을 업데이트
+            goalTime = startTime + (parseInt(hourInput.value) * 60 * 60 * 1000) + (parseInt(minuteInput.value) * 60 * 1000) + (parseInt(secondInput.value) * 1000);
+
+            timerInterval = setInterval(updateTimer, 1000);
+            startButton.style.display = 'none'; // 시작 버튼 숨기기
+            stopButton.style.display = 'inline'; // 중지 버튼 보이기
+            setGoalButton.style.display = 'none'; // 목표 시간 설정 버튼 숨기기
+            continueButton.style.display = 'none'; // 계속 버튼 숨기기
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+            elapsedTime = Date.now() - startTime; // 타이머가 중지된 후 경과한 시간
+            startButton.style.display = 'none'; // 시작 버튼 숨기기
+            stopButton.style.display = 'none'; // 중지 버튼 숨기기
+            resetButton.style.display = 'inline'; // 초기화 버튼 보이기
+            continueButton.style.display = 'inline'; // 계속 버튼 보이기
+            recordButton.style.display = 'inline'; // 기록 버튼 보이기
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            elapsedTime = 0; // elapsedTime 초기화
+            timerElement.textContent = '00:00:00'; // 타이머 초기화
+            elapsedTimeElement.textContent = '지난 시간: '; // 지난 시간 초기화
+            remainingTimeElement.textContent = '목표까지 남은 시간: '; // 목표까지 남은 시간 초기화
+            goalTimeElement.textContent = '목표 시간: '; // 목표 시간 초기화
+            hourInput.value = '0'; // 시 입력 초기화
+            minuteInput.value = '0'; // 분 입력 초기화
+            secondInput.value = '0'; // 초 입력 초기화
+            startButton.style.display = 'none'; // 시작 버튼 숨기기
+            stopButton.style.display = 'none'; // 중지 버튼 숨기기
+            resetButton.style.display = 'none'; // 초기화 버튼 숨기기
+            recordButton.style.display = 'none'; // 기록 버튼 숨기기
+            continueButton.style.display = 'none'; // 계속 버튼 숨기기
+            setGoalButton.style.display = 'inline'; // 목표 시간 설정 버튼 보이기
+        }
+
+        function updateTimer() {
+            const currentTime = Date.now();
+            elapsedTime = currentTime - startTime;  // 타이머가 중지된 후 경과한 시간
+            const formattedTime = formatTime(elapsedTime);
+            timerElement.textContent = formattedTime;
+
+            if (elapsedTime >= 0) {
+                const formattedPastTime = formatTime(elapsedTime);
+                elapsedTimeElement.textContent = `지난 시간: ${formattedPastTime}`;
+
+                // remainingTime = (goalTime - currentTime - elapsedTime + 1000 * Math.floor(elapsedTime / 1000));
+                elapsedTime = currentTime - startTime;
+                remainingTime = (goalTime - currentTime);
+
+                if (remainingTime >= 0) {
+                    const formattedRemainingTime = formatTime(remainingTime + 1000);
+                    remainingTimeElement.textContent = `목표까지 남은 시간: ${formattedRemainingTime}`;
+                } else {
+                    remainingTimeElement.textContent = '목표 시간에 도달했습니다!';
+                }
+            } else {
+                elapsedTimeElement.textContent = '지난 시간: '; // 초기화
+                remainingTimeElement.textContent = '목표까지 남은 시간: '; // 초기화
+            }
+        }
+
+        function formatTime(milliseconds) {
+            const hours = Math.floor(milliseconds / (1000 * 60 * 60));
+            const minutes = Math.floor((milliseconds % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((milliseconds % (1000 * 60)) / 1000);
+            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function recordTime() {
+            const formattedTime = formatTime(elapsedTime);
+            const lastRecordTime = recordsList.textContent ? parseTime(recordsList.textContent) : 0;
+            const currentTime = parseTime(formattedTime);
+
+            if (currentTime <= lastRecordTime) {
+                // 현재 기록이 가장 최신 기록보다 작거나 같을 경우
+                recordsList.textContent = formattedTime;
+                alert("오늘의 공부 기록보다 작거나 같습니다.");
+            } else {
+                // 현재 기록이 가장 최신 기록보다 클 경우
+                recordsList.textContent = formattedTime;
+                alert("새로운 공부 기록이 추가되었습니다.");
+            }
+        }
+
+        function parseTime(timeString) {
+            const [hours, minutes, seconds] = timeString.split(':').map(Number);
+            return hours * 3600 + minutes * 60 + seconds * 1;
+        }
+
+        setGoalButton.addEventListener('click', function () {
+            const hours = parseInt(hourInput.value);
+            const minutes = parseInt(minuteInput.value);
+            const seconds = parseInt(secondInput.value);
+            goalTime = Date.now() + (hours * 60 * 60 * 1000) + (minutes * 60 * 1000) + (seconds * 1000);
+            const formattedGoalTime = formatTime(goalTime - Date.now());
+            goalTimeElement.textContent = `목표 시간: ${formattedGoalTime}`; // 목표 시간 설정 추가
+            remainingTimeElement.textContent = `목표까지 남은 시간: ${formattedGoalTime}`; // 목표까지 남은 시간 초기화
+            startButton.style.display = 'inline'; // 시작 버튼 보이기
+        });
+
+        startButton.addEventListener('click', startTimer);
+        stopButton.addEventListener('click', stopTimer);
+        resetButton.addEventListener('click', resetTimer);
+        recordButton.addEventListener('click', recordTime);
+        continueButton.addEventListener('click', startTimer); // 계속 버튼 클릭 시 타이머 시작
+
+
+        window.addEventListener('DOMContentLoaded', function() {
+            // 페이지가 로드될 때 sessionStorage에서 데이터를 불러옵니다.
+            const storedGoalTime = sessionStorage.getItem('goalTime');
+            const storedElapsedTime = sessionStorage.getItem('elapsedTime');
+            const storedRemainingTime = sessionStorage.getItem('remainingTime');
+            const storedRecords = sessionStorage.getItem('records');
+
+            // 값이 존재하는지 확인하고, 존재한다면 해당 값을 적용합니다.
+            if (storedGoalTime && storedElapsedTime && storedRemainingTime) {
+                goalTimeElement.textContent = `목표 시간: ${storedGoalTime}`;
+                elapsedTimeElement.textContent = `지난 시간: ${storedElapsedTime}`;
+                if (storedRemainingTime === undefined) {
+                    storedRemainingTime = '목표 시간에 도달했습니다!';
+                }
+                remainingTimeElement.textContent = `목표까지 남은 시간: ${storedRemainingTime}`;
+                recordsList.textContent = storedRecords;
+
+                // 세션 스토리지에서 가져온 시간 데이터를 시간으로 변환하여 타이머를 시작합니다.
+                const goalTimeParts = storedGoalTime.split(':').map(Number);
+                const elapsedTimeParts = storedElapsedTime.split(':').map(Number);
+                const remainingTimeParts = storedRemainingTime.split(':').map(Number);
+
+                // 시간 데이터를 밀리초 단위로 변환하여 타이머를 시작합니다.
+                const goalTimeInMillis = goalTimeParts[0] * 3600000 + goalTimeParts[1] * 60000 + goalTimeParts[2] * 1000;
+                const elapsedTimeInMillis = elapsedTimeParts[0] * 3600000 + elapsedTimeParts[1] * 60000 + elapsedTimeParts[2] * 1000;
+                const remainingTimeInMillis = remainingTimeParts[0] * 3600000 + remainingTimeParts[1] * 60000 + remainingTimeParts[2] * 1000;
+
+                // 타이머를 시작합니다.
+                elapsedTime = elapsedTimeInMillis;
+                // remainingTime = remainingTimeInMillis;
+                startTime = Date.now() - elapsedTimeInMillis; // 시작 시간을 현재 시간에서 지난 시간을 뺀 값으로 설정합니다.
+                goalTime = Date.now() + remainingTimeInMillis; // 목표 시간을 현재 시간에서 남은 시간을 더한 값으로 설정합니다.
+                startTimer(); // 타이머 시작
+            } else {
+                // 값이 없으면 초기화 상태로 유지됩니다.
+                resetTimer();
+            }
+        });
+
+        window.addEventListener('beforeunload', function(event) {
+            event.preventDefault(); // preventDefault를 제거하여 브라우저에 메시지를 표시하도록 합니다.
+
+            // 값이 있는 경우에만 sessionStorage에 저장합니다.
+            if (goalTimeElement.textContent && elapsedTimeElement.textContent && remainingTimeElement.textContent) {
+                sessionStorage.setItem('goalTime', goalTimeElement.textContent.split(' ')[2]);
+                sessionStorage.setItem('elapsedTime', elapsedTimeElement.textContent.split(' ')[2]);
+                
+                let remainingTime = remainingTimeElement.textContent.split(' ')[3];
+                if (remainingTime === undefined) {
+                    remainingTime = '목표 달성!';
+                }
+                sessionStorage.setItem('remainingTime', remainingTime);
+            }
+
+            sessionStorage.setItem('records', recordsList.textContent); // 배열을 문자열로 변환하여 저장
+        });
+
+
+    </script>
+</body>
+
+</html>
+

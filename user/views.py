@@ -31,6 +31,7 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
+    request.session.clear()  # 세션 내용을 삭제
     print("로그아웃")
     return redirect("index")
 
@@ -445,37 +446,60 @@ def lecture_detail_view(request, lecture_name):
 
 
 
+# 세션 키 정의
+TIMER_SESSION_KEYS = {
+    'TIMER_RUNNING': 'timer_running',
+    'ELAPSED_TIME': 'elapsed_time',
+    'RECORDS': 'records',
+    'GOAL_TIME': 'goal_time'
+}
+
 def update_session_view(request):
-    if request.method == 'POST':
+    if request.method == 'POST' or request.method == 'GET':  # GET 요청도 처리할 수 있도록 수정
         try:
-            data = json.loads(request.body)
+            if request.method == 'POST':
+                data = json.loads(request.body)
+            else:
+                data = request.GET
+            # JSON 형식이 유효한지 확인
+            if not all(key in data for key in TIMER_SESSION_KEYS.values()):
+                return JsonResponse({'error': 'Invalid JSON format.'}, status=400)
             # 세션 업데이트
-            request.session['timer_running'] = data.get('timer_running', False)
-            request.session['elapsed_time'] = data.get('elapsed_time', 0)
-            request.session['records'] = data.get('records', [])
-            request.session['goal_time'] = data.get('goal_time', 0)
+            for key, value in data.items():
+                request.session[TIMER_SESSION_KEYS[key]] = value
             return JsonResponse({'message': 'Session updated successfully.'})
-        except json.JSONDecodeError:
-            return JsonResponse({'error': 'Invalid JSON format.'}, status=400)  # 잘못된 JSON 형식일 경우 에러 응답 반환
-    elif request.method == 'GET':
-        # GET 요청에 대한 처리 추가
-        context = {
-            'timer_running': request.session.get('timer_running', False),
-            'elapsed_time': request.session.get('elapsed_time', 0),
-            'records': request.session.get('records', []),
-            'goal_time': request.session.get('goal_time', 0)
-        }
-        return JsonResponse(context)
+        except (json.JSONDecodeError, ValueError):
+            return JsonResponse({'error': 'Invalid data format.'}, status=400)
     else:
-        return JsonResponse({'error': 'Invalid request method.'}, status=405)  # POST 요청이 아닌 경우 에러 응답 반환
+        return JsonResponse({'error': 'Invalid request method.'}, status=405)
+
+
+
 
 def test1_view(request):
-    # 세션 데이터를 함께 전달
-    return render(request, "user/test1.html")
+    # 사용자가 세션에 로그인되어 있는지 확인
+    if request.user.is_authenticated:
+        # 세션에 로그인되어 있는 경우 사용자 이름을 세션에 저장
+        request.session['session_username'] = request.user.username
+        context = {
+            'username': request.user.username,
+        }
+    else:
+        # 세션에 로그인되어 있지 않은 경우
+        context = {'message': '로그인 되지 않았습니다.'}
+    
+    return render(request, 'user/test1.html', context)
 
 def test2_view(request):
     # 세션 데이터를 함께 전달
-    return render(request, "user/test2.html")
+    context = {
+        'timer_running': request.session.get('timer_running', False),
+        'elapsed_time': request.session.get('elapsed_time', 0),
+        'records': request.session.get('records', []),
+        'goal_time': request.session.get('goal_time', 0)
+    }
+    return render(request, "user/test2.html", context)
+
 
 # def start_timer(request):
 #     if not request.session.get('timer_running', False):
@@ -518,6 +542,7 @@ def timer_view(request):
     return render(request, 'user/timer.html', context)
 
 
-
-
+def timer_test1_view(request):
+    context = {}
+    return render(request, 'user/timer_test1.html', context)
 
