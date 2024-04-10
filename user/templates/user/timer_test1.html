@@ -65,8 +65,13 @@
                 // 중지된 시점의 시간을 기록
                 startTime = Date.now() - elapsedTime; // 현재 시간에서 타이머가 중지된 후 경과한 시간을 뺀 시간
             }
+
             // 중단된 시점부터 다시 시작하는 경우에는 goalTime을 업데이트
-            goalTime = startTime + (parseInt(hourInput.value) * 60 * 60 * 1000) + (parseInt(minuteInput.value) * 60 * 1000) + (parseInt(secondInput.value) * 1000);
+            let newGoalTime = startTime + (parseInt(hourInput.value) * 60 * 60 * 1000) + (parseInt(minuteInput.value) * 60 * 1000) + (parseInt(secondInput.value) * 1000);
+            if (newGoalTime > goalTime) {
+                // 새로 계산된 goalTime이 이전 goalTime보다 클 경우에만 업데이트
+                goalTime = newGoalTime;
+            }
 
             timerInterval = setInterval(updateTimer, 1000);
             startButton.style.display = 'none'; // 시작 버튼 숨기기
@@ -74,6 +79,30 @@
             setGoalButton.style.display = 'none'; // 목표 시간 설정 버튼 숨기기
             continueButton.style.display = 'none'; // 계속 버튼 숨기기
         }
+
+        function continueTimer() {
+            // startTime과 elapsedTime 설정
+            startTime = Date.now() - elapsedTime;
+            
+            // 중단된 시점부터 다시 시작하는 경우에는 goalTime을 업데이트
+            let newGoalTime = startTime + (parseInt(hourInput.value) * 60 * 60 * 1000) + (parseInt(minuteInput.value) * 60 * 1000) + (parseInt(secondInput.value) * 1000);
+            if (newGoalTime > goalTime) {
+                // 새로 계산된 goalTime이 이전 goalTime보다 클 경우에만 업데이트
+                goalTime = newGoalTime;
+            }
+
+            // 타이머 시작
+            timerInterval = setInterval(updateTimer, 1000);
+
+            // 버튼 상태 변경
+            startButton.style.display = 'none'; // 시작 버튼 숨기기
+            stopButton.style.display = 'inline'; // 중지 버튼 보이기
+            setGoalButton.style.display = 'none'; // 목표 시간 설정 버튼 숨기기
+            continueButton.style.display = 'none'; // 계속 버튼 숨기기
+            resetButton.style.display = 'none'; // 초기화 버튼 보이기
+            recordButton.style.display = 'none'; // 기록 버튼 보이기
+        }
+
 
         function stopTimer() {
             clearInterval(timerInterval);
@@ -172,7 +201,7 @@
         stopButton.addEventListener('click', stopTimer);
         resetButton.addEventListener('click', resetTimer);
         recordButton.addEventListener('click', recordTime);
-        continueButton.addEventListener('click', startTimer); // 계속 버튼 클릭 시 타이머 시작
+        continueButton.addEventListener('click', continueTimer); // 계속 버튼 클릭 시 타이머 시작
 
 
         window.addEventListener('DOMContentLoaded', function() {
@@ -204,15 +233,17 @@
 
                 // 타이머를 시작합니다.
                 elapsedTime = elapsedTimeInMillis;
-                // remainingTime = remainingTimeInMillis;
                 startTime = Date.now() - elapsedTimeInMillis; // 시작 시간을 현재 시간에서 지난 시간을 뺀 값으로 설정합니다.
                 goalTime = Date.now() + remainingTimeInMillis; // 목표 시간을 현재 시간에서 남은 시간을 더한 값으로 설정합니다.
+                remainingTime = remainingTimeInMillis; // startTimer() 호출 후 remainingTime 설정
                 startTimer(); // 타이머 시작
+                
             } else {
                 // 값이 없으면 초기화 상태로 유지됩니다.
                 resetTimer();
             }
         });
+
 
         window.addEventListener('beforeunload', function(event) {
             event.preventDefault(); // preventDefault를 제거하여 브라우저에 메시지를 표시하도록 합니다.
