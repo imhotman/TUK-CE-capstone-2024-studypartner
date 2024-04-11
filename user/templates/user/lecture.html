@@ -18,7 +18,11 @@
 
     <a href="{% url 'user:lecture' %}">
         <img src="{% static 'images/study_logo.png' %}" alt="스터디파트너 로고사진" style="width: 75px">
-    </a>
+    </a><br><br>
+
+    <!-- 타이머를 포함할 부분 -->
+    {% include "user/timer_test1.html" %}
+
     <!-- <h2>Study Partner</h2> -->
 
 
