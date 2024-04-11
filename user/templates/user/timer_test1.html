@@ -10,14 +10,14 @@
 <body>
     <h1>타이머</h1>
     <div>
-        <label for="hour">시:</label>
         <input type="number" id="hour" min="0" max="23" value="0">
-        <label for="minute">분:</label>
+        <label for="hour" id="hour-label">시간</label>
         <input type="number" id="minute" min="0" max="59" value="0">
-        <label for="second">초:</label>
+        <label for="minute" id="minute-label">분</label>
         <input type="number" id="second" min="0" max="59" value="0">
+        <label for="second" id="second-label">초</label>
         <button id="setGoalBtn">목표 시간 설정</button>
-        <p id="timer">00:00:00</p>
+        <p id="timer">00:00:00</p><br><br>
         <button id="startBtn" style="display:none;">시작</button>
         <button id="continueBtn" style="display:none;">계속</button>
         <button id="stopBtn" style="display:none;">중지</button>
@@ -25,6 +25,7 @@
         <button id="resetBtn" style="display:none;">초기화</button>
     </div>
     <div>
+        
         <p id="goalTime">목표 시간:</p>
         <p id="elapsedTime">지난 시간: </p>
         <p id="remainingTime">목표까지 남은 시간: </p>
@@ -33,6 +34,12 @@
         <h2>오늘의 공부 기록</h2>
         <ul id="records"></ul>
     </div>
+    <style>
+    #timer {
+        display: none; /* 타이머 요소를 숨깁니다. */
+    }
+    </style>
+   
 
     <script>
         let timerInterval;
@@ -78,10 +85,24 @@
             stopButton.style.display = 'inline'; // 중지 버튼 보이기
             setGoalButton.style.display = 'none'; // 목표 시간 설정 버튼 숨기기
             continueButton.style.display = 'none'; // 계속 버튼 숨기기
+            document.getElementById('hour').style.display = 'none';
+            document.getElementById('minute').style.display = 'none';
+            document.getElementById('second').style.display = 'none';
+            document.getElementById('hour-label').style.display = 'none';
+            document.getElementById('minute-label').style.display = 'none';
+            document.getElementById('second-label').style.display = 'none';    
         }
 
         function continueTimer() {
+            // 세션에 저장된 값이 있다면 초기에 한 번만 elapsedTime 값을 가져옵니다.
+            if (!startTime) {
+                const storedElapsedTime = sessionStorage.getItem('elapsedTime');
+                if (storedElapsedTime) {
+                    elapsedTime = parseInt(storedElapsedTime);
+                }
+            }
             // startTime과 elapsedTime 설정
+            
             startTime = Date.now() - elapsedTime;
             
             // 중단된 시점부터 다시 시작하는 경우에는 goalTime을 업데이트
@@ -101,6 +122,12 @@
             continueButton.style.display = 'none'; // 계속 버튼 숨기기
             resetButton.style.display = 'none'; // 초기화 버튼 보이기
             recordButton.style.display = 'none'; // 기록 버튼 보이기
+            document.getElementById('hour').style.display = 'none';
+            document.getElementById('minute').style.display = 'none';
+            document.getElementById('second').style.display = 'none';
+            document.getElementById('hour-label').style.display = 'none';
+            document.getElementById('minute-label').style.display = 'none';
+            document.getElementById('second-label').style.display = 'none';
         }
 
 
@@ -130,6 +157,12 @@
             recordButton.style.display = 'none'; // 기록 버튼 숨기기
             continueButton.style.display = 'none'; // 계속 버튼 숨기기
             setGoalButton.style.display = 'inline'; // 목표 시간 설정 버튼 보이기
+            document.getElementById('hour').style.display = 'inline';
+            document.getElementById('minute').style.display = 'inline';
+            document.getElementById('second').style.display = 'inline';
+            document.getElementById('hour-label').style.display = 'inline';
+            document.getElementById('minute-label').style.display = 'inline';
+            document.getElementById('second-label').style.display = 'inline';
         }
 
         function updateTimer() {
@@ -142,13 +175,28 @@
                 const formattedPastTime = formatTime(elapsedTime);
                 elapsedTimeElement.textContent = `지난 시간: ${formattedPastTime}`;
 
-                // remainingTime = (goalTime - currentTime - elapsedTime + 1000 * Math.floor(elapsedTime / 1000));
-                elapsedTime = currentTime - startTime;
-                remainingTime = (goalTime - currentTime);
+                remainingTime = goalTime - currentTime; // 목표까지 남은 시간 계산
 
                 if (remainingTime >= 0) {
-                    const formattedRemainingTime = formatTime(remainingTime + 1000);
-                    remainingTimeElement.textContent = `목표까지 남은 시간: ${formattedRemainingTime}`;
+                    const storedGoalTime = sessionStorage.getItem('goalTime');
+                    const storedElapsedTime = sessionStorage.getItem('elapsedTime');
+
+                    if (storedGoalTime && storedElapsedTime) {
+                        // 세션 스토리지에서 가져온 시간 데이터를 시간으로 변환하여 타이머를 시작합니다.
+                        const goalTimeParts = storedGoalTime.split(':').map(Number);
+                        const elapsedTimeParts = storedElapsedTime.split(':').map(Number);
+
+                        const goalTimeInMillis = goalTimeParts[0] * 3600000 + goalTimeParts[1] * 60000 + goalTimeParts[2] * 1000;
+                        const elapsedTimeInMillis = elapsedTimeParts[0] * 3600000 + elapsedTimeParts[1] * 60000 + elapsedTimeParts[2] * 1000;
+
+                        const formattedRemainingTime = formatTime(goalTimeInMillis - elapsedTimeInMillis - 1000);
+                        remainingTimeElement.textContent = `목표까지 남은 시간: ${formattedRemainingTime}`;
+                    }
+                    else {
+                        const formattedRemainingTime = formatTime(remainingTime + 1000);
+                        remainingTimeElement.textContent = `목표까지 남은 시간: ${formattedRemainingTime}`;
+                    }
+
                 } else {
                     remainingTimeElement.textContent = '목표 시간에 도달했습니다!';
                 }
@@ -156,7 +204,13 @@
                 elapsedTimeElement.textContent = '지난 시간: '; // 초기화
                 remainingTimeElement.textContent = '목표까지 남은 시간: '; // 초기화
             }
+            // sessionStorage에 저장
+            sessionStorage.setItem('goalTime', goalTimeElement.textContent.split(' ')[2]);
+            sessionStorage.setItem('elapsedTime', elapsedTimeElement.textContent.split(' ')[2]);
+            sessionStorage.setItem('remainingTime', remainingTimeElement.textContent.split(' ')[3]);
+            sessionStorage.setItem('records', recordsList.textContent); // 배열을 문자열로 변환하여 저장
         }
+
 
         function formatTime(milliseconds) {
             const hours = Math.floor(milliseconds / (1000 * 60 * 60));
@@ -246,7 +300,7 @@
 
 
         window.addEventListener('beforeunload', function(event) {
-            event.preventDefault(); // preventDefault를 제거하여 브라우저에 메시지를 표시하도록 합니다.
+            // event.preventDefault(); // preventDefault를 추가하여 브라우저에 주의 메시지를 표시하도록 합니다.
 
             // 값이 있는 경우에만 sessionStorage에 저장합니다.
             if (goalTimeElement.textContent && elapsedTimeElement.textContent && remainingTimeElement.textContent) {
@@ -266,6 +320,4 @@
 
     </script>
 </body>
-
 </html>
-
