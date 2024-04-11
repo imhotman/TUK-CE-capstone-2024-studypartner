@@ -67,20 +67,11 @@
               {% endif %}
               <ul class="header-sublist">
                 <li class="header-subitem">
-                  <a class="header-sublink" href="{% url 'user:lecture_list' %}">
+                  <a class="header-sublink" href="{% url 'user:lecture' %}">
                     <span>음성 요약하기</span>
                   </a>
                 </li>
-                <li class="header-subitem">
-                  <a class="header-sublink" href="{% url 'user:add_lecture_chapter' %}">
-                    <span>손글씨체 변환</span>
-                  </a>
-                </li>
               </ul>
-            </li>
-            <li class="header-gnbitem">
-            </li>
-            <li class="header-gnbitem">
             </li>
             <li class="header-gnbitem">
               <a class="header-gnblink" href="">
@@ -189,15 +180,15 @@
               </a>
               <ul class="fullmenu-sublist">
                 <li class="fullmenu-subitem">
-                  <a class="fullmenu-sublink" href="#">
+                  <a class="fullmenu-sublink" href="{% url 'user:lecture' %}">
                     <span>음성 요약하기</span>
                   </a>
                 </li>
-                <li class="fullmenu-subitem">
-                  <a class="fullmenu-sublink" href="#">
+                <!-- <li class="fullmenu-subitem">
+                  <a class="fullmenu-sublink" href="{% url 'user:lecture' %}">
                     <span>손글씨체 변환하기</span>
                   </a>
-                </li>
+                </li> -->
               </ul>
             </li>
             {% else %}  <!-- 로그아웃 되었을 때 보이는 화면 -->
@@ -283,7 +274,7 @@
         <div class="footer-bottom">
           <h2 class="footer-logo">
             <a href="">
-              <img src="{% static 'images/img_logo_white.png' %}" alt="로고">
+              <img src="{% static 'images/study_name.png' %}" alt="로고">
             </a>
           </h2>
           <div class="footer-txt">
