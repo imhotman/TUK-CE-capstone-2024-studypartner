@@ -75,9 +75,9 @@
                         </div>
                     {% endfor %}
 
-                    <a href="{% url 'user:logout' %}" class="nav__link">
+                    <a href="{% url 'user:logout' %}" id="lecture-logout-button" class="nav__link">
                         <ion-icon name="log-out-outline" class="nav__icon"></ion-icon>
-                        <span class="nav_name" id="lecture-logout-button">로그아웃</span>
+                        <span class="nav_name">로그아웃</span>
                     </a>
                 </div>
             {% else %}
