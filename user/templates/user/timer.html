@@ -155,37 +155,39 @@
         }
 
         function resetTimer() {
-            clearInterval(timerInterval);
-            elapsedTime = 0; // elapsedTime 초기화
-            timerElement.textContent = '00:00:00'; // 타이머 초기화
-            elapsedTimeElement.textContent = '지난 시간: '; // 지난 시간 초기화
-            remainingTimeElement.textContent = '목표까지 남은 시간: '; // 목표까지 남은 시간 초기화
-            goalTimeElement.textContent = '목표 시간: '; // 목표 시간 초기화
-            recordsList.textContent = ''    // 기록 초기화
-            goalpercentElement.textContent = '목표 달성률: '; // 목표 달성률 초기화
-            hourInput.value = '0'; // 시 입력 초기화
-            minuteInput.value = '0'; // 분 입력 초기화
-            secondInput.value = '0'; // 초 입력 초기화
-            startButton.style.display = 'none'; // 시작 버튼 숨기기
-            stopButton.style.display = 'none'; // 중지 버튼 숨기기
-            resetButton.style.display = 'none'; // 초기화 버튼 숨기기
-            recordButton.style.display = 'none'; // 기록 버튼 숨기기
-            continueButton.style.display = 'none'; // 계속 버튼 숨기기
-            setGoalButton.style.display = 'inline'; // 목표 시간 설정 버튼 보이기
-            document.getElementById('hour').style.display = 'inline';
-            document.getElementById('minute').style.display = 'inline';
-            document.getElementById('second').style.display = 'inline';
-            document.getElementById('hour-label').style.display = 'inline';
-            document.getElementById('minute-label').style.display = 'inline';
-            document.getElementById('second-label').style.display = 'inline';
-            document.getElementById('saveBtn').style.display = 'none';
+            if (window.confirm('정말 초기화 하시겠습니까?\n초기화 시 모든 기록이 초기화됩니다.')) {
+                clearInterval(timerInterval);
+                elapsedTime = 0; // elapsedTime 초기화
+                timerElement.textContent = '00:00:00'; // 타이머 초기화
+                elapsedTimeElement.textContent = '지난 시간: '; // 지난 시간 초기화
+                remainingTimeElement.textContent = '목표까지 남은 시간: '; // 목표까지 남은 시간 초기화
+                goalTimeElement.textContent = '목표 시간: '; // 목표 시간 초기화
+                recordsList.textContent = ''    // 기록 초기화
+                goalpercentElement.textContent = '목표 달성률: '; // 목표 달성률 초기화
+                hourInput.value = '0'; // 시 입력 초기화
+                minuteInput.value = '0'; // 분 입력 초기화
+                secondInput.value = '0'; // 초 입력 초기화
+                startButton.style.display = 'none'; // 시작 버튼 숨기기
+                stopButton.style.display = 'none'; // 중지 버튼 숨기기
+                resetButton.style.display = 'none'; // 초기화 버튼 숨기기
+                recordButton.style.display = 'none'; // 기록 버튼 숨기기
+                continueButton.style.display = 'none'; // 계속 버튼 숨기기
+                setGoalButton.style.display = 'inline'; // 목표 시간 설정 버튼 보이기
+                document.getElementById('hour').style.display = 'inline';
+                document.getElementById('minute').style.display = 'inline';
+                document.getElementById('second').style.display = 'inline';
+                document.getElementById('hour-label').style.display = 'inline';
+                document.getElementById('minute-label').style.display = 'inline';
+                document.getElementById('second-label').style.display = 'inline';
+                document.getElementById('saveBtn').style.display = 'none';
 
-            // 세션 스토리지에서 데이터 삭제
-            sessionStorage.removeItem('elapsedTime');
-            sessionStorage.removeItem('records');
-            sessionStorage.removeItem('goalTime');
-            sessionStorage.removeItem('goalpercent');
-            sessionStorage.removeItem('remainingTime');
+                // 세션 스토리지에서 데이터 삭제
+                sessionStorage.removeItem('elapsedTime');
+                sessionStorage.removeItem('records');
+                sessionStorage.removeItem('goalTime');
+                sessionStorage.removeItem('goalpercent');
+                sessionStorage.removeItem('remainingTime');
+            }
         }
 
         function updateTimer() {
@@ -199,7 +201,7 @@
                 elapsedTimeElement.textContent = `지난 시간: ${formattedPastTime}`;
 
                 remainingTime = goalTime - currentTime; // 목표까지 남은 시간 계산
-
+                // 목표까지 남은 시간이 양수일 경우 실행되는 코드
                 if (remainingTime >= 0) {
                     const storedGoalTime = sessionStorage.getItem('goalTime');
                     const storedElapsedTime = sessionStorage.getItem('elapsedTime');
@@ -227,7 +229,7 @@
                         const goalPercentage = (((elapsedTime + 2000) / (goalTime + 1000)));
                         goalpercentElement.textContent = `목표 달성률: 계산중`;
                     }
-
+                // 목표까지 남은 시간이 음수일 경우 실행되는 코드
                 } else {
                     remainingTimeElement.textContent = '목표 시간에 도달했습니다!';
                     goalpercentElement.textContent = '목표 달성률: 100%';
