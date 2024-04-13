@@ -22,13 +22,12 @@ class LectureChapter(models.Model):
 class Study_TimerSession(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
-    goal_time = models.TimeField()
-    elapsed_time = models.TimeField()
-    remaining_time = models.TimeField()
+    goal_time = models.CharField(max_length=100, null=True)
+    elapsed_time = models.CharField(max_length=100, null=True)
+    remaining_time = models.CharField(max_length=100, null=True)
     goalpercent = models.CharField(max_length=100, null=True)
-    records = models.TimeField()
+    records = models.CharField(max_length=100, null=True)
     
-
     def __str__(self):
         return f"사용자: {self.user.username}, 날짜: {self.date},목표시간: {self.goal_time}, 지난시간: {self.elapsed_time}, 목표까지 남은시간: {self.remaining_time}, 목표달성률: {self.goalpercent},기록: {self.records}"
 

@@ -376,28 +376,32 @@ def timer_test1_view(request):
     return render(request, 'user/timer_test1.html', context)
 
 
-
-
-
 def add_timer_view(request):
-    if request.method == 'POST':
+    if request.method == 'POST' or request.method == 'GET':
         # 폼에서 전송된 데이터 처리
         goal_time = request.POST.get('goal_time')
         elapsed_time = request.POST.get('elapsed_time')
         remaining_time = request.POST.get('remaining_time')
-        goalpercent = request.POST.get('goalpercent')
+        goal_percent = request.POST.get('goal_percent')
         records = request.POST.get('records')
 
+        print("User:", request.user)
+        print("goal_time:", goal_time)
+        print("elapsed_time:", elapsed_time)
+        print("elapsed_time:", remaining_time)
+        print("goal_percent:", goal_percent)
+        print("records:", records)
         # 모델에 저장
-        timer_session = Study_TimerSession(
+        timer_session = Study_TimerSession.objects.create(
+            user=request.user,
             goal_time=goal_time,
             elapsed_time=elapsed_time,
             remaining_time=remaining_time,
-            goalpercent=goalpercent,
+            goalpercent=goal_percent,
             records=records
         )
         timer_session.save()
-
-        return render('user/lecture.html')
+        
+        return JsonResponse({'message': '성공적으로 저장하였습니다.'})
     else:
-        return render('user/lecture.html')
+        return JsonResponse({'error': '저장 실패하였습니다.'}, status=400)
