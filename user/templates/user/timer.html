@@ -217,7 +217,6 @@
                         remainingTimeElement.textContent = `목표까지 남은 시간: ${formattedRemainingTime}`;
 
                         // 목표 달성률 계산
-   
                         const goalPercentage = (((elapsedTimeInMillis + 1000) / goalTimeInMillis) * 100);
                         goalpercentElement.textContent = `목표 달성률: ${goalPercentage.toFixed(2)}%`;
                     }
@@ -241,7 +240,12 @@
             // sessionStorage에 저장
             sessionStorage.setItem('goalTime', goalTimeElement.textContent.split(' ')[2]);
             sessionStorage.setItem('elapsedTime', elapsedTimeElement.textContent.split(' ')[2]);
-            sessionStorage.setItem('remainingTime', remainingTimeElement.textContent.split(' ')[3]);
+            // sessionStorage.setItem('remainingTime', remainingTimeElement.textContent.split(' ')[3]);
+            let remainingTimeText = remainingTimeElement.textContent.split(' ')[3];
+            if (typeof remainingTimeText === 'undefined') {
+                remainingTimeText = '목표 달성!';
+            }
+            sessionStorage.setItem('remainingTime', remainingTimeText);
             sessionStorage.setItem('records', recordsList.textContent); // 배열을 문자열로 변환하여 저장
             sessionStorage.setItem('goalpercent', goalpercentElement.textContent); // 배열을 문자열로 변환하여 저장
         }
