@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, Http404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from .models import User, Lecture, LectureChapter
+from .models import User, Lecture, LectureChapter, Study_TimerSession
 from django.contrib.auth.decorators import login_required
 from .forms import LectureChapterForm
 from django.urls import reverse
@@ -375,3 +375,29 @@ def timer_test1_view(request):
     context = {}
     return render(request, 'user/timer_test1.html', context)
 
+
+
+
+
+def add_timer_view(request):
+    if request.method == 'POST':
+        # 폼에서 전송된 데이터 처리
+        goal_time = request.POST.get('goal_time')
+        elapsed_time = request.POST.get('elapsed_time')
+        remaining_time = request.POST.get('remaining_time')
+        goalpercent = request.POST.get('goalpercent')
+        records = request.POST.get('records')
+
+        # 모델에 저장
+        timer_session = Study_TimerSession(
+            goal_time=goal_time,
+            elapsed_time=elapsed_time,
+            remaining_time=remaining_time,
+            goalpercent=goalpercent,
+            records=records
+        )
+        timer_session.save()
+
+        return render('user/lecture.html')
+    else:
+        return render('user/lecture.html')
