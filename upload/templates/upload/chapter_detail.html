@@ -29,89 +29,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- CSS -->
-    <link rel="stylesheet" href="{% static 'css/lecture.css' %}">
+    <!-- <link rel="stylesheet" href="{% static 'css/lecture.css' %}">
     <link rel="stylesheet" href="{% static 'css/lecture_form.css' %}">
-    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}"> -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
 
 
     <title>{{ chapter.lecture.title }} 챕터 상세 정보</title>
 </head>
-<body id="body-pd">
-    
-    <a href="{% url 'user:lecture' %}">
-        <img src="{% static 'images/study_logo.png' %}" alt="스터디파트너 로고사진" style="width: 75px">
-    </a><br>
 
-    <!-- 타이머를 포함할 부분 -->
-    {% include "user/timer.html" %}
-
-    <!-- 사이드 네비게이션 바 -->
-    <div class="l-navbar" id="navbar">
-        <nav class="nav">
-            <div>
-                <div class="nav__brand">
-                    <ion-icon name="menu-outline" class="nav__toggle" id="nav-toggle"></ion-icon>
-                    {% if request.user.is_authenticated %}
-                        <a href="#" class="nav__logo">
-                            <span>{{ request.user.username }} 님</span>
-                        </a>
-                    {% else %}
-                        <a href="{% url 'user:login' %}" class="nav__logo">
-                            <span>로그인 후 이용하세요.</span>
-                        </a>
-                    {% endif %}
-                </div>
-
-                {% if request.user.is_authenticated %}
-                    <div class="nav__list">
-                        <a href="{% url 'index' %}" class="nav__link active">
-                            <ion-icon name="home-outline" class="nav__icon"></ion-icon>
-                            <span class="nav_name">메인화면</span>
-                        </a>
-
-                        {% for lecture in lectures %}
-                            <div class="nav__link collapse">
-                                <ion-icon name="folder-outline" class="nav__icon"></ion-icon>
-                                <span class="nav_name" id="my-courses">
-                                    <a class="lecture_urllink" href="{% url 'user:lecture_detail' lecture_name=lecture.lecture %}">{{ lecture.lecture }}</a>
-                                </span>
-                                <div class="collapse__link">
-                                    <!-- <ion-icon name="add" id="collapse-link"></ion-icon> -->
-                                    <ion-icon name="chevron-down-outline"></ion-icon>
-                                </div>
-                                <ul class="collapse__menu text_element" id="collapse-menu">
-                                    {% for chapter in lecture.chapters %}
-                                        <li class="collapse__sublink">
-                                            <!-- <a class="lecture_urllink" href="{% url 'upload:chapter_detail' lecture_name=lecture.lecture chapter_name=chapter.chapter_name %}">
-                                                {{ chapter.chapter_name }}
-                                            </a> -->
-                                            <a class="lecture_urllink" href="{% url 'upload:chapter_detail' lecture_name=lecture.lecture chapter_name=chapter.chapter_name %}">
-                                                {{ chapter.chapter_name }}
-                                            </a>
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        {% endfor %}
-
-                        <a href="{% url 'user:logout' %}" class="nav__link">
-                            <ion-icon name="log-out-outline" class="nav__icon"></ion-icon>
-                            <span class="nav_name">로그아웃</span>
-                        </a>
-                    </div>
-                {% else %}
-                    <div class="nav__list">
-                        <a href="{% url 'index' %}" class="nav__link active">
-                            <ion-icon name="home-outline" class="nav__icon"></ion-icon>
-                            <span class="nav_name">메인화면</span>
-                        </a>
-                    </div>
-                {% endif %}
-            </div>
-        </nav>
-    </div>
-    <!-- 사이드 네비게이션 바 끝부분 -->
+    <!-- 강의실 사이드 네비게이터 & 타이머 포함할 부분 -->
+    {% include "user/lecture_sidebar.html" %}
 
     <!-- 사용자의 챕터 상세정보 -->
     <div class="custom-body">
@@ -146,16 +74,6 @@
         </div>
     </div>
     <!-- 사용자의 챕터 상세정보 끝부분-->
-
-    <!-- IONICONS -->
-    <script src="https://unpkg.com/ionicons@5.2.3/dist/ionicons.js"></script>
-    <!-- JS -->
-    <script src="{% static 'js/lecture.js' %}"></script>
-
-    <script>
-        const chapterUrl = "{% url 'chapter' %}";
-    </script>    
-
 
 </body>
 </html>
