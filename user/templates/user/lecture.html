@@ -124,10 +124,12 @@
     <script>
         document.getElementById('add-lecture-button').addEventListener('click', function() {
             if (window.confirm('강의를 추가하시겠습니까?')) {
-                document.getElementById('add-lecture-form').submit();
+                alert("강의가 정상적으로 추가되었습니다.")
+                document.getElementById('add-lecture-form').submit();  
             } else {
                 // 추가하기 전에 아무 동작도 하지 않음
                 event.preventDefault();
+                alert("강의 추가를 취소하였습니다.")
             }
         });
     </script>
