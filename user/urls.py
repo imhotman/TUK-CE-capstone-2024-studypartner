@@ -14,7 +14,8 @@ urlpatterns = [
     path('test1/', views.test1_view, name='test1'),
     path('test2/', views.test2_view, name='test2'),
     path('timer_test1/', views.timer_test1_view, name='timer_test1'),
-    path('update-session/', views.update_session_view, name='update_session'), # 새로운 URL 패턴 추가
+    path('update-session/', views.update_session_view, name='update_session'),
+    path('add_timer/', views.add_timer_view, name='add_timer'),
 
     # lecture에 대한 URL 패턴
     path('lecture_detail/<str:lecture_name>/', views.lecture_detail_view, name='lecture_detail'),  # lecture_detail_view
