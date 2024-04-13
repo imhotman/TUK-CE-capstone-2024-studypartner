@@ -388,7 +388,7 @@ def add_timer_view(request):
         print("User:", request.user)
         print("goal_time:", goal_time)
         print("elapsed_time:", elapsed_time)
-        print("elapsed_time:", remaining_time)
+        print("remaining_time:", remaining_time)
         print("goal_percent:", goal_percent)
         print("records:", records)
         # 모델에 저장
