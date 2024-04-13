@@ -77,7 +77,7 @@
 
                     <a href="{% url 'user:logout' %}" class="nav__link">
                         <ion-icon name="log-out-outline" class="nav__icon"></ion-icon>
-                        <span class="nav_name">로그아웃</span>
+                        <span class="nav_name" id="lecture-logout-button">로그아웃</span>
                     </a>
                 </div>
             {% else %}
@@ -94,19 +94,9 @@
 <!-- 사이드 네비게이션 바 끝부분 -->
 
 
-
-
-
-
-
-    
-
     <div class="custom-body">
         <div class="lecture-box">
             <h2>Study Partner</h2>
-
-
-
 
             <!-- 강의 별 form -->
             <form method="post" action="{% url 'user:add_lecture_chapter' %}">
@@ -123,27 +113,36 @@
                 <label>강의 하위목록 (필수)</label>
             </div>
             <div class="index_studypartner_buttonlist" style="text-align: center;">     
-                <button type="submit" style="margin-left: 117px;">강의 추가</button>&nbsp;&nbsp;
+                <button type="submit" id="add-lecture-button" style="margin-left: 117px;">강의 추가</button>&nbsp;&nbsp;
                 <button type="reset" class="reverse dark" style="background-color: darkcyan;">모두 삭제</button>    
             </div>
-            
-            
-            </form>
-            
+                       
+            </form>         
         </div>
     </div>
     
+    <script>
+        document.getElementById('add-lecture-button').addEventListener('click', function() {
+            if (window.confirm('강의를 추가하시겠습니까?')) {
+                document.getElementById('add-lecture-form').submit();
+            } else {
+                // 추가하기 전에 아무 동작도 하지 않음
+                event.preventDefault();
+            }
+        });
+    </script>
 
-
-
-
-
-
-
-
-
-
-
+    <script>
+        document.getElementById('lecture-logout-button').addEventListener('click', function(event) {
+            if (window.confirm('로그아웃 하시겠습니까?')) {
+                // 로그아웃을 처리하는 URL로 이동
+                window.location.href = "{% url 'logout' %}";
+            } else {
+                // 취소를 클릭했을 때 아무 동작도 하지 않음
+                event.preventDefault();
+            }
+        });
+    </script>
 
     <!-- IONICONS -->
     <script src="https://unpkg.com/ionicons@5.2.3/dist/ionicons.js"></script>
