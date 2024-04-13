@@ -215,11 +215,6 @@ def lecture_view(request):
 #     return render(request, 'user/add_lecture_chapter.html')
 
 
-
-
-
-
-
 @login_required
 def add_lecture_chapter_view(request):
     if request.method == 'POST':
@@ -405,3 +400,28 @@ def add_timer_view(request):
         return JsonResponse({'message': '성공적으로 저장하였습니다.'})
     else:
         return JsonResponse({'error': '저장 실패하였습니다.'}, status=400)
+    
+
+@login_required
+def lecture_sidebar_view(request):
+    user = request.user
+    lecture_chapters = LectureChapter.objects.filter(user=user).select_related('lecture').order_by('lecture__title')
+
+    lectures = []
+    for chapter in lecture_chapters:
+        lecture_title = chapter.lecture.title
+        chapter_name = chapter.chapter_name
+        lecture_url = reverse('user:lecture_detail', kwargs={'lecture_name': lecture_title})
+        chapter_url = reverse('upload:chapter_detail', kwargs={'lecture_name': lecture_title, 'chapter_name': chapter_name})
+
+        # 현재 강의가 lectures 리스트에 없으면 추가
+        if not any(lecture['lecture'] == lecture_title for lecture in lectures):
+            lectures.append({'lecture': lecture_title, 'chapters': []})
+
+        # 현재 챕터 추가
+        lectures[-1]['chapters'].append({'chapter_name': chapter_name, 'chapter_url': chapter_url, 'lecture_url': lecture_url})
+
+    context = {
+        'lectures': lectures,
+    }
+    return render(request, "user/lecture_sidebar.html", context)
