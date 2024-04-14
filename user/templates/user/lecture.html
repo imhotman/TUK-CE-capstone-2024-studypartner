@@ -22,7 +22,7 @@
             <h2>Study Partner</h2>
 
             <!-- 강의 별 form -->
-            <form method="post" action="{% url 'user:add_lecture_chapter' %}">
+            <form method="post" action="{% url 'user:add_lecture_chapter' %}" id="add-lecture-form">
                 {% csrf_token %}
                 
 
