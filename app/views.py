@@ -7,19 +7,17 @@ from datetime import date   # 현재 날짜를 얻기 위한 모듈
 
 
 
-
-
-
 def index(request: HttpRequest) -> HttpResponse: # 메인 페이지
     return render(request, 'study/index.html')
-
-
 
 def signup(request: HttpRequest) -> HttpResponse: # 회원가입 페이지
     return render(request, 'study/signup.html')
 
 def signup_done(request: HttpRequest) -> HttpResponse: # 회원가입 완료 페이지
     return render(request, 'study/signup_done.html')
+
+def delete_done(request: HttpRequest) -> HttpResponse: # 회원탈퇴 완료 페이지
+    return render(request, 'study/delete_done.html')
 
 def login(request: HttpRequest) -> HttpResponse: # 로그인 페이지
     return render(request, 'study/login.html')
