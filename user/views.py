@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, Http404
+from django.shortcuts import render, redirect, Http404, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .models import User, Lecture, LectureChapter, Study_TimerSession
@@ -224,12 +224,33 @@ def lecture_detail_view(request, lecture_name):
     if not lecture_chapters.exists():
         raise Http404("해당 강의에 대한 챕터를 찾을 수 없습니다.")
 
+    # 현재 유저의 강의 목록과 챕터 목록 가져오기
+    user = request.user
+    lecture_chapters_user = LectureChapter.objects.filter(user=user).select_related('lecture').order_by('lecture__title')
+
+    lectures = []
+    for chapter in lecture_chapters_user:
+        lecture_title = chapter.lecture.title
+        chapter_name = chapter.chapter_name
+        lecture_url = reverse('user:lecture_detail', kwargs={'lecture_name': lecture_title})
+        chapter_url = reverse('upload:chapter_detail', kwargs={'lecture_name': lecture_title, 'chapter_name': chapter_name})
+
+        # 현재 강의가 lectures 리스트에 없으면 추가
+        if not any(lecture['lecture'] == lecture_title for lecture in lectures):
+            lectures.append({'lecture': lecture_title, 'chapters': []})
+
+        # 현재 챕터 추가
+        lectures[-1]['chapters'].append({'chapter_name': chapter_name, 'chapter_url': chapter_url, 'lecture_url': lecture_url})
+
     context = {
         'lecture_name': lecture_name,
         'lecture_chapters': lecture_chapters,
+        'lectures': lectures,
     }
 
     return render(request, "user/lecture_detail.html", context)
+
+
 
 
 
@@ -389,4 +410,15 @@ def lecture_sidebar_view(request):
     return render(request, "user/lecture_sidebar.html", context)
 
 
+@login_required
+def delete_chapter(request, lecture_id, chapter_id):
+    # 해당 강의와 챕터가 존재하는지 확인
+    lecture = get_object_or_404(Lecture, pk=lecture_id)
+    chapter = get_object_or_404(LectureChapter, pk=chapter_id)
 
+    # 챕터 삭제
+    chapter.delete()
+    print("챕터가 삭제되었습니다.")
+
+    # 삭제 후 강의 상세 페이지로 리다이렉트
+    return redirect('user:lecture_detail', lecture_name=lecture.title)
