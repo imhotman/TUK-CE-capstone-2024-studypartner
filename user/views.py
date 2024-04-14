@@ -10,7 +10,7 @@ from datetime import datetime, timedelta, timezone
 import json
 
 
-
+# 로그인
 def login_view(request):
     if request.method == "POST":
         username = request.POST["username"]
@@ -29,12 +29,16 @@ def login_view(request):
 
     return render(request, "user/login.html")
 
+
+# 로그아웃
 def logout_view(request):
     logout(request)
     request.session.clear()  # 세션 내용을 삭제
     print("로그아웃")
     return redirect("index")
 
+
+# 회원가입
 def signup_view(request):
     if request.method == "POST":
         print(request.POST)
@@ -51,22 +55,25 @@ def signup_view(request):
     return render(request, "user/signup.html")
 
 
+# 회원탈퇴
+def delete_account_view(request):
+    if request.method == "POST":
+        # 현재 로그인한 사용자를 가져옴.
+        user = request.user
+        print(f"삭제할 사용자: {user}")
+        # 회원정보 삭제
+        user.delete()
+        print("회원 탈퇴완료")
 
+        # 로그아웃
+        logout(request)
 
+        # 삭제 후 리다이렉트할 페이지를 지정
+        return redirect("delete_done")
 
-
-# @login_required
-# def lecture_list_view(request):
-#     user = request.user  # 현재 로그인한 사용자 정보 가져오기
-#     chapters = LectureChapter.objects.filter(user=user)
-
-#     context = {
-#         'chapters': chapters,  # 사용자의 LectureChapter 객체 목록을 전달
-#     }
-
-#     return render(request, "user/lecture_list.html", context)
-
-
+    # POST 요청이 아니면 일반적으로 회원탈퇴를 수행하는 폼 제공
+    print("GET 요청입니다.")
+    return redirect("index")
 
 
 
@@ -76,10 +83,7 @@ def signup_view(request):
 
 
 # 수정할 페이지
-
-
-
-
+# 삭제예정 - lecture_list_view
 @login_required
 def lecture_list_view(request):
     user = request.user
@@ -111,30 +115,7 @@ def lecture_list_view(request):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-# @login_required
-# def lecture_view(request):
-#     user = request.user  # 현재 로그인한 사용자 정보 가져오기
-#     chapters = LectureChapter.objects.filter(user=user)
-
-#     context = {
-#         'chapters': chapters,  # 사용자의 LectureChapter 객체 목록을 전달
-#     }
-
-#     return render(request, "user/lecture.html", context)
-
+# 강의실
 @login_required
 def lecture_view(request):
     user = request.user
@@ -160,61 +141,7 @@ def lecture_view(request):
     return render(request, "user/lecture.html", context)
 
 
-
-
-
-
-
-
-
-
-
-# @login_required
-# def add_lecture_chapter_view(request):
-#     if request.method == 'POST':
-#         form = LectureChapterForm(request.POST)
-#         if form.is_valid():
-#             # 폼에서 입력한 데이터 가져오기
-#             lecture_name = form.cleaned_data.get('lecture_name')
-#             chapter_name = form.cleaned_data.get('chapter_name')
-            
-#             # 터미널에 출력
-#             print("User:", request.user)
-#             print("Lecture:", lecture_name)
-#             print("Chapter Name:", chapter_name)
-#             print("성공적으로 추가되었습니다.")
-
-#             # Lecture 모델에서 해당 강의를 가져오거나 생성
-#             lecture, created = Lecture.objects.get_or_create(title=lecture_name)
-
-#             # 새로운 LectureChapter 객체 생성 및 저장
-#             chapter = form.save(commit=False)
-#             chapter.user = request.user
-#             chapter.lecture = lecture  # Lecture 객체 할당
-#             chapter.save()
-
-#             messages.success(request, '강의 챕터가 성공적으로 추가되었습니다.')
-#             return render(request, "user/add_lecture_chapter.html")
-#     else:
-#         form = LectureChapterForm()
-
-#     # 폼 유효성 검사 실패 시에도 폼과 함께 에러 메시지를 전달
-#     if form.errors:
-#         # 폼에서 입력한 데이터 가져오기
-#         lecture_name = form.cleaned_data.get('lecture_name')
-#         chapter_name = form.cleaned_data.get('chapter_name')
-        
-#         # 터미널에 출력
-#         print("User:", request.user)
-#         print("Lecture:", lecture_name)
-#         print("Chapter Name:", chapter_name)
-#         print("강의 챕터 추가에 실패했습니다.")
-
-#         messages.error(request, '강의 챕터 추가에 실패했습니다. 입력을 다시 확인해주세요.')
-
-#     return render(request, 'user/add_lecture_chapter.html')
-
-
+# 강의 추가
 @login_required
 def add_lecture_chapter_view(request):
     if request.method == 'POST':
@@ -287,7 +214,7 @@ def add_lecture_chapter_view(request):
 #     return render(request, "user/lecture_detail.html", context)
 
 
-
+# 강의 상세정보
 def lecture_detail_view(request, lecture_name):
     # 강의명에 해당하는 모든 LectureChapter 객체를 가져옴
     lecture_chapters = LectureChapter.objects.filter(lecture__title=lecture_name)
@@ -314,6 +241,7 @@ TIMER_SESSION_KEYS = {
     'GOAL_TIME': 'goal_time'
 }
 
+# 세션 업데이트
 def update_session_view(request):
     if request.method == 'POST' or request.method == 'GET':  # GET 요청도 처리할 수 있도록 수정
         try:
@@ -335,7 +263,7 @@ def update_session_view(request):
 
 
 
-
+# 테스트1 페이지 - 삭제예정
 def test1_view(request):
     # 사용자가 세션에 로그인되어 있는지 확인
     if request.user.is_authenticated:
@@ -350,6 +278,8 @@ def test1_view(request):
     
     return render(request, 'user/test1.html', context)
 
+
+# 테스트2 페이지 - 삭제예정
 def test2_view(request):
     # 세션 데이터를 함께 전달
     context = {
@@ -361,16 +291,19 @@ def test2_view(request):
     return render(request, "user/test2.html", context)
 
 
+# 타이머
 def timer_view(request):
     context = {}
     return render(request, 'user/timer.html', context)
 
 
+# 타이머 테스트화면 - 삭제예정
 def timer_test1_view(request):
     context = {}
     return render(request, 'user/timer_test1.html', context)
 
 
+# 서버에 타이머 기록 저장
 def add_timer_view(request):
     if request.method == 'POST' or request.method == 'GET':
         # 폼에서 전송된 데이터 처리
@@ -402,6 +335,7 @@ def add_timer_view(request):
         return JsonResponse({'error': '저장 실패하였습니다.'}, status=400)
     
 
+# 강의실 사이드 네비게이터 바
 @login_required
 def lecture_sidebar_view(request):
     user = request.user

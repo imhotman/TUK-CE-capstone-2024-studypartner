@@ -26,12 +26,16 @@
               {% endif %}
             </p>  <!-- 로그인 한 사용자 이름 --> 
           </li>
+          {% if request.user.is_authenticated %}  <!-- 로그인 되었을 때 보이는 화면 -->
           <li class="contents-profile-item">
-            <a href="javascript:void(0);" class="btnset btnset-round">내 정보 관리</a>
+            <a href="{% url 'user:logout' %}" class="btnset btnset-round">로그아웃</a>
           </li>
+          {% else %}  <!-- 로그아웃 되었을 때 보이는 화면 -->
+          <a href="{% url 'user:login' %}" class="btnset btnset-round">로그인</a>
+          {% endif %}
         </ul>
         <div class="contents-group contents-reservation">
-          <h2 class="contents-tit"> 최근 이용내역 <a href="" class="contents-more">더보기</a>
+          <h2 class="contents-tit"> 최근 공부기록 <a href="" class="contents-more">자세히 보기</a>
           </h2>
 
           <!-- 임시로 띄어쓰기 한 부분. 나중에 삭제 예정 -->
@@ -55,16 +59,38 @@
               <em>상담시간</em> : 평일 09:00 ~ 18:00 (점심시간 12:00 ~ 13:00) </span>
           </a>
         </div>
+        <form id="delete-account-form" action="{% url 'user:delete_account' %}" method="POST" style="display: none;">
+          {% csrf_token %}
+        </form>
+        
         <div class="contents-button">
-          {% if request.user.is_authenticated %}  <!-- 로그인 되었을 때 보이는 화면 -->
-          <a href="{% url 'user:logout' %}" class="btnset btnset-round">로그아웃</a>
-          {% else %}  <!-- 로그아웃 되었을 때 보이는 화면 -->
-          <a href="{% url 'user:login' %}" class="btnset btnset-round">로그인</a>
-          {% endif %}
-          
+            {% if request.user.is_authenticated %}
+            <!-- 로그인 되었을 때 보이는 화면 -->
+            <button id="delete-account-btn" class="btnset btnset-round">회원탈퇴</button>
+            {% else %}
+            <!-- 로그아웃 되었을 때 보이는 화면 -->
+            <a href="{% url 'user:login' %}" class="btnset btnset-round">로그인</a>
+            {% endif %}
         </div>
       </div>
     </div>
   </div>
+
+  <script>
+    // 회원탈퇴 버튼 클릭 시 confirm 창 표시
+    document.getElementById('delete-account-btn').addEventListener('click', function(event) {
+        // 기본 동작 중단 (폼 제출 방지)
+        event.preventDefault();
+        
+        // 확인 창 표시
+        if (window.confirm('정말 회원탈퇴 하시겠습니까?')) {
+            // 폼을 제출
+            document.getElementById('delete-account-form').submit();
+        } else {
+            // 취소 버튼 클릭 시 아무 동작도 하지 않음
+            return false;
+        }
+    });
+</script>
   <!-- [E]study_partner-N23 -->
   {% endblock %}
