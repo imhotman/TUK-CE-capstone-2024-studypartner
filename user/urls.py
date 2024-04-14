@@ -18,8 +18,7 @@ urlpatterns = [
     path('add_timer/', views.add_timer_view, name='add_timer'),
     path('lecture_sidebar/', views.lecture_sidebar_view, name='lecture_sidebar'),
     path('delete_account/', views.delete_account_view, name='delete_account'),
-    
-
+  
 
     # lecture에 대한 URL 패턴
     path('lecture_detail/<str:lecture_name>/', views.lecture_detail_view, name='lecture_detail'),  # lecture_detail_view

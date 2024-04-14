@@ -35,7 +35,7 @@ urlpatterns = [
     path('upload/', include('upload.urls')),
     path('summary/', include('summary.urls')),
     path('delete_done/', views.delete_done, name='delete_done'),
-
+    path('delete_record/<int:record_id>/', views.delete_record_view, name='delete_record'),
 ]
 
 from django.conf import settings
