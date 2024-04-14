@@ -410,6 +410,7 @@ def lecture_sidebar_view(request):
     return render(request, "user/lecture_sidebar.html", context)
 
 
+# 챕터 삭제
 @login_required
 def delete_chapter(request, lecture_id, chapter_id):
     # 해당 강의와 챕터가 존재하는지 확인
