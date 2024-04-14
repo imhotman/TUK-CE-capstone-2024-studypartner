@@ -181,7 +181,7 @@
 /* study_partner-N23 [kaltA4yc3z] */
 .study_partner-N23 { overflow: hidden; background-color: var(--highlight-bg1); }
 .study_partner-N23 .contents-inner { padding: 8rem 1.6rem; }
-.study_partner-N23 .contents-container { width: 100%; max-width: 84rem; margin: 0 auto; }
+.study_partner-N23 .contents-container { width: 100%; max-width: 92rem; margin: 0 auto; }
 .study_partner-N23 .textset.textset-sub .textset-tit { font-size: var(--fs-h3); line-height: var(--lh-h3); }
 .study_partner-N23 .contents-group { padding: 2.4rem; background-color: var(--white); }
 .study_partner-N23 .contents-group+.contents-group { margin-top: 1.6rem; }

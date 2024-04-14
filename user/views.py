@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import LectureChapterForm
 from django.urls import reverse
 from django.http import JsonResponse
+from .models import Study_TimerSession
 from datetime import datetime, timedelta, timezone
 import json
 
@@ -262,22 +263,49 @@ def update_session_view(request):
         return JsonResponse({'error': 'Invalid request method.'}, status=405)
 
 
+# 시간 문자열 시간으로 변환
+def convert_to_timedelta(record):
+    # 시간 문자열을 ':'로 분할하여 시, 분, 초를 추출
+    hours, minutes, seconds = map(int, record.split(':'))
+    # timedelta 객체로 변환하여 반환
+    return timedelta(hours=hours, minutes=minutes, seconds=seconds)
 
-# 테스트1 페이지 - 삭제예정
+
+# 하루 단위 기록
+def convert_to_day(record):
+    # 기록을 초로 변환
+    total_seconds = record.total_seconds()
+    # 하루(24시간)에 해당하는 초로 나누어 하루 단위의 기록을 구함
+    return total_seconds / 86400
+
+
+# 뷰 함수
 def test1_view(request):
     # 사용자가 세션에 로그인되어 있는지 확인
     if request.user.is_authenticated:
         # 세션에 로그인되어 있는 경우 사용자 이름을 세션에 저장
         request.session['session_username'] = request.user.username
+
+        # Study_TimerSession 모델에서 모든 객체 가져오기
+        sessions = Study_TimerSession.objects.all()
+        
+        # 기록을 timedelta 형식으로 변환
+        for session in sessions:
+            session.records = convert_to_timedelta(session.records)
+
+        # 가장 높은 기록을 가진 객체 찾기
+        highest_record = max(sessions, key=lambda session: convert_to_day(session.records))
+        
         context = {
             'username': request.user.username,
+            'sessions': sessions,
+            'highest_record': highest_record
         }
     else:
         # 세션에 로그인되어 있지 않은 경우
         context = {'message': '로그인 되지 않았습니다.'}
     
     return render(request, 'user/test1.html', context)
-
 
 # 테스트2 페이지 - 삭제예정
 def test2_view(request):
@@ -359,3 +387,6 @@ def lecture_sidebar_view(request):
         'lectures': lectures,
     }
     return render(request, "user/lecture_sidebar.html", context)
+
+
+

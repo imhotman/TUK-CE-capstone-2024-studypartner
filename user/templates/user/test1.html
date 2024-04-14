@@ -20,7 +20,21 @@
     {% else %}
         <span>로그인 되지 않았습니다.</span><br><br>
     {% endif %}
-    <!-- 타이머를 포함할 부분 -->
-    {% include "user/timer_test1.html" %}
+
+    <!-- Study_TimerSession 모델에서 가져온 데이터 표시 -->
+    <h3>Study_TimerSession 데이터:</h3>
+    <ul>
+    {% for session in sessions reversed %}
+        <li>날짜: {{ session.date }}, 목표시간: {{ session.goal_time }}, 지난시간: {{ session.elapsed_time }}, 목표까지 남은시간: {{ session.remaining_time }}, 목표달성률: {{ session.goalpercent }}, 기록: {{ session.records }}</li>
+    {% endfor %}
+    </ul>
+
+    <!-- 가장 높은 기록 항목 출력 -->
+    <h3>가장 높은 기록:</h3>
+    {% if highest_record %}
+        <p>날짜: {{ highest_record.date }}, 목표시간: {{ highest_record.goal_time }}, 지난시간: {{ highest_record.elapsed_time }}, 목표까지 남은시간: {{ highest_record.remaining_time }}, 목표달성률: {{ highest_record.goalpercent }}, 기록: {{ highest_record.records }}</p>
+    {% else %}
+        <p>가장 높은 기록이 없습니다.</p>
+    {% endif %}
 </body>
 </html>
