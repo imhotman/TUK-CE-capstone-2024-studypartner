@@ -1,6 +1,6 @@
 <!-- lecture_detail.html -->
 
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
@@ -14,9 +14,74 @@
         {% for chapter in lecture_chapters %}
             <li>{{ chapter.chapter_name }}</li>
         {% endfor %}
-    </ul>
+    </ul> -->
     <!-- 현재 로그인한 사용자 출력 -->
-    <p>현재 로그인한 사용자: {{ user.username }}</p>
+    <!-- <p>현재 로그인한 사용자: {{ user.username }}</p>
+</body>
+</html> -->
+
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>내 강의실 상세정보 | 스터디파트너</title>
+    <style>
+        .chapter-delete-btn {
+            cursor: pointer;
+            margin-left: 10px;
+            color: rgb(214, 48, 103);
+        }
+    </style>
+</head>
+<body>
+    <!-- 강의실 사이드 네비게이터 & 타이머 포함할 부분 -->
+    {% include "user/lecture_sidebar.html" %}
+
+    <!-- 사용자의 강의 상세정보 -->
+    <div class="custom-body">
+        <div class="lecture-box">
+            <h2>        
+                <span>Study Partner</span>
+                <a href="{% url 'user:lecture' %}">
+                    <ion-icon name="arrow-back-outline" class="lecture_urllink2 nav__toggle2 study-partner-backion" id="back-toggle"></ion-icon>
+                </a>
+            </h2>
+
+            <div class="user-box">
+                <p style="color:white">사용자: {{ user.username }} 님</p>
+            </div>
+            <div class="user-box">
+                <p style="color:white">{{ lecture_name }} 전체 챕터정보입니다. </p>
+                <ul style="color:white">
+                    {% for chapter in lecture_chapters %}
+                        <li>
+                            {{ chapter.chapter_name }}
+                            <form id="delete-chapter-form-{{ chapter.id }}" action="{% url 'user:delete_chapter' lecture_id=chapter.lecture.id chapter_id=chapter.id %}" method="post" style="display: inline;">
+                                {% csrf_token %}                                        
+                                <button type="submit" style="display:none;"></button>
+                            </form>
+                            <span onclick="deleteChapter('{{ chapter.id }}')" class="chapter-delete-btn"><ion-icon name="close"></ion-icon></span>
+                        </li>
+                    {% endfor %}
+                    
+                </ul> 
+            </div><br>
+        </div>
+    </div>
+    <!-- 사용자의 강의 상세정보 끝부분-->
+
+<script>
+    function deleteChapter(chapterId) {
+        if (window.confirm('정말 삭제하시겠습니까?\n선택하신 챕터가 삭제됩니다.')) {
+            document.getElementById('delete-chapter-form-' + chapterId).submit();
+        }
+    }
+</script>
+
 </body>
 </html>
 
+{% endblock %}
