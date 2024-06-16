@@ -462,7 +462,7 @@ def send_friend_request(request):
 
 # 테스트3 페이지 - 삭제예정
 def test3_view(request):
-    # 친구 요청 수락하기
+    # 현재 사용자의 친구 요청 가져오기
     friend_requests = FriendRequest.objects.filter(to_user=request.user)
 
     # 현재 사용자의 친구 목록 가져오기
@@ -497,6 +497,7 @@ def test3_view(request):
 #     return redirect('user:test3')  # 이동할 URL을 설정해야 합니다.
 
 
+# 친구 요청 수락
 def accept_friend_request(request, request_id):
     friend_request = get_object_or_404(FriendRequest, id=request_id)
     
@@ -515,3 +516,22 @@ def accept_friend_request(request, request_id):
     return redirect('user:test3')  # 친구 요청을 수락한 후에는 리다이렉트
 
 
+# 친구 삭제
+def delete_friend(request, friend_id):
+    # 친구 관계 가져오기
+    friendship = get_object_or_404(Friendship, user=request.user, friend_id=friend_id)
+    # 역방향 친구 관계 가져오기
+    reverse_friendship = get_object_or_404(Friendship, user=friend_id, friend=request.user)
+    
+    # 친구 관계 삭제
+    friendship.delete()
+    reverse_friendship.delete()
+    
+    return redirect('user:test3')
+
+
+# 친구 요청 거절
+def reject_friend_request(request, request_id):
+    friend_request = get_object_or_404(FriendRequest, id=request_id)
+    friend_request.delete()
+    return redirect('user:test3')

@@ -24,20 +24,31 @@
     {% csrf_token %}
         <button type="submit">친구 요청 수락</button>
     </form>
+
+    <form method="POST" action="{% url 'user:reject_friend_request' friend_request.id %}">
+        {% csrf_token %}
+        <button type="submit">친구 요청 거절</button>
+    </form>
     
 {% endfor %}
 
 <!-- 친구 목록 템플릿 -->
 <br>
-{% if friends %}
-    <h3>친구 목록</h3>
-    <ul>
-        {% for friendship in friends %}
-            <li>{{ friendship.friend.username }}</li>
-        {% endfor %}
-    </ul>
-{% else %}
-    <p>친구가 없습니다.</p>
-{% endif %}
+    {% if friends %}
+        <h3>친구 목록</h3>
+        <ul>
+            {% for friendship in friends %}
+                <li>
+                    {{ friendship.friend.username }}
+                    <form method="POST" action="{% url 'user:delete_friend' friendship.friend.id %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit">친구 삭제</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>친구가 없습니다.</p>
+    {% endif %}
 </body>
 </html>
