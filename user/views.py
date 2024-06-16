@@ -136,9 +136,21 @@ def lecture_view(request):
         # 현재 챕터 추가
         lectures[-1]['chapters'].append({'chapter_name': chapter_name, 'chapter_url': chapter_url, 'lecture_url': lecture_url})
 
+
+    # 현재 사용자의 친구 요청 가져오기
+    friend_requests = FriendRequest.objects.filter(to_user=request.user)
+
+    # 현재 사용자의 친구 목록 가져오기
+    user = request.user
+    friends = Friendship.objects.filter(user=user).select_related('friend')
+
     context = {
+        'request_user': user,
+        'friend_requests': friend_requests,
+        'friends': friends,
         'lectures': lectures,
-    }
+        }
+    
     return render(request, "user/lecture.html", context)
 
 
@@ -449,19 +461,19 @@ def send_friend_request(request):
             # 친구 요청 생성 및 저장
             friend_request = FriendRequest.objects.create(from_user=request.user, to_user=friend_user)
             print("친구 요청 완료")
-            return redirect('user:test2')  # 요청을 보낸 후 홈 페이지로 리다이렉트
+            return redirect('user:friend')  # 요청을 보낸 후 홈 페이지로 리다이렉트
             
         except User.DoesNotExist:
             pass
     # POST 요청이 아니거나 요청 수신자가 잘못된 경우
     print("친구 요청 에러")
-    return redirect('user:test1')  # 에러 페이지로 리다이렉트
+    return redirect('user:friend')  # 에러 페이지로 리다이렉트
     
 
 
 
-# 테스트3 페이지 - 삭제예정
-def test3_view(request):
+# 친구 시스템 사이트 뷰
+def friend_view(request):
     # 현재 사용자의 친구 요청 가져오기
     friend_requests = FriendRequest.objects.filter(to_user=request.user)
 
@@ -475,7 +487,7 @@ def test3_view(request):
         'friends': friends,
         }
     
-    return render(request, 'user/test3.html', context)
+    return render(request, 'user/lecture.html', context)
 
 
 # def accept_friend_request(request_id):
@@ -494,7 +506,7 @@ def test3_view(request):
 #     except FriendRequest.DoesNotExist:
 #         pass
 
-#     return redirect('user:test3')  # 이동할 URL을 설정해야 합니다.
+#     return redirect('user:friend')  # 이동할 URL을 설정해야 합니다.
 
 
 # 친구 요청 수락
@@ -504,7 +516,7 @@ def accept_friend_request(request, request_id):
     # 이미 친구인지 확인
     if Friendship.objects.filter(user=friend_request.to_user, friend=friend_request.from_user).exists():
         # 이미 친구인 경우에는 요청을 수락할 필요가 없으므로 리다이렉트
-        return redirect('user:test3')
+        return redirect('user:friend')
     
     # 친구 관계 생성(친구 추가)
     Friendship.objects.create(user=friend_request.from_user, friend=friend_request.to_user)
@@ -513,7 +525,7 @@ def accept_friend_request(request, request_id):
     # 친구 요청 삭제
     friend_request.delete()
     
-    return redirect('user:test3')  # 친구 요청을 수락한 후에는 리다이렉트
+    return redirect('user:friend')  # 친구 요청을 수락한 후에는 리다이렉트
 
 
 # 친구 삭제
@@ -527,11 +539,11 @@ def delete_friend(request, friend_id):
     friendship.delete()
     reverse_friendship.delete()
     
-    return redirect('user:test3')
+    return redirect('user:friend')
 
 
 # 친구 요청 거절
 def reject_friend_request(request, request_id):
     friend_request = get_object_or_404(FriendRequest, id=request_id)
     friend_request.delete()
-    return redirect('user:test3')
+    return redirect('user:friend')

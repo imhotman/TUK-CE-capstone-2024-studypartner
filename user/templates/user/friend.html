@@ -1,0 +1,115 @@
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>친구 추가 페이지</title>
+</head>
+
+<style>
+    /* CSS에서 input 요소를 선택하고 원하는 스타일을 적용 */
+    input#friend_id {
+        background-color: white; /* 배경색 */
+        border: 0.7px solid black; /* 테두리 색 */
+        border-radius: 3.5px; /* 테두리를 둥글게 설정 */
+    }
+</style>
+
+<body class="bg-gray-100">
+    <div class="max-w-sm bg-white p-3 rounded-lg shadow-md">
+    <span>강의실 사용자: <b>{{ request.user.username }}</b> 님</span><br>
+    <hr style="border-top: 0.8px solid #ccc; width: 100%; margin: 7px 0;">
+    
+    <span class="contents-notice-link"></span>
+    <br>
+        <form method="POST" action="{% url 'user:send_friend_request' %}">
+            {% csrf_token %}
+            <label for="friend_id"><b>친구의 아이디:</b></label>
+            <input type="text" id="friend_id" name="friend_id" required>
+            
+
+<button type="submit" 
+ style="background-color: #4CAF50; border: none; color: white; padding: 6px 12px; text-align: center; text-decoration: none; 
+        display: inline-block; font-size: 13px; margin: 4px 2px; cursor: pointer;border-radius: 7px;">친구 추가</button> 
+                                                                
+        </form>
+    
+    <!-- 친구 요청 목록 템플릿 -->
+    <br>
+    <hr style="border-top: 0.5px solid #ccc; width: 100%; margin: 7px 0;">
+    <h3><b>친구 요청 목록</b></h3>
+    {% for friend_request in friend_requests %}<br>
+        <p><b>{{ friend_request.from_user.username }}님</b>으로부터 친구 요청이 도착했습니다.</p>
+            
+        <div style="display: flex; align-items: center;">
+            <form method="POST" action="{% url 'user:accept_friend_request' friend_request.id %}" style="margin-right: 10px;">
+                {% csrf_token %}
+                <button type="submit" 
+                        style="background-color: #43afc7; border: none; color: white; padding: 6px 12px; text-align: center; text-decoration: none; 
+                                font-size: 13px; cursor: pointer; border-radius: 7px;">친구 요청 수락</button> 
+            </form>
+            
+            <form method="POST" action="{% url 'user:reject_friend_request' friend_request.id %}">
+                {% csrf_token %}
+                <button type="submit" onclick="confirmReject('{{ friend_request.id }}')"
+                        style="background-color: #fd7f1e; border: none; color: white; padding: 6px 12px; text-align: center; text-decoration: none; 
+                                font-size: 13px; cursor: pointer; border-radius: 7px;">친구 요청 거절</button> 
+            </form>
+        </div>
+    {% endfor %}
+
+    <!-- 친구 목록 템플릿 -->
+    <br>
+    <hr style="border-top: 0.5px solid #ccc; width: 100%; margin: 7px 0;">
+        {% if friends %}
+            <h3><b>친구 목록</b></h3><br>
+            <ul>
+                {% for friendship in friends %}
+                    <li>
+                        {{ friendship.friend.username }} 님
+                        <form id="delete-form-{{ friendship.friend.id }}" method="POST" action="{% url 'user:delete_friend' friendship.friend.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <!-- 친구 삭제 -->
+                            &nbsp;
+                            <button type="submit" onclick="confirmDelete('{{ friendship.friend.id }}')" 
+                                style="background-color: #df048b; border: none; color: white; padding: 6px 12px; text-align: center; text-decoration: none; 
+                                        display: inline-block; font-size: 13px; margin: 4px 2px; cursor: pointer;border-radius: 7px;">친구 삭제</button> 
+                        
+                        </form>
+                        
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+        <h3><b>친구 목록</b></h3><br>
+            <p>친구가 없습니다.</p>
+        {% endif %}
+    </div>
+
+    <script>
+        function confirmReject(requestId) {
+            if (confirm("정말로 친구 요청을 거절하시겠습니까?")) {
+                // 거절 처리를 위한 AJAX 요청 등을 여기에 추가
+                alert("친구 요청이 거절되었습니다.");
+            } else {
+                // 취소 버튼 클릭 시 동작
+                alert("친구 요청 거절을 취소하였습니다.");
+            }
+        }
+
+        function confirmDelete(requestId) {
+            if (confirm("정말로 이 친구를 삭제하시겠습니까?")) {
+                // 삭제 처리를 위한 AJAX 요청 등을 여기에 추가
+                alert("친구가 삭제되었습니다.");
+            } else {
+                // 취소 버튼 클릭 시 동작
+                alert("친구 삭제를 취소하였습니다.");
+            }
+        }
+    </script>
+
+</body>
+</html>
+{% endblock %}
