@@ -1,11 +1,13 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, Http404, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from user.models import Lecture, LectureChapter, Friendship, FriendRequest
 from .models import UploadFile_summary
 from .forms import UploadFile_summaryForm  # UploadFileForm을 가져옴
 from django.urls import reverse
+from django.http import Http404
+
 
 # Create your views here.
 
@@ -112,3 +114,11 @@ def upload_file_summary(request, lecture_name, chapter_name):
         'form': form
     }
     return render(request, "summary/summary_detail.html", context)
+
+
+def delete_file_summary(request, file_id):
+    file_to_delete = get_object_or_404(UploadFile_summary, id=file_id)
+    lecture_name = file_to_delete.chapter.lecture.title
+    chapter_name = file_to_delete.chapter.chapter_name
+    file_to_delete.delete()
+    return redirect('summary:summary_detail', lecture_name=lecture_name, chapter_name=chapter_name)
