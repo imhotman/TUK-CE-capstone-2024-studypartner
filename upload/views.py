@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, Http404, redirect
 from django.contrib.auth.models import User
-from user.models import Lecture, LectureChapter
+from user.models import Lecture, LectureChapter, FriendRequest, Friendship
 from django.urls import reverse
 from django.http import HttpResponse
 
@@ -33,12 +33,21 @@ def chapter_detail_view(request, lecture_name, chapter_name):
         # 현재 챕터 추가
         lectures[-1]['chapters'].append({'chapter_name': chapter_name, 'chapter_url': chapter_url, 'lecture_url': lecture_url})
 
+    # 현재 사용자의 친구 요청 가져오기
+    friend_requests = FriendRequest.objects.filter(to_user=request.user)
+
+    # 현재 사용자의 친구 목록 가져오기
+    user = request.user
+    friends = Friendship.objects.filter(user=user).select_related('friend')
 
     context = {
         'chapter': chapter,
         'lectures': lectures,
-        'chapter_name': chapter_name
-    }
+        'chapter_name': chapter_name,
+        'request_user': user,
+        'friend_requests': friend_requests,
+        'friends': friends,
+        }
 
     return render(request, "upload/chapter_detail.html", context)
 
