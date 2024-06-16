@@ -13,10 +13,10 @@
 
     <title>내 강의실 | 스터디파트너</title>
 </head>
-
+<body>
     <!-- 강의실 사이드 네비게이터 & 타이머 포함할 부분 -->
     {% include "user/lecture_sidebar.html" %}
-
+    
     <div class="custom-body">
         <div class="lecture-box">
             <h2>Study Partner</h2>
@@ -25,7 +25,6 @@
             <form method="post" action="{% url 'user:add_lecture_chapter' %}" id="add-lecture-form">
                 {% csrf_token %}
                 
-
             <div class="user-box">
                 <input name="lecture_name" type="text" name="" required="">
                 <span></span>
@@ -36,13 +35,20 @@
                 <label>강의 하위목록 (필수)</label>
             </div>
             <div class="index_studypartner_buttonlist" style="text-align: center;">     
-                <button type="submit" id="add-lecture-button" style="margin-left: 117px;">강의 추가</button>&nbsp;&nbsp;
+                <button type="submit" id="add-lecture-button" style="margin-left: 77px;">강의 추가</button>&nbsp;&nbsp;
                 <button type="reset" class="reverse dark" style="background-color: darkcyan;">모두 삭제</button>    
             </div>
                        
             </form>         
         </div>
     </div>
+
+
+    <!-- 친구 시스템 포함할 부분 -->
+    <div class="lecture-box2">
+        {% include "user/friend.html" %}
+    </div>
+
 
     <script>
         document.getElementById('add-lecture-button').addEventListener('click', function() {
