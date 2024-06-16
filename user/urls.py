@@ -22,6 +22,9 @@ urlpatterns = [
     path('lecture/<int:lecture_id>/delete_chapter/<int:chapter_id>/', views.delete_chapter, name='delete_chapter'),
     path('send_friend_request/', views.send_friend_request, name='send_friend_request'),
     path('accept_friend_request/<int:request_id>/', views.accept_friend_request, name='accept_friend_request'),
+    path('delete_friend/<int:friend_id>/', views.delete_friend, name='delete_friend'),
+    path('reject_friend_request/<int:request_id>/', views.reject_friend_request, name='reject_friend_request'),
+
 
 
   
