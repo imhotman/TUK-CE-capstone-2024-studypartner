@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
-from django.utils import timezone
+from django.db.models import UniqueConstraint
+# from django.utils import timezone
 
 class Lecture(models.Model):
     title = models.CharField(max_length=100)
@@ -31,5 +32,29 @@ class Study_TimerSession(models.Model):
     def __str__(self):
         return f"사용자: {self.user.username}, 날짜: {self.date},목표시간: {self.goal_time}, 지난시간: {self.elapsed_time}, 목표까지 남은시간: {self.remaining_time}, 목표달성률: {self.goalpercent},기록: {self.records}"
 
-    
-    
+class FriendRequest(models.Model):
+    from_user = models.ForeignKey(User, related_name='sent_friend_requests', on_delete=models.CASCADE)
+    to_user = models.ForeignKey(User, related_name='received_friend_requests', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(fields=['from_user', 'to_user'], name='unique_friend_requests')
+        ]
+
+    def __str__(self):
+        return f"친구요청: {self.from_user.username}, 친구수락: {self.to_user.username}"
+
+class Friendship(models.Model):
+    user = models.ForeignKey(User, related_name='friendships', on_delete=models.CASCADE)
+    friend = models.ForeignKey(User, related_name='friends', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'friend'], name='unique_friendship')
+        ]
+
+    def __str__(self):
+        return f"{self.user.username} 의 친구: {self.friend.username}"    
+

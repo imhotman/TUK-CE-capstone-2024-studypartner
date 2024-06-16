@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import LectureChapterForm
 from django.urls import reverse
 from django.http import JsonResponse
-from .models import Study_TimerSession
+from .models import Study_TimerSession, FriendRequest, Friendship
 from datetime import datetime, timedelta, timezone
 import json
 
@@ -423,3 +423,95 @@ def delete_chapter(request, lecture_id, chapter_id):
 
     # 삭제 후 강의 상세 페이지로 리다이렉트
     return redirect('user:lecture_detail', lecture_name=lecture.title)
+
+
+# 친구 요청
+def send_friend_request(request):
+    if request.method == 'POST':
+        from_user = request.user
+        friend_id = request.POST.get('friend_id')
+        print(from_user)
+        print(friend_id)
+
+        try:
+            friend_user = User.objects.get(username=friend_id)
+            
+            # 동일한 사용자인지 확인
+            if friend_user == request.user:
+                print("동일한 사용자입니다.")
+                return redirect('user:test1')
+            
+            # 이미 친구인지 또는 이미 요청을 보낸 경우인지 확인
+            if Friendship.objects.filter(user=request.user, friend=friend_user).exists() or FriendRequest.objects.filter(from_user=request.user, to_user=friend_user).exists():
+                print("이미 친구이거나 요청을 보낸 사용자입니다.")
+                return redirect('user:test1')
+            
+            # 친구 요청 생성 및 저장
+            friend_request = FriendRequest.objects.create(from_user=request.user, to_user=friend_user)
+            print("친구 요청 완료")
+            return redirect('user:test2')  # 요청을 보낸 후 홈 페이지로 리다이렉트
+            
+        except User.DoesNotExist:
+            pass
+    # POST 요청이 아니거나 요청 수신자가 잘못된 경우
+    print("친구 요청 에러")
+    return redirect('user:test1')  # 에러 페이지로 리다이렉트
+    
+
+
+
+# 테스트3 페이지 - 삭제예정
+def test3_view(request):
+    # 친구 요청 수락하기
+    friend_requests = FriendRequest.objects.filter(to_user=request.user)
+
+    # 현재 사용자의 친구 목록 가져오기
+    user = request.user
+    friends = Friendship.objects.filter(user=user).select_related('friend')
+
+    context = {
+        'request_user': user,
+        'friend_requests': friend_requests,
+        'friends': friends,
+        }
+    
+    return render(request, 'user/test3.html', context)
+
+
+# def accept_friend_request(request_id):
+#     try:
+#         friend_request = FriendRequest.objects.get(id=request_id)
+#         user1 = friend_request.from_user
+#         user2 = friend_request.to_user
+        
+#         # 친구 관계 생성(친구 추가)
+#         Friendship.objects.create(user=user1, friend=user2)
+#         Friendship.objects.create(user=user2, friend=user1)
+        
+#         # 친구 요청 삭제
+#         friend_request.delete()
+        
+#     except FriendRequest.DoesNotExist:
+#         pass
+
+#     return redirect('user:test3')  # 이동할 URL을 설정해야 합니다.
+
+
+def accept_friend_request(request, request_id):
+    friend_request = get_object_or_404(FriendRequest, id=request_id)
+    
+    # 이미 친구인지 확인
+    if Friendship.objects.filter(user=friend_request.to_user, friend=friend_request.from_user).exists():
+        # 이미 친구인 경우에는 요청을 수락할 필요가 없으므로 리다이렉트
+        return redirect('user:test3')
+    
+    # 친구 관계 생성(친구 추가)
+    Friendship.objects.create(user=friend_request.from_user, friend=friend_request.to_user)
+    Friendship.objects.create(user=friend_request.to_user, friend=friend_request.from_user)
+    
+    # 친구 요청 삭제
+    friend_request.delete()
+    
+    return redirect('user:test3')  # 친구 요청을 수락한 후에는 리다이렉트
+
+
