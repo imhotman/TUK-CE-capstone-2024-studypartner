@@ -47,14 +47,14 @@
           </div>
         </div>
       </div>
-      <div id="start" class="swiper-button-next" ><img src="{% static 'icons/ico_right_circle_white.svg' %}" alt="next 화살표" ></div> <!-- 지금 시작하기 버튼 눌렀을 때 보이는 화면 id="start" -->
+      <div class="swiper-button-next" ><img src="{% static 'icons/ico_right_circle_white.svg' %}" alt="next 화살표" ></div> 
       <div class="swiper-button-prev"><img src="{% static 'icons/ico_left_circle_white.svg' %}" alt="next 화살표" ></div>
       <div class="contents-control">
         <div class="swiper-pagination"></div>
-        <div class="swiper-button-pause">
+        <div class="swiper-button-pause" id="start"> <!-- 지금 시작하기 버튼 눌렀을 때 보이는 화면 id="start" -->
           <img src="{% static 'icons/ico_pause_white.svg' %}" alt="스와이퍼 멈춤버튼">
         </div>
-        <div class="swiper-button-play">
+        <div class="swiper-button-play"> 
           <img src="{% static 'icons/ico_play_white.svg' %}" alt="스와이퍼 재생버튼">
         </div>
       </div>
@@ -64,56 +64,127 @@
 <!-- [E]study_partner-N3 -->
 
 <!-- [S]study_partner-N4 -->
-<div class="contents-inner">
-  <div class="contents-container container-md">
-    <div class="cardset cardset-hor row-rever col-rever-m cardset-lg">
-      <figure class="cardset-figure img-pc">
-        <img class="cardset-img" src="{% static 'images/img_mainvisual_1.png' %}" alt="PC 카드 이미지">
-      </figure>
-      <figure class="cardset-figure img-mobile">
-        <img class="cardset-img" src="{% static 'images/img_mainvisual_1.png' %}" alt="모바일 카드 이미지">
-      </figure>
-      <div class="cardset-body">
-        <h2 class="cardset-tit">
-          캠프랜드만의 감성으로
-          <br>
-          사로잡는 새로움을 만듭니다.
-        </h2>
-        <p class="cardset-desc">
-          디자인은 단순히 아름답게만 만드는 작업이 아니라,
-          <br>
-          사용자의 편의성을 고려해 아름다움을 불어넣어야 합니다.
-          <br>
-          두 가지를 고려하며 만드는 과정은 어렵고 힘들지 몰라도
-          <br>
-          캠프랜드에게는 의미 있는 일이며, 소중한 가치입니다.
-        </p>
+<div class="study_partner-N4" data-bid="utlWkmVvYp"> 
+  <div class="contents-inner">
+    <div class="contents-container container-md">
+      <div class="cardset cardset-hor row-rever col-rever-m cardset-lg cardset-animation1">
+        <br>
+        <figure class="cardset-figure img-pc">
+          <p style="margin-top: 7.8rem;"></p>
+          <img class="cardset-img" src="{% static 'images/lecture_capture1.png' %}" alt="PC 카드 이미지">
+        </figure>
+        <figure class="cardset-figure img-mobile">
+          
+          <img class="cardset-img" src="{% static 'images/lecture_capture1.png' %}" alt="모바일 카드 이미지">
+        </figure>
+        <div class="cardset-body">
+          <h2 class="cardset-tit">
+            <br>
+            "내 강의실"은
+            <br>
+            학습 경험을 혁신적으로
+            <br>
+            변화시킬 공간입니다.
+          </h2>
+          <p class="cardset-desc">
+            이 공간에서는 다음과 같은 다양한 기능을 통해 학습을 보다
+            <br>
+            체계적이고 효율적으로 진행할 수 있습니다.
+            <br>
+            <br>
+            1. 강의 및 각 강의 별 <b>챕터 추가</b> 및 <b>삭제기능</b> 
+            <br>
+            2. <b>음성파일 업로드</b> 및 <b>AI 요약</b> 기능
+            <br>
+            3. <b>AI Quiz</b> 기능
+            <br>
+            4. <b>AI 손 글씨체 제작</b> 기능
+            <br>
+            5. <b>타이머</b> 기능
+            <br>
+            6. <b>친구추가</b> 기능
+          </p>
+        </div>
       </div>
-    </div>
-    <div class="cardset cardset-hor col-rever-m cardset-lg">
-      <figure class="contents-backfigure img-pc">
-        <img class="contents-backimg" src="{% url 'about' %}" alt="about텍스트 이미지">
-      </figure>
-      <figure class="cardset-figure img-pc">
-        <img class="cardset-img" src="{% static 'images/img_mainvisual_1.png' %}" alt="PC 카드 이미지">
-      </figure>
-      <figure class="cardset-figure img-mobile">
-        <img class="cardset-img" src="{% static 'images/img_mainvisual_1.png' %}" alt="모바일 카드 이미지">
-      </figure>
-      <div class="cardset-body">
-        <h2 class="cardset-tit">
-          당신을 위한
-          <br>
-          우리의 도전은 계속됩니다.
-        </h2>
-        <p class="cardset-desc">
-          끊임없이 변하고 발전하는 인터넷 시대에
-          <br class="br-mo"> 캠프랜드만의 트렌드한
-          <br class="br-pc">
-          감성 디자인과 기술을 더하여
-          <br class="br-mo"> 차원높은 서비스를 제공합니다.
-        </p>
-        <a href="javascript:void(0);" class="btnset btnset-round btnset-line btnset-black">VIEW ALL STORY</a>
+      <p style="margin-top: 12.5rem;"></p>
+      <div class="cardset cardset-hor col-rever-m cardset-lg cardset-animation2">
+        <figure class="contents-backfigure img-pc">
+        </figure>
+        <figure class="cardset-figure img-pc">
+          <img class="cardset-img3" src="{% static 'images/img_timer1.png' %}" alt="PC 카드 이미지" style="margin-left: 13rem;">
+        </figure>
+        <figure class="cardset-figure img-mobile">
+          <img class="cardset-img" src="{% static 'images/img_timer1.png' %}" alt="모바일 카드 이미지">
+        </figure>
+        <div class="cardset-body">
+          <h2 class="cardset-tit">
+            "타이머"는
+            <br>
+            학습시간을 효율적으로 관리하고
+            <br>
+            목표달성에 도움을 줍니다.
+          </h2>
+          <p class="cardset-desc">
+            타이머의 다양한 기능들을 소개합니다!
+            <br>
+            <br>
+            1. <b>목표 시간:</b> 학습하고자 하는 목표를 설정하세요.
+            <br>
+            2. <b>지난 시간:</b> 학습한 시간을 확인하세요.
+            <br>
+            3. <b>목표까지 남은 시간:</b> 목표 달성을 위한 남은 시간을 확인하세요.
+            <br>
+            4. <b>목표달성률:</b> 목표에 얼마나 가까워졌는지 확인하세요.
+            <br>
+            5. <b>오늘의 공부 기록:</b> 오늘의 공부 시간을 기록하세요.
+            <br>
+            6. <b>공부 기록내역:</b> 자세한 기록은 마이페이지 및 강의실에서 확인할 수 있어요.
+          </p>
+        </div>
+      </div>
+
+      <p style="margin-top: 12.5rem;"></p>
+      <div class="cardset cardset-hor row-rever col-rever-m cardset-lg cardset-animation1">
+        <br>
+        <figure class="cardset-figure img-pc">
+          <p style="margin-top: 3.8rem;"></p>
+          <img class="cardset-img4" src="{% static 'images/img_mypage1.png' %}" alt="PC 카드 이미지">
+        </figure>
+        <figure class="cardset-figure img-mobile">
+          
+          <img class="cardset-img4" src="{% static 'images/img_mypage1.png' %}" alt="모바일 카드 이미지">
+        </figure>
+        <div class="cardset-body">
+          <h2 class="cardset-tit">
+            <br>
+            "마이페이지"에서
+            <br>
+            최근 공부한 기록을
+            <br>
+            확인할 수 있습니다.
+
+          </h2>
+          <p class="cardset-desc">
+            목표 달성의 성취감을 느낄 수 있도록 요약된 정보를 제공합니다.
+            <br>
+            모든 공부기록 데이터는 "자세히 보기"를 눌러 확인해 보세요!
+            <br>
+            <br>
+            1. <b>날짜별 높은 기록:</b> 각 날짜별로 최고 기록을 볼 수 있어요.
+            <br>
+            2. <b>최근 공부기록 데이터:</b> 내림차순으로 나열하여 자신의 학습기록을 볼 수 있어요.
+            <br>
+            3. <b>공부기록 삭제:</b> 기록을 지우고 싶다면 
+            <a style="color: rgb(175, 19, 131);"><ion-icon name="close" class="nav__icon delete-btn"></ion-icon></a> 아이콘을 눌러 삭제할 수 있어요.
+            <br>
+
+          </p>
+          {% if request.user.is_authenticated %}
+          <a href="{% url 'user:logout' %}" class="btnset btnset-round btnset-line btnset-black">로그아웃 하기</a>
+          {% else %}
+          <a href="{% url 'user:login' %}" class="btnset btnset-round btnset-line btnset-black">로그인 하기</a>
+          {% endif %}
+        </div>
       </div>
     </div>
   </div>
@@ -121,17 +192,17 @@
 <!-- [E]study_partner-N4 -->
 
   <!-- [S]study_partner-N5 -->
-  <div class="study_partner-N5" data-bid="FhLTa4BFpO" style="margin-top: 350px;">
+  <!-- <div class="study_partner-N5" data-bid="FhLTa4BFpO" style="margin-top: 350px;">
     <div class="contents-inner">
       <div class="contents-container container-md">
         <div class="cardset-wrap">
           <div class="cardset cardset-center">
-            <h1 style="margin-left: 500px;">메인 페이지 제작중입니다....</h1>
+
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
   <!-- [E]study_partner-N5 -->
 
   <!-- [S]study_partner-N6 -->
@@ -149,7 +220,7 @@
               <div class="contents-slide-group container-md">
                 <div class="textset">
                   <h2 class="textset-tit"> 스터디파트너 <br> 사이트 소개 </h2>
-                  <p class="textset-desc"> 스터디파트너에서 소개하는 <br> 여러 정보들을 확인하세요. </p>
+                  <p class="textset-desc"> 스터디파트너에서 소개하는 <br> 자세한 정보들을 확인하세요. </p>
                 </div>
                 <a class="btnset btnset-round btnset-line btnset-white" href="{% url 'about' %}">사이트 소개 바로가기</a>
               </div>
@@ -163,4 +234,6 @@
   </div>
   <!-- [E]study_partner-N6 -->
 
+  <!-- IONICONS -->
+  <script src="https://unpkg.com/ionicons@5.2.3/dist/ionicons.js"></script>
 {% endblock %}
