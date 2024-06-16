@@ -480,8 +480,10 @@ br.br-mo { display: none; }
 .cardset-wrap { display: flex; } 
 .cardset { position: relative; } 
 .cardset .cardset-figure { width: 100%; height: 40rem; margin-bottom: 0; } 
-.cardset .cardset-img { width: 100%; height: 100%; object-fit: cover; } 
+.cardset .cardset-img { width: 100%; height: 100%; object-fit: auto; } 
 .cardset .cardset-img2 { width:47%; height: 47%; object-fit: auto; } 
+.cardset .cardset-img3 { width:45%; height: 120%; object-fit: auto; }
+.cardset .cardset-img4 { width:107%; height: 115%; object-fit: auto; }
 .cardset .cardset-tit { font-size: var(--fs-h5); line-height: var(--lh-h5); font-weight: 600; } 
 .cardset .cardset-subtit { font-size: var(--fs-h5); line-height: var(--lh-h5); font-weight: 500; }
 .cardset .cardset-subtit + .cardset-desc { margin-top: 0.7rem; } 

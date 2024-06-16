@@ -13,12 +13,15 @@ urlpatterns = [
     path('timer/', views.timer_view, name='timer'),
     path('test1/', views.test1_view, name='test1'),
     path('test2/', views.test2_view, name='test2'),
+    path('test3/', views.test3_view, name='test3'),
     path('timer_test1/', views.timer_test1_view, name='timer_test1'),
     path('update-session/', views.update_session_view, name='update_session'),
     path('add_timer/', views.add_timer_view, name='add_timer'),
     path('lecture_sidebar/', views.lecture_sidebar_view, name='lecture_sidebar'),
     path('delete_account/', views.delete_account_view, name='delete_account'),
     path('lecture/<int:lecture_id>/delete_chapter/<int:chapter_id>/', views.delete_chapter, name='delete_chapter'),
+    path('send_friend_request/', views.send_friend_request, name='send_friend_request'),
+    path('accept_friend_request/<int:request_id>/', views.accept_friend_request, name='accept_friend_request'),
 
 
   

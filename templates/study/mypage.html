@@ -47,21 +47,27 @@
         <div class="contents-group contents-reservation">
           {% if request.user.is_authenticated %}  <!-- 로그인 되었을 때 보이는 화면 -->
           <h2 class="contents-tit"> 최근 공부기록 <a href="" class="contents-more">자세히 보기</a></h2>
-          <span style="color: rgb(130, 129, 129)">안내사항: 모든 공부기록 데이터는 자세히 보기를 눌러 확인하세요!</span><br><br>
+          <span style="color: rgb(130, 129, 129)">
+            안내사항:<br><br>
+              <b>날짜별 높은 기록</b>과 <b>최근 공부기록 데이터</b>는 내림차순(최근순)으로 각각 5개, 8개가 표시됩니다.<br>
+              모든 공부기록 데이터를 보시려면 자세히 보기를 눌러 확인하세요!
+          </span><br><br>
           
           <!-- 가장 높은 기록 항목 출력 -->
-          <h3>날짜별 높은 기록:</h3>
-          {% if highest_record %}
-              <p>날짜: {{ highest_record.date }} &nbsp;목표시간: {{ highest_record.goal_time }}, &nbsp;지난시간: {{ highest_record.elapsed_time }}, &nbsp;목표까지 남은시간: {{ highest_record.remaining_time }}, &nbsp;목표달성률: {{ highest_record.goalpercent }}, &nbsp;기록: {{ highest_record.records }}</p>
+          <h3>날짜별 높은 기록:</h3><br>
+          {% if highest_records %}
+              {% for highest_record in highest_records|slice:":5" %}
+                  <p>날짜: {{ highest_record.date }} &nbsp;목표시간: {{ highest_record.goal_time }}, &nbsp;지난시간: {{ highest_record.elapsed_time }}, &nbsp;목표까지 남은시간: {{ highest_record.remaining_time }}, &nbsp;목표달성률: {{ highest_record.goalpercent }}, &nbsp;기록: {{ highest_record.records }}</p>
+              {% endfor %}
           {% else %}
               <p>기록된 공부기록이 없습니다.</p>
           {% endif %}
           <!-- 가장 높은 기록 항목 출력 끝 부분 -->
           <br>
           <!-- 최근 공부기록 데이터 표시 -->
-          <h3>최근 공부기록 데이터:</h3>
+          <h3>최근 공부기록 데이터:</h3><br>
           <ul>
-          {% for session in sessions|slice:":3" %}
+          {% for session in sessions|slice:":8" %}
             <li>
               <div>
                 <!-- 삭제 폼 -->
