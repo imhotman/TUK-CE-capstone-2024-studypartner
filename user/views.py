@@ -516,7 +516,7 @@ def accept_friend_request(request, request_id):
     # 이미 친구인지 확인
     if Friendship.objects.filter(user=friend_request.to_user, friend=friend_request.from_user).exists():
         # 이미 친구인 경우에는 요청을 수락할 필요가 없으므로 리다이렉트
-        return redirect('user:friend')
+        return redirect('user:lecture')
     
     # 친구 관계 생성(친구 추가)
     Friendship.objects.create(user=friend_request.from_user, friend=friend_request.to_user)
@@ -525,7 +525,7 @@ def accept_friend_request(request, request_id):
     # 친구 요청 삭제
     friend_request.delete()
     
-    return redirect('user:friend')  # 친구 요청을 수락한 후에는 리다이렉트
+    return redirect('user:lecture')  # 친구 요청을 수락한 후에는 리다이렉트
 
 
 # 친구 삭제
@@ -539,11 +539,11 @@ def delete_friend(request, friend_id):
     friendship.delete()
     reverse_friendship.delete()
     
-    return redirect('user:friend')
+    return redirect('user:lecture')
 
 
 # 친구 요청 거절
 def reject_friend_request(request, request_id):
     friend_request = get_object_or_404(FriendRequest, id=request_id)
     friend_request.delete()
-    return redirect('user:friend')
+    return redirect('user:lecture')
