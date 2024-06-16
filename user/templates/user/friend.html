@@ -24,16 +24,14 @@
     
     <span class="contents-notice-link"></span>
     <br>
-        <form method="POST" action="{% url 'user:send_friend_request' %}">
+        <form id="add-friend-form" method="POST" action="{% url 'user:send_friend_request' %}">
             {% csrf_token %}
             <label for="friend_id"><b>친구 ID:</b></label>
             <input type="text" id="friend_id" name="friend_id" required>
             
-
-<button type="submit" 
- style="background-color: #4CAF50; border: none; color: white; padding: 6px 12px; text-align: center; text-decoration: none; 
-        display: inline-block; font-size: 13px; margin: 4px 2px; cursor: pointer;border-radius: 7px;">친구 추가</button> 
-                                                                
+            <button type="button" id="add-friend-btn"
+                style="background-color: #4CAF50; border: none; color: white; padding: 6px 12px; text-align: center; text-decoration: none; 
+                    display: inline-block; font-size: 13px; margin: 4px 2px; cursor: pointer;border-radius: 7px;">친구 추가</button>
         </form>
     
     <!-- 친구 요청 목록 템플릿 -->
@@ -52,9 +50,9 @@
                                 font-size: 13px; cursor: pointer; border-radius: 7px;">친구 요청 수락</button> 
             </form>
             
-            <form method="POST" action="{% url 'user:reject_friend_request' friend_request.id %}">
+            <form id="reject-form-{{ friend_request.id }}" method="POST" action="{% url 'user:reject_friend_request' friend_request.id %}">
                 {% csrf_token %}
-                <button type="submit" onclick="confirmReject('{{ friend_request.id }}')"
+                <button type="button" onclick="confirmReject('{{ friend_request.id }}')"
                         style="background-color: #fd7f1e; border: none; color: white; padding: 6px 12px; text-align: center; text-decoration: none; 
                                 font-size: 13px; cursor: pointer; border-radius: 7px;">친구 요청 거절</button> 
             </form>
@@ -78,7 +76,7 @@
                             {% csrf_token %}
                             <!-- 친구 삭제 -->
                             &nbsp;
-                            <button type="submit" onclick="confirmDelete('{{ friendship.friend.id }}')" 
+                            <button type="button" onclick="confirmDelete('{{ friendship.friend.id }}')" 
                                 style="background-color: #df048b; border: none; color: white; padding: 6px 12px; text-align: center; text-decoration: none; 
                                         display: inline-block; font-size: 13px; margin: 4px 2px; cursor: pointer;border-radius: 7px;">친구 삭제</button> 
                         
@@ -94,10 +92,18 @@
     </div>
 
     <script>
+        document.getElementById('add-friend-btn').addEventListener('click', function() {
+            if (confirm("정말로 이 친구를 추가하시겠습니까?")) {
+                document.getElementById('add-friend-form').submit();
+            } else {
+                alert("친구 추가를 취소하였습니다.");
+            }
+        });
+
         function confirmReject(requestId) {
             if (confirm("정말로 친구 요청을 거절하시겠습니까?")) {
-                // 거절 처리를 위한 AJAX 요청 등을 여기에 추가
-                alert("친구 요청이 거절되었습니다.");
+                // form submit
+                document.getElementById('reject-form-' + requestId).submit();
             } else {
                 // 취소 버튼 클릭 시 동작
                 alert("친구 요청 거절을 취소하였습니다.");
@@ -106,7 +112,8 @@
 
         function confirmDelete(requestId) {
             if (confirm("정말로 이 친구를 삭제하시겠습니까?")) {
-                // 삭제 처리를 위한 AJAX 요청 등을 여기에 추가
+                // form submit
+                document.getElementById('delete-form-' + requestId).submit();
                 alert("친구가 삭제되었습니다.");
             } else {
                 // 취소 버튼 클릭 시 동작

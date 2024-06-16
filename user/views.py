@@ -253,12 +253,22 @@ def lecture_detail_view(request, lecture_name):
 
         # 현재 챕터 추가
         lectures[-1]['chapters'].append({'chapter_name': chapter_name, 'chapter_url': chapter_url, 'lecture_url': lecture_url})
+    
+    # 현재 사용자의 친구 요청 가져오기
+    friend_requests = FriendRequest.objects.filter(to_user=request.user)
+
+    # 현재 사용자의 친구 목록 가져오기
+    user = request.user
+    friends = Friendship.objects.filter(user=user).select_related('friend')
 
     context = {
         'lecture_name': lecture_name,
         'lecture_chapters': lecture_chapters,
         'lectures': lectures,
-    }
+        'request_user': user,
+        'friend_requests': friend_requests,
+        'friends': friends,
+        }
 
     return render(request, "user/lecture_detail.html", context)
 
