@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, Http404, redirect
 from django.contrib.auth.models import User
-from user.models import Lecture, LectureChapter
+from user.models import Lecture, LectureChapter, Friendship, FriendRequest
 from .models import UploadFile_summary
 from .forms import UploadFile_summaryForm  # UploadFileForm을 가져옴
 from django.urls import reverse
@@ -69,6 +69,12 @@ def summary_detail_view(request, lecture_name, chapter_name):
     # 파일 업로드를 위한 폼 생성
     form = UploadFile_summaryForm(request.POST or None, request.FILES or None)    
 
+    # 현재 사용자의 친구 요청 가져오기
+    friend_requests = FriendRequest.objects.filter(to_user=request.user)
+
+    # 현재 사용자의 친구 목록 가져오기
+    user = request.user
+    friends = Friendship.objects.filter(user=user).select_related('friend')
 
     context = {
         'chapter': chapter,
@@ -76,7 +82,10 @@ def summary_detail_view(request, lecture_name, chapter_name):
         'chapter_name': chapter_name,
         'uploaded_files': uploaded_files,  # 업로드된 파일들을 context에 추가
         'form': form,  # 폼을 context에 추가
-    }
+        'request_user': user,
+        'friend_requests': friend_requests,
+        'friends': friends,
+        }
 
     return render(request, "summary/summary_detail.html", context)
 
