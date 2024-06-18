@@ -11,8 +11,8 @@
     position: fixed; /* position 값을 absolute에서 fixed로 변경 */
     top: 50%;
     left: 50%;
-    width: 500px;
-    padding: 35px;
+    width: 510px;
+    padding: 30px;
     transform: translate(-50%, -50%);
     background: darkslategray;
     box-sizing: border-box;
