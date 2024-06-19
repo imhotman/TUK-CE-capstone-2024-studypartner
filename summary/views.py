@@ -179,26 +179,17 @@ def stt_view(request, file_id):
 
 os.environ['HF_TOKEN'] = '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'
 
+# 모델과 토크나이저 설정
 model_id = "meta-llama/Meta-Llama-3-8B-Instruct"
-
-# 파인 튜닝
-#pipeline = transformers.pipeline(
-#    "text-generation",
-#    model=model_id,
-#    model_kwargs={"torch_dtype": torch.bfloat16},
-#    device_map="auto",
-#)
-
 tokenizer = AutoTokenizer.from_pretrained(model_id)
 model = AutoModelForCausalLM.from_pretrained(
     model_id,
-    torch_dtype = torch.bfloat16,
-    device_map = "auto",
+    torch_dtype=torch.float32,  # torch_dtype을 torch.float32로 변경
+    device="cpu"  # CPU 사용 설정 (필요에 따라 변경 가능)
 )
 
 
 
-# 텍스트 요약 생성 함수
 def generate_response(sys_message, user_message):
     # 메시지 포맷 설정
     messages = [
@@ -246,9 +237,10 @@ def show_summary_view(request, file_id):
         if not text:
             raise ValueError("STT 함수에서 텍스트를 반환하지 못했습니다.")
 
-        sys_message = "너는 요약을 수행하는 챗봇이야. 핵심 내용만 256토큰 이내로 한국어로 요약해줘"
-
-        summary = generate_response(sys_message, text)
+        summary = generate_response(
+            sys_message = "너는 요약을 수행하는 챗봇이야. 핵심 내용만 256토큰 이내로 한국어로 요약해줘", 
+            user_message = text
+            )
         print("summary 출력:", summary)
 
         context = {
@@ -265,13 +257,6 @@ def show_summary_view(request, file_id):
     except Exception as e:
         print(f"Error in show_summary_view: {e}")
         return render(request, 'summary/show_summary.html', {'summary': "요약 생성 중 오류가 발생했습니다.", 'audio_file': None})
-
-# 테스트 목적 함수
-def test_generate_summary(text):
-    sys_message = "너는 요약을 수행하는 챗봇이야. 핵심 내용만 256토큰 이내로 한국어로 요약해줘"
-    summary_text = generate_response(sys_message, text)
-    print(summary_text)
-    return summary_text
 
 
 
