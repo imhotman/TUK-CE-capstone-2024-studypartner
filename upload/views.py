@@ -1,9 +1,11 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, Http404, redirect
 from django.contrib.auth.models import User
-from user.models import Lecture, LectureChapter, FriendRequest, Friendship
+from user.models import Lecture, LectureChapter, FriendRequest, Friendship, Study_TimerSession
 from django.urls import reverse
 from django.http import HttpResponse
+from datetime import date
+
 
 
 
@@ -40,6 +42,14 @@ def chapter_detail_view(request, lecture_name, chapter_name):
     user = request.user
     friends = Friendship.objects.filter(user=user).select_related('friend')
 
+    # 오늘의 가장 높은 기록 가져오기
+    today = date.today()
+    today_sessions = Study_TimerSession.objects.filter(user=user, date__date=today)
+    if today_sessions:
+        today_record = max(today_sessions, key=lambda session: session.records)
+    else:
+        today_record = None
+
     context = {
         'chapter': chapter,
         'lectures': lectures,
@@ -47,6 +57,7 @@ def chapter_detail_view(request, lecture_name, chapter_name):
         'request_user': user,
         'friend_requests': friend_requests,
         'friends': friends,
+        'today_record': today_record
         }
 
     return render(request, "upload/chapter_detail.html", context)
