@@ -1,0 +1,105 @@
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>손글씨 테스트 페이지</title>
+
+    <!-- CSS -->
+    <!-- <link rel="stylesheet" href="{% static 'css/lecture.css' %}">
+    <link rel="stylesheet" href="{% static 'css/lecture_form.css' %}">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}"> -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+
+
+    <title>{{ chapter.lecture.title }} 챕터 상세 정보</title>
+</head>
+<body id="body-pd">
+    
+    <!-- 강의실 사이드 네비게이터 & 타이머 포함할 부분 -->
+    {% include "user/lecture_sidebar.html" %}
+
+    <!-- 사용자의 챕터 상세정보 -->
+    <div class="custom-body">
+        <div class="lecture-box">
+            <h2>        
+                <span>Study Partner</span>
+                <a href="{% url 'upload:chapter_detail' lecture_name=chapter.lecture.title chapter_name=chapter.chapter_name %}">
+                    <ion-icon name="arrow-back-outline" class="lecture_urllink2 nav__toggle2 study-partner-backion" id="back-toggle"></ion-icon>
+                </a>
+            </h2>
+
+            <div class="user-box">
+                <p style="color:white">사용자: {{ user.username }} </p>
+            </div>
+            <div class="user-box">
+                <p style="color:white">강의명: {{ chapter.lecture.title }} </p>
+            </div>
+            <div class="user-box">
+                <p style="color:white">챕터명: {{ chapter.chapter_name }} </p>
+            </div><br>
+            
+            <div class="user-box">
+                <p style="color:white">업로드된 파일 목록: </p>
+                <ul>
+                    {% for file in uploaded_files %}
+                        <li>
+                            <a href="{{ file.file_name.url }}" class="lecture_urllink" style="color: rgb(190, 119, 220)">{{ file.file_title }}</a> 
+                            <!-- 파일 다운로드 링크 추가 -->
+                            <a href="{{ file.file_name.url }}" class="lecture_urllink" style="margin-left: 30px; color: rgb(250, 173, 30);" download="{{ file.file_name.name }}">
+                                다운로드
+                            </a> 
+                            <a style="margin-left: 10px; color: rgb(92, 194, 107);" class="lecture_urllink" href="#">
+                                AI 요약하기
+                            </a>
+                            <!-- 파일 삭제 버튼 추가 -->
+                            <form id="delete-form-{{ file.id }}" method="post" action="{% url 'user:delete_file_handwriting' file.id %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="button" onclick="confirmDelete('{{ file.id }}')" style="margin-left: 10px; color: rgb(230, 71, 137);">삭제</button>
+                            </form>
+                        </li>
+                    {% endfor %} 
+                </ul>
+            </div><br>
+            <div>
+                <p style="color:white">파일 업로드: </p><br>
+                <form id="upload-form" method="post" action="{% url 'user:upload_file_handwriting' lecture_name=chapter.lecture.title chapter_name=chapter.chapter_name %}" enctype="multipart/form-data" style="color: darkgray">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <br>
+                    <div class="index_studypartner_buttonlist" style="text-align: center; display: ruby-text;">     
+                        <button type="submit" style="margin-left: 0px;">파일 업로드</button>&nbsp;&nbsp;
+                        <button type="button" onclick="resetUploadForm()" class="reverse dark" style="background-color: darkcyan;">모두 삭제</button>&nbsp;&nbsp;
+                    </div>
+                </form>
+                
+            </div>
+        </div>
+    </div>
+    <!-- 사용자의 챕터 상세정보 끝부분-->
+
+    <!-- 친구 시스템 포함할 부분 -->
+    <div class="lecture-box2">
+        {% include "user/friend.html" %}
+    </div>
+    <!-- 친구 시스템 포함할 끝 부분-->
+
+    <script>
+        function confirmDelete(fileId) {
+            if (confirm("정말로 이 파일을 삭제하시겠습니까?")) {
+                document.getElementById('delete-form-' + fileId).submit();
+            } else {
+                alert("파일 삭제를 취소하였습니다.");
+            }
+        }
+
+        function resetUploadForm() {
+            document.getElementById('upload-form').reset();
+        }
+    </script>
+
+</body>
+</html>
+{% endblock %}

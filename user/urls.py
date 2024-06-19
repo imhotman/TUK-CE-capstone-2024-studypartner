@@ -13,6 +13,12 @@ urlpatterns = [
     path('timer/', views.timer_view, name='timer'),
     path('test1/', views.test1_view, name='test1'),
     path('test2/', views.test2_view, name='test2'),
+    
+    path('handwriting/<str:lecture_name>/<str:chapter_name>/', views.handwriting_view, name='handwriting'),
+
+    path('upload_file_handwriting/<str:lecture_name>/<str:chapter_name>/', views.delete_file_handwriting, name='upload_file_handwriting'),
+    path('delete_file_handwriting/<int:file_id>/', views.delete_file_handwriting, name='delete_file_handwriting'),
+    
     path('timer_test1/', views.timer_test1_view, name='timer_test1'),
     path('update-session/', views.update_session_view, name='update_session'),
     path('add_timer/', views.add_timer_view, name='add_timer'),
