@@ -174,189 +174,27 @@ def stt_view(request, file_id):
     return render(request, 'summary/show_stt.html', context)
 
 
-# # 환경 변수 설정
-# os.environ["TOKENIZERS_PARALLELISM"] = "false"
-
-# # generate_response 함수 정의
-# def generate_response(sys_message, user_message):
-#     # CUDA 사용 가능 여부 확인
-#     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-#     print(device)
-#     print(sys_message)
-#     print(user_message)
-
-#     # 모델 초기화
-#     model_id = "meta-llama/Meta-Llama-3-8B-Instruct"
-#     tokenizer = AutoTokenizer.from_pretrained(model_id)
-    
-#     # CUDA 사용 가능 여부에 따라 모델 설정
-#     if device.type == "cuda":
-#         model = AutoModelForCausalLM.from_pretrained(model_id).to(device)
-#     else:
-#         model = AutoModelForCausalLM.from_pretrained(model_id).to("cpu")
-
-#     messages = [
-#         {"role": "system", "content": f"{sys_message}"},
-#         {"role": "user", "content": f"{user_message}"},
-#     ]
-
-#     input_ids = tokenizer.apply_chat_template(
-#         messages,
-#         add_generation_prompt=True,
-#         return_tensors="pt"
-#     ).to(device)
-
-#     terminators = [
-#         tokenizer.eos_token_id,
-#         tokenizer.convert_tokens_to_ids("")
-#     ]
-
-#     outputs = model.generate(
-#         input_ids,
-#         max_new_tokens=256,
-#         eos_token_id=terminators,
-#         do_sample=True,
-#         temperature=0.6,
-#         top_p=0.9,
-#     )
-#     response = outputs[0][input_ids.shape[-1]:]
-
-#     return tokenizer.decode(response, skip_special_tokens=True)
-
-# # AI 진짜요약 뷰
-# def show_summary_view(request, file_id):
-#     try:
-#         audio_file = get_object_or_404(UploadFile_summary, pk=file_id)
-#         text = stt(audio_file.file_name.path)  # stt 함수는 정의된 곳에서 가져오기
-
-#         print(audio_file)
-#         print(text)
-
-#         if text is None:
-#             raise ValueError("STT 함수에서 텍스트를 반환하지 못했습니다.")
-
-#         sys_message = "You are a summarization assistant."
-#         summary = generate_response(sys_message, text)
-
-#         context = {
-#             'summary': summary,
-#             'audio_file': audio_file
-#         }
-
-#         return render(request, 'summary/show_summary.html', context)
-    
-#     except ValueError as ve:
-#         print(f"ValueError in show_summary_view: {ve}")
-#         return render(request, 'summary/show_summary.html', {'summary': "요약 생성 중 오류가 발생했습니다.", 'audio_file': None})
-    
-#     except Exception as e:
-#         print(f"Error in show_summary_view: {e}")
-#         return render(request, 'summary/show_summary.html', {'summary': "요약 생성 중 오류가 발생했습니다.", 'audio_file': None})
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-# sys_message = '너는 요약을 수행하는 챗봇이야. 핵심 내용만 256토큰 이내로 한국어로 요약해줘'
-# ori_txt = """'다음과 같다. 하의도에 상륙한 신한공사 사원과 경관 등은 소작료를 강제 징수하기 위해 2개조로 나뉘어, 제1대는 오림리, 제2대는 대리로 향했다.
-#             오림리에 도착한 제1대는 곧바로 가택 수색을 하고, 노인과 부녀자들에게까지 ‘소작료를 내지 않으면 총살시키겠다’고 위협하면서 농민들을 폭행했다.
-#             농민 200여명이 경관의 행위에 항의하자, 경관대는 실탄을 장전해 농민에게 무차별 사격을 가했는데 그 과정에서 朴鍾彩가 중상을 입었다.'"""
-
-# if __name__ == "__main__":
-#     summary_text = generate_response(sys_message, ori_txt)
-#     print(summary_text)
-
-
-
-
-
-
-import os
-import torch
-from django.shortcuts import render, get_object_or_404
-from transformers import AutoTokenizer, AutoModelForCausalLM
-from .models import UploadFile_summary
-from .forms import UploadFile_summaryForm
-
-# 환경 변수 설정
-os.environ["TOKENIZERS_PARALLELISM"] = "false"
-
-# generate_response 함수 정의
-def generate_response(sys_message, user_message):
-    try:
-        # CUDA 사용 가능 여부 확인
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        print(device)
-        print(sys_message)
-        print(user_message)
-
-        # 모델 초기화
-        model_id = "meta-llama/Meta-Llama-3-8B-Instruct"
-        tokenizer = AutoTokenizer.from_pretrained(model_id)
-        
-        # CUDA 사용 가능 여부에 따라 모델 설정
-        if device.type == "cuda":
-            model = AutoModelForCausalLM.from_pretrained(model_id).to(device)
-        else:
-            model = AutoModelForCausalLM.from_pretrained(model_id).to("cpu")
-
-        messages = [
-            {"role": "system", "content": f"{sys_message}"},
-            {"role": "user", "content": f"{user_message}"},
-        ]
-
-        input_ids = tokenizer.apply_chat_template(
-            messages,
-            add_generation_prompt=True,
-            return_tensors="pt"
-        ).to(device)
-
-        terminators = [
-            tokenizer.eos_token_id,
-            tokenizer.convert_tokens_to_ids("")
-        ]
-
-        outputs = model.generate(
-            input_ids,
-            max_new_tokens=256,
-            eos_token_id=terminators,
-            do_sample=True,
-            temperature=0.6,
-            top_p=0.9,
-        )
-        response = outputs[0][input_ids.shape[-1]:]
-
-        return tokenizer.decode(response, skip_special_tokens=True)
-
-    except Exception as e:
-        print(f"Error in generate_response: {e}")
-        raise  # 예외를 호출자에게 다시 전파
 
 
 # AI 진짜요약 뷰
 def show_summary_view(request, file_id):
     try:
         audio_file = get_object_or_404(UploadFile_summary, pk=file_id)
-        text = stt(audio_file.file_name.path)  # STT 함수는 정의된 곳에서 가져오기
+        text = stt(audio_file.file_name.path)  # stt 함수는 정의된 곳에서 가져오기
 
-        print(audio_file)
-        print(text)  # 터미널에 텍스트가 출력되는지 확인
+        print("텍스트 출력:", text)
 
-        # 텍스트가 None이거나 빈 문자열일 때 ValueError 발생
-        if text is None or text.strip() == "":
-            raise ValueError("음성을 텍스트로 변환할 수 없습니다.")
+        if text is None:
+            raise ValueError("STT 함수에서 텍스트를 반환하지 못했습니다.")
 
         sys_message = "You are a summarization assistant."
+
         summary = generate_response(sys_message, text)
+        print("summary 출력:", summary)
 
         context = {
             'summary': summary,
@@ -367,8 +205,85 @@ def show_summary_view(request, file_id):
     
     except ValueError as ve:
         print(f"ValueError in show_summary_view: {ve}")
-        return render(request, 'summary/show_summary.html', {'summary': "음성 인식에 실패했습니다.", 'audio_file': audio_file})
+        return render(request, 'summary/show_summary.html', {'summary': "요약 생성 중 오류가 발생했습니다.", 'audio_file': None})
     
     except Exception as e:
         print(f"Error in show_summary_view: {e}")
-        return render(request, 'summary/show_summary.html', {'summary': "요약 생성 중 오류가 발생했습니다.", 'audio_file': audio_file})
+        return render(request, 'summary/show_summary.html', {'summary': "요약 생성 중 오류가 발생했습니다.", 'audio_file': None})
+
+
+
+
+
+
+
+
+
+
+os.environ['HF_TOKEN'] = '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'
+
+model_id = "meta-llama/Meta-Llama-3-8B-Instruct"
+
+# 파인 튜닝
+#pipeline = transformers.pipeline(
+#    "text-generation",
+#    model=model_id,
+#    model_kwargs={"torch_dtype": torch.bfloat16},
+#    device_map="auto",
+#)
+
+tokenizer = AutoTokenizer.from_pretrained(model_id)
+model = AutoModelForCausalLM.from_pretrained(
+    model_id,
+    torch_dtype = torch.bfloat16,
+    device_map = "auto",
+)
+
+
+
+def generate_response(sys_message, user_message):
+    messages = [
+        {"role": "system", "content": f"{sys_message}"},
+        {"role": "user", "content": f"{user_message}"},
+   ]
+
+    input_ids = tokenizer.apply_chat_template(
+        messages,
+        add_generation_prompt=True,
+        return_tensors="pt"
+    ).to(model.device)
+
+    terminators = [
+        tokenizer.eos_token_id,
+        tokenizer.convert_tokens_to_ids("<|eot_id|>")
+   ]
+
+    outputs = model.generate(
+        input_ids,
+        max_new_tokens=256,
+        eos_token_id=terminators,
+        do_sample=True,
+        temperature=0.6,
+        top_p=0.9,
+    )
+    response = outputs[0][input_ids.shape[-1]:]
+
+    
+
+    sys_message = '너는 요약을 수행하는 챗봇이야. 핵심 내용만 256토큰 이내로 한국어로 요약해줘'
+    ori_txt = user_message
+    print("user_message", user_message)
+
+
+    if __name__ == "__main__":
+        summary_text = generate_response(sys_message, ori_txt)
+        print(summary_text)
+
+    return tokenizer.decode(response, skip_special_tokens = True)
+
+
+
+
+
+
+
