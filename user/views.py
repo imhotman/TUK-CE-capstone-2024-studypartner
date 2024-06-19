@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, Http404, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from .models import User, Lecture, LectureChapter, Study_TimerSession
+from .models import User, Lecture, LectureChapter, Study_TimerSession, UploadFile_handwriting
 from django.contrib.auth.decorators import login_required
 from .forms import LectureChapterForm
 from django.urls import reverse
@@ -557,3 +557,90 @@ def reject_friend_request(request, request_id):
     friend_request = get_object_or_404(FriendRequest, id=request_id)
     friend_request.delete()
     return redirect('user:lecture')
+
+
+
+# 손글씨 제작 테스트 페이지
+def handwriting_view(request, lecture_name, chapter_name):
+    # 강의명과 챕터명이 일치하는 LectureChapter 객체를 가져옴
+    chapter = LectureChapter.objects.filter(lecture__title=lecture_name, chapter_name=chapter_name).first()
+
+    # 현재 로그인한 사용자 정보를 가져옴
+    current_user = request.user
+    lecture_chapters = LectureChapter.objects.filter(user=current_user).select_related('lecture').order_by('lecture__title')
+
+    # LectureChapter가 없는 경우 404 에러 반환
+    if not chapter:
+        raise Http404("챕터를 찾을 수 없습니다.")
+
+    lectures = []
+    for chapter_obj in lecture_chapters:
+        lecture_title = chapter_obj.lecture.title
+        chapter_name = chapter_obj.chapter_name
+        lecture_url = reverse('user:lecture_detail', kwargs={'lecture_name': lecture_title})
+        chapter_url = reverse('upload:chapter_detail', kwargs={'lecture_name': lecture_title, 'chapter_name': chapter_name})
+
+        # 현재 강의가 lectures 리스트에 없으면 추가
+        if not any(lecture['lecture'] == lecture_title for lecture in lectures):
+            lectures.append({'lecture': lecture_title, 'chapters': []})
+
+        # 현재 챕터 추가
+        lectures[-1]['chapters'].append({'chapter_name': chapter_name, 'chapter_url': chapter_url, 'lecture_url': lecture_url})
+
+    # 해당 챕터에 업로드된 파일들 가져오기
+    uploaded_files = UploadFile_handwriting.objects.filter(chapter=chapter)
+
+    # 파일 업로드를 위한 폼 생성
+    form = UploadFile_handwriting(request.POST or None, request.FILES or None)    
+
+    # 현재 사용자의 친구 요청 가져오기
+    friend_requests = FriendRequest.objects.filter(to_user=request.user)
+
+    # 현재 사용자의 친구 목록 가져오기
+    user = request.user
+    friends = Friendship.objects.filter(user=user).select_related('friend')
+
+    context = {
+        'chapter': chapter,
+        'lectures': lectures,
+        'chapter_name': chapter_name,
+        'uploaded_files': uploaded_files,  # 업로드된 파일들을 context에 추가
+        'form': form,  # 폼을 context에 추가
+        'request_user': user,
+        'friend_requests': friend_requests,
+        'friends': friends,
+        }
+
+    return render(request, "user/handwriting.html", context)
+
+
+def upload_file_handwriting(request, lecture_name, chapter_name):
+    try:
+        chapter = LectureChapter.objects.get(lecture__title=lecture_name, chapter_name=chapter_name)
+    except LectureChapter.DoesNotExist:
+        raise Http404("챕터를 찾을 수 없습니다.")
+    
+    if request.method == 'POST':
+        form = UploadFile_handwriting(request.POST, request.FILES)
+        if form.is_valid():
+            upload_file = form.save(commit=False)
+            upload_file.chapter = chapter
+            upload_file.user = request.user
+            upload_file.save()
+            return redirect('upload:chapter_detail', lecture_name=lecture_name, chapter_name=chapter_name)
+    else:
+        form = UploadFile_handwriting()
+    
+    context = {
+        'chapter': chapter,
+        'form': form
+    }
+    return render(request, "upload/chapter_detail.html", context)
+
+
+def delete_file_handwriting(request, file_id):
+    file_to_delete = get_object_or_404(UploadFile_handwriting, id=file_id)
+    lecture_name = file_to_delete.chapter.lecture.title
+    chapter_name = file_to_delete.chapter.chapter_name
+    file_to_delete.delete()
+    return redirect('upload:chapter_detail', lecture_name=lecture_name, chapter_name=chapter_name)

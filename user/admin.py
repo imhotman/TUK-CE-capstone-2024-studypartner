@@ -1,9 +1,10 @@
 from django.contrib import admin
-from .models import Lecture, LectureChapter, Study_TimerSession, FriendRequest, Friendship
+from .models import Lecture, LectureChapter, Study_TimerSession, FriendRequest, Friendship, UploadFile_handwriting
 
 admin.site.register(Lecture)
 admin.site.register(LectureChapter)
 admin.site.register(Study_TimerSession)
+admin.site.register(UploadFile_handwriting)
 # FriendRequest 모델 등록
 @admin.register(FriendRequest)
 class FriendRequestAdmin(admin.ModelAdmin):
@@ -13,3 +14,5 @@ class FriendRequestAdmin(admin.ModelAdmin):
 @admin.register(Friendship)
 class FriendshipAdmin(admin.ModelAdmin):
     list_display = ['user', 'friend', 'created_at']
+
+
