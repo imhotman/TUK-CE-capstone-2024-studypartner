@@ -140,12 +140,6 @@ def delete_file_summary(request, file_id):
     return redirect('summary:summary_detail', lecture_name=lecture_name, chapter_name=chapter_name)
 
 
-
-
-
-
-
-
 # STT 함수
 def stt(file_path):
     r = sr.Recognizer()
@@ -180,41 +174,7 @@ def stt_view(request, file_id):
 
 
 
-# AI 진짜요약 뷰
-def show_summary_view(request, file_id):
-    try:
-        audio_file = get_object_or_404(UploadFile_summary, pk=file_id)
-        text = stt(audio_file.file_name.path)  # stt 함수는 정의된 곳에서 가져오기
-
-        request.session['text'] = text  # 세션에 저장
-
-        print("텍스트 출력:", text)
-
-        if text is None:
-            raise ValueError("STT 함수에서 텍스트를 반환하지 못했습니다.")
-
-        sys_message = "You are a summarization assistant."
-
-        summary = generate_response(sys_message, text)
-        print("summary 출력:", summary)
-
-        context = {
-            'summary': summary,
-            'audio_file': audio_file
-        }
-
-        return render(request, 'summary/show_summary.html', context)
-    
-    except ValueError as ve:
-        print(f"ValueError in show_summary_view: {ve}")
-        return render(request, 'summary/show_summary.html', {'summary': "요약 생성 중 오류가 발생했습니다.", 'audio_file': None})
-    
-    except Exception as e:
-        print(f"Error in show_summary_view: {e}")
-        return render(request, 'summary/show_summary.html', {'summary': "요약 생성 중 오류가 발생했습니다.", 'audio_file': None})
-
-
-
+######################## 에러 나는 구간 ##########################
 
 
 os.environ['HF_TOKEN'] = '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'
@@ -238,42 +198,80 @@ model = AutoModelForCausalLM.from_pretrained(
 
 
 
+# 텍스트 요약 생성 함수
 def generate_response(sys_message, user_message):
+    # 메시지 포맷 설정
     messages = [
         {"role": "system", "content": f"{sys_message}"},
         {"role": "user", "content": f"{user_message}"},
-   ]
+    ]
 
+    # 입력 토큰 생성
     input_ids = tokenizer.apply_chat_template(
         messages,
         add_generation_prompt=True,
         return_tensors="pt"
     ).to(model.device)
 
+    # 종료 토큰 설정
     terminators = [
         tokenizer.eos_token_id,
         tokenizer.convert_tokens_to_ids("<|eot_id|>")
-   ]
+    ]
 
+    # 모델을 사용해 텍스트 생성
     outputs = model.generate(
         input_ids,
         max_new_tokens=256,
         eos_token_id=terminators,
         do_sample=True,
         temperature=0.6,
-        
         top_p=0.9,
     )
+    
+    # 응답 텍스트 디코딩
     response = outputs[0][input_ids.shape[-1]:]
-    return tokenizer.decode(response, skip_special_tokens = True)
+    summary_text = tokenizer.decode(response, skip_special_tokens=True)
     
+    return summary_text
 
+# Django 뷰 함수
+def show_summary_view(request, file_id):
+    try:
+        audio_file = get_object_or_404(UploadFile_summary, pk=file_id)
+        text = stt(audio_file.file_name.path)  # stt 함수는 정의된 곳에서 가져오기
 
+        print("텍스트 출력:", text)
 
+        if not text:
+            raise ValueError("STT 함수에서 텍스트를 반환하지 못했습니다.")
 
+        sys_message = "너는 요약을 수행하는 챗봇이야. 핵심 내용만 256토큰 이내로 한국어로 요약해줘"
+
+        summary = generate_response(sys_message, text)
+        print("summary 출력:", summary)
+
+        context = {
+            'summary': summary,
+            'audio_file': audio_file
+        }
+
+        return render(request, 'summary/show_summary.html', context)
     
+    except ValueError as ve:
+        print(f"ValueError in show_summary_view: {ve}")
+        return render(request, 'summary/show_summary.html', {'summary': "요약 생성 중 오류가 발생했습니다.", 'audio_file': None})
+    
+    except Exception as e:
+        print(f"Error in show_summary_view: {e}")
+        return render(request, 'summary/show_summary.html', {'summary': "요약 생성 중 오류가 발생했습니다.", 'audio_file': None})
 
-
+# 테스트 목적 함수
+def test_generate_summary(text):
+    sys_message = "너는 요약을 수행하는 챗봇이야. 핵심 내용만 256토큰 이내로 한국어로 요약해줘"
+    summary_text = generate_response(sys_message, text)
+    print(summary_text)
+    return summary_text
 
 
 
