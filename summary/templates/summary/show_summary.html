@@ -1,14 +1,31 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>show Summary</title>
+    <title>Show Summary</title>
 </head>
 <body>
-    <h1>Summary result : {{ audio_file.title }}</h1>
-    <p>{{ text }}</p>
-    <a href="{% url 'generate_response' %}">요약문</a>
+    <h1>Summary result: {{ audio_file.title }}</h1>
+    {% if summary %}
+        <p>{{ summary }}</p>
+    {% else %}
+        <p>요약을 생성할 수 없습니다. 오류가 발생하였거나 인식된 텍스트가 없습니다.</p>
+    {% endif %}
 </body>
 </html>
+
+<!-- {% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Show Summary</title>
+</head>
+<body>
+    <h1>Summary result: {{ audio_file.title }}</h1>
+    <p>{{ summary }}</p>
+</body>
+</html> -->
