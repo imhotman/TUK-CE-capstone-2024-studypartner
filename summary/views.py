@@ -184,8 +184,7 @@ model_id = "meta-llama/Meta-Llama-3-8B-Instruct"
 tokenizer = AutoTokenizer.from_pretrained(model_id)
 model = AutoModelForCausalLM.from_pretrained(
     model_id,
-    torch_dtype=torch.float32,  # torch_dtype을 torch.float32로 변경
-    device="cpu"  # CPU 사용 설정 (필요에 따라 변경 가능)
+    torch_dtype=torch.float16,
 )
 
 
