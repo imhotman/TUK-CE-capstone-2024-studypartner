@@ -206,7 +206,7 @@ def show_summary_view(request, file_id):
 ######################## 에러 나는 구간 ##########################
 
 
-os.environ['HF_TOKEN'] = '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'
+os.environ['HF_TOKEN'] = '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'
 
 model_id = "meta-llama/Meta-Llama-3-8B-Instruct"
 
@@ -265,6 +265,8 @@ ori_txt = """'다음과 같다. 여야는 16일 의대 증원 배분을 멈춰�
 if __name__ == "__main__":
     summary_text = generate_response(sys_message, ori_txt)
     print(summary_text)
+
+
 
 
 
