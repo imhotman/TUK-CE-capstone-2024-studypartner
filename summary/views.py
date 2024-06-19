@@ -2,11 +2,12 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
-from user.models import Lecture, LectureChapter, Friendship, FriendRequest
+from user.models import Lecture, LectureChapter, Friendship, FriendRequest, Study_TimerSession
 from .models import UploadFile_summary
 from .forms import UploadFile_summaryForm  # UploadFileForm을 가져옴
 from django.urls import reverse
 from django.http import Http404
+from datetime import date
 import speech_recognition as sr
 import wave
 from transformers import AutoTokenizer, AutoModelForCausalLM
@@ -84,6 +85,14 @@ def summary_detail_view(request, lecture_name, chapter_name):
     user = request.user
     friends = Friendship.objects.filter(user=user).select_related('friend')
 
+    # 오늘의 가장 높은 기록 가져오기
+    today = date.today()
+    today_sessions = Study_TimerSession.objects.filter(user=user, date__date=today)
+    if today_sessions:
+        today_record = max(today_sessions, key=lambda session: session.records)
+    else:
+        today_record = None
+
     context = {
         'chapter': chapter,
         'lectures': lectures,
@@ -93,6 +102,7 @@ def summary_detail_view(request, lecture_name, chapter_name):
         'request_user': user,
         'friend_requests': friend_requests,
         'friends': friends,
+        'today_record': today_record
         }
 
     return render(request, "summary/summary_detail.html", context)

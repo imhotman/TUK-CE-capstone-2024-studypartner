@@ -9,6 +9,9 @@ from django.http import JsonResponse
 from .models import Study_TimerSession, FriendRequest, Friendship
 from datetime import datetime, timedelta, timezone
 import json
+from datetime import date
+import pytz
+
 
 
 # 로그인
@@ -144,11 +147,20 @@ def lecture_view(request):
     user = request.user
     friends = Friendship.objects.filter(user=user).select_related('friend')
 
+    # 오늘의 가장 높은 기록 가져오기
+    today = date.today()
+    today_sessions = Study_TimerSession.objects.filter(user=user, date__date=today)
+    if today_sessions:
+        today_record = max(today_sessions, key=lambda session: session.records)
+    else:
+        today_record = None
+
     context = {
         'request_user': user,
         'friend_requests': friend_requests,
         'friends': friends,
         'lectures': lectures,
+        'today_record': today_record
         }
     
     return render(request, "user/lecture.html", context)
@@ -261,6 +273,14 @@ def lecture_detail_view(request, lecture_name):
     user = request.user
     friends = Friendship.objects.filter(user=user).select_related('friend')
 
+    # 오늘의 가장 높은 기록 가져오기
+    today = date.today()
+    today_sessions = Study_TimerSession.objects.filter(user=user, date__date=today)
+    if today_sessions:
+        today_record = max(today_sessions, key=lambda session: session.records)
+    else:
+        today_record = None
+
     context = {
         'lecture_name': lecture_name,
         'lecture_chapters': lecture_chapters,
@@ -268,6 +288,7 @@ def lecture_detail_view(request, lecture_name):
         'request_user': user,
         'friend_requests': friend_requests,
         'friends': friends,
+        'today_record': today_record
         }
 
     return render(request, "user/lecture_detail.html", context)
@@ -324,42 +345,93 @@ def convert_to_day(record):
 
 # 뷰 함수
 def test1_view(request):
-    # 사용자가 세션에 로그인되어 있는지 확인
     if request.user.is_authenticated:
-        # 세션에 로그인되어 있는 경우 사용자 이름을 세션에 저장
-        request.session['session_username'] = request.user.username
+        # 현재 사용자의 모든 공부 세션 가져오기 (날짜 역순 정렬)
+        sessions = Study_TimerSession.objects.filter(user=request.user).order_by('-date')
 
-        # Study_TimerSession 모델에서 모든 객체 가져오기
-        sessions = Study_TimerSession.objects.all()
-        
         # 기록을 timedelta 형식으로 변환
         for session in sessions:
             session.records = convert_to_timedelta(session.records)
 
-        # 가장 높은 기록을 가진 객체 찾기
-        highest_record = max(sessions, key=lambda session: convert_to_day(session.records))
-        
+        # 한국 시간대로 변환
+        korea_tz = pytz.timezone('Asia/Seoul')
+        for session in sessions:
+            session.date = session.date.astimezone(korea_tz)
+
+        # 오늘의 기록 가져오기 (가장 높은 기록)
+        today = date.today()
+        today_sessions = sessions.filter(date__date=today)
+        if today_sessions:
+            today_record = max(today_sessions, key=lambda session: session.records)
+        else:
+            today_record = None
+
+        # 각 날짜별로 가장 높은 기록을 가진 세션 찾기
+        highest_records = []
+        if sessions:
+            previous_date = sessions[0].date.date()
+            highest_record = sessions[0]
+            for session in sessions[1:]:
+                current_date = session.date.date()
+                if current_date != previous_date:
+                    highest_records.append(highest_record)
+                    highest_record = session
+                    previous_date = current_date
+                else:
+                    if convert_to_day(session.records) > convert_to_day(highest_record.records):
+                        highest_record = session
+            highest_records.append(highest_record)
+
+        else:
+            highest_records = None
+
         context = {
-            'username': request.user.username,
             'sessions': sessions,
-            'highest_record': highest_record
+            'highest_record': highest_records,
+            'today_record': today_record,
         }
+
     else:
-        # 세션에 로그인되어 있지 않은 경우
         context = {'message': '로그인 되지 않았습니다.'}
-    
+
     return render(request, 'user/test1.html', context)
 
-# 테스트2 페이지 - 삭제예정
-def test2_view(request):
+
+
+# 오늘의 공부기록 페이지
+def today_records_view(request):
     # 세션 데이터를 함께 전달
-    context = {
-        'timer_running': request.session.get('timer_running', False),
-        'elapsed_time': request.session.get('elapsed_time', 0),
-        'records': request.session.get('records', []),
-        'goal_time': request.session.get('goal_time', 0)
-    }
-    return render(request, "user/test2.html", context)
+    if request.user.is_authenticated:
+        # 현재 사용자의 모든 공부 세션 가져오기 (날짜 역순 정렬)
+        sessions = Study_TimerSession.objects.filter(user=request.user).order_by('-date')
+
+        # 기록을 timedelta 형식으로 변환
+        for session in sessions:
+            session.records = convert_to_timedelta(session.records)
+
+        # 한국 시간대로 변환
+        korea_tz = pytz.timezone('Asia/Seoul')
+        for session in sessions:
+            session.date = session.date.astimezone(korea_tz)
+
+        # 오늘의 기록 가져오기 (가장 높은 기록)
+        today = date.today()
+        today_sessions = sessions.filter(date__date=today)
+        if today_sessions:
+            today_record = max(today_sessions, key=lambda session: session.records)
+        else:
+            today_record = None
+
+        context = {
+            'sessions': sessions,
+            'today_record': today_record,
+        }
+
+    else:
+        context = {'message': '로그인 되지 않았습니다.'}
+    
+    return render(request, 'user/today_records.html', context)
+
 
 
 # 타이머
@@ -497,7 +569,7 @@ def friend_view(request):
         'friends': friends,
         }
     
-    return render(request, 'user/lecture.html', context)
+    return render(request, 'user/friend.html', context)
 
 
 # def accept_friend_request(request_id):
@@ -612,6 +684,14 @@ def handwriting_view(request, lecture_name, chapter_name):
     user = request.user
     friends = Friendship.objects.filter(user=user).select_related('friend')
 
+    # 오늘의 가장 높은 기록 가져오기
+    today = date.today()
+    today_sessions = Study_TimerSession.objects.filter(user=user, date__date=today)
+    if today_sessions:
+        today_record = max(today_sessions, key=lambda session: session.records)
+    else:
+        today_record = None
+
     context = {
         'chapter': chapter,
         'lectures': lectures,
@@ -621,6 +701,7 @@ def handwriting_view(request, lecture_name, chapter_name):
         'request_user': user,
         'friend_requests': friend_requests,
         'friends': friends,
+        'today_record': today_record
         }
 
     return render(request, "user/handwriting.html", context)
