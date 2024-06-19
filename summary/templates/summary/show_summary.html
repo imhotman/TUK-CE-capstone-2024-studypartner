@@ -1,0 +1,14 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>show Summary</title>
+</head>
+<body>
+    <h1>Summary result : {{ audio_file.title }}</h1>
+    <p>{{ text }}</p>
+    <a href="{% url 'generate_response' %}">요약문</a>
+</body>
+</html>
