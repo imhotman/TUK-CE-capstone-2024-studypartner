@@ -7,6 +7,12 @@ from .models import UploadFile_summary
 from .forms import UploadFile_summaryForm  # UploadFileForm을 가져옴
 from django.urls import reverse
 from django.http import Http404
+import speech_recognition as sr
+import wave
+from transformers import AutoTokenizer, AutoModelForCausalLM
+import torch
+import os
+
 
 
 # Create your views here.
@@ -122,3 +128,90 @@ def delete_file_summary(request, file_id):
     chapter_name = file_to_delete.chapter.chapter_name
     file_to_delete.delete()
     return redirect('summary:summary_detail', lecture_name=lecture_name, chapter_name=chapter_name)
+
+
+
+
+
+
+
+
+def stt(file_path):
+    r = sr.Recognizer()
+    with sr.AudioFile(file_path) as source:
+        audio = r.record(source)
+
+    try:
+        text = r.recognize_google(audio, language='ko')
+        return text
+    except sr.UnknownValueError:
+        return '인식 실패'
+    except sr.RequestError as e:
+        return f"요청 실패: {e}"
+
+def stt_view(request, pk):
+    audio_file = get_object_or_404(UploadFile_summary, pk=pk)
+    text = stt(audio_file.file.path)
+    return render(request, 'show_stt.html', {'text': text, 'audio_file': audio_file})
+
+
+
+
+def generate_response(sys_message, user_message):
+    os.environ['HF_TOKEN'] = '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'
+
+    model_id = "meta-llama/Meta-Llama-3-8B-Instruct"
+
+    # 파인 튜닝
+    #pipeline = transformers.pipeline(
+    #    "text-generation",
+    #    model=model_id,
+    #    model_kwargs={"torch_dtype": torch.bfloat16}, 
+    #    device_map="auto",
+    #)
+
+    tokenizer = AutoTokenizer.from_pretrained(model_id)
+    model = AutoModelForCausalLM.from_pretrained(
+        model_id,
+        torch_dtype = torch.bfloat16,
+        device_map = "auto",
+    )
+
+    messages = [
+        {"role": "system", "content": f"{sys_message}"},
+        {"role": "user", "content": f"{user_message}"},
+    ]
+
+    input_ids = tokenizer.apply_chat_template(
+        messages,
+        add_generation_prompt=True,
+        return_tensors="pt"
+    ).to(model.device)
+
+    terminators = [
+        tokenizer.eos_token_id,
+        tokenizer.convert_tokens_to_ids("<|eot_id|>")
+    ]
+
+    outputs = model.generate(
+        input_ids,
+        max_new_tokens=256,
+        eos_token_id=terminators,
+        do_sample=True,
+        temperature=0.6,
+        top_p=0.9,
+    )
+    response = outputs[0][input_ids.shape[-1]:]
+
+    return tokenizer.decode(response, skip_special_tokens = True)
+
+
+
+sys_message = '너는 요약을 수행하는 챗봇이야. 핵심 내용만 256토큰 이내로 한국어로 요약해줘'
+ori_txt = """'다음과 같다. 하의도에 상륙한 신한공사 사원과 경관 등은 소작료를 강제 징수하기 위해 2개조로 나뉘어, 제1대는 오림리, 제2대는 대리로 향했다.
+            오림리에 도착한 제1대는 곧바로 가택 수색을 하고, 노인과 부녀자들에게까지 ‘소작료를 내지 않으면 총살시키겠다’고 위협하면서 농민들을 폭행했다.
+            농민 200여명이 경관의 행위에 항의하자, 경관대는 실탄을 장전해 농민에게 무차별 사격을 가했는데 그 과정에서 朴鍾彩가 중상을 입었다.'"""
+
+if __name__ == "__main__":
+    summary_text = generate_response(sys_message, ori_txt)
+    print(summary_text)
