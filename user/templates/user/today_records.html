@@ -1,0 +1,28 @@
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>친구 추가 페이지</title>
+</head>
+
+
+
+<body class="bg-gray-100">
+    <div class="max-w-sm bg-white p-3 rounded-lg shadow-md">
+        <h3><b>오늘의 가장높은 공부기록</b></h3>
+    <hr style="border-top: 0.8px solid #ccc; width: 100%; margin: 7px 0;"><br>
+    
+    {% if today_record %}
+        <p><b>날짜:</b> {{ today_record.date|date:"n월 j일" }}, &nbsp;<b>최고기록:</b> {{ today_record.records }}</p>
+    {% else %}
+        <p>오늘의 공부기록이 없습니다.</p>
+    {% endif %}
+</div><br>
+
+
+</body>
+</html>
+{% endblock %}
