@@ -16,7 +16,7 @@ urlpatterns = [
     
     path('handwriting/<str:lecture_name>/<str:chapter_name>/', views.handwriting_view, name='handwriting'),
 
-    path('upload_file_handwriting/<str:lecture_name>/<str:chapter_name>/', views.delete_file_handwriting, name='upload_file_handwriting'),
+    path('upload_file_handwriting/<str:lecture_name>/<str:chapter_name>/', views.upload_file_handwriting, name='upload_file_handwriting'),
     path('delete_file_handwriting/<int:file_id>/', views.delete_file_handwriting, name='delete_file_handwriting'),
     
     path('timer_test1/', views.timer_test1_view, name='timer_test1'),
