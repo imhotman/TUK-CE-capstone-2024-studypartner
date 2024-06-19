@@ -136,6 +136,7 @@ def delete_file_summary(request, file_id):
 
 
 
+# STT 함수
 def stt(file_path):
     r = sr.Recognizer()
     with sr.AudioFile(file_path) as source:
@@ -149,10 +150,28 @@ def stt(file_path):
     except sr.RequestError as e:
         return f"요청 실패: {e}"
 
-def stt_view(request, pk):
-    audio_file = get_object_or_404(UploadFile_summary, pk=pk)
-    text = stt(audio_file.file.path)
-    return render(request, 'show_stt.html', {'text': text, 'audio_file': audio_file})
+# AI 요약하기를 처리할 view 함수
+def stt_view(request, file_id):
+    audio_file = get_object_or_404(UploadFile_summary, pk=file_id)
+    text = stt(audio_file.file_name.path)
+    
+    context = {
+        'text': text,
+        'audio_file': audio_file
+    }
+
+    return render(request, 'summary/show_stt.html', context)
+
+
+
+
+
+
+
+
+
+
+
 
 
 
