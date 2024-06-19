@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .models import User, Lecture, LectureChapter, Study_TimerSession, UploadFile_handwriting
 from django.contrib.auth.decorators import login_required
-from .forms import LectureChapterForm
+from .forms import LectureChapterForm, UploadFile_handwritingForm
 from django.urls import reverse
 from django.http import JsonResponse
 from .models import Study_TimerSession, FriendRequest, Friendship
@@ -560,6 +560,18 @@ def reject_friend_request(request, request_id):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 # 손글씨 제작 테스트 페이지
 def handwriting_view(request, lecture_name, chapter_name):
     # 강의명과 챕터명이 일치하는 LectureChapter 객체를 가져옴
@@ -591,7 +603,7 @@ def handwriting_view(request, lecture_name, chapter_name):
     uploaded_files = UploadFile_handwriting.objects.filter(chapter=chapter)
 
     # 파일 업로드를 위한 폼 생성
-    form = UploadFile_handwriting(request.POST or None, request.FILES or None)    
+    form = UploadFile_handwritingForm(request.POST or None, request.FILES or None)    
 
     # 현재 사용자의 친구 요청 가져오기
     friend_requests = FriendRequest.objects.filter(to_user=request.user)
@@ -621,21 +633,21 @@ def upload_file_handwriting(request, lecture_name, chapter_name):
         raise Http404("챕터를 찾을 수 없습니다.")
     
     if request.method == 'POST':
-        form = UploadFile_handwriting(request.POST, request.FILES)
+        form = UploadFile_handwritingForm(request.POST, request.FILES)
         if form.is_valid():
             upload_file = form.save(commit=False)
             upload_file.chapter = chapter
             upload_file.user = request.user
             upload_file.save()
-            return redirect('upload:chapter_detail', lecture_name=lecture_name, chapter_name=chapter_name)
+            return redirect('user:handwriting', lecture_name=lecture_name, chapter_name=chapter_name)
     else:
-        form = UploadFile_handwriting()
+        form = UploadFile_handwritingForm()
     
     context = {
         'chapter': chapter,
         'form': form
     }
-    return render(request, "upload/chapter_detail.html", context)
+    return render(request, "user/handwriting.html", context)
 
 
 def delete_file_handwriting(request, file_id):
@@ -643,4 +655,4 @@ def delete_file_handwriting(request, file_id):
     lecture_name = file_to_delete.chapter.lecture.title
     chapter_name = file_to_delete.chapter.chapter_name
     file_to_delete.delete()
-    return redirect('upload:chapter_detail', lecture_name=lecture_name, chapter_name=chapter_name)
+    return redirect('user:handwriting', lecture_name=lecture_name, chapter_name=chapter_name)
