@@ -53,6 +53,9 @@
                             <a style="margin-left: 10px; color: rgb(92, 194, 107);" class="lecture_urllink" href="{% url 'summary:stt_view' file_id=file.pk %}">
                                 AI 요약하기
                             </a>
+                            <a style="margin-left: 10px; color: rgb(213, 221, 7);" class="lecture_urllink" href="{% url 'summary:show_summary_view' file_id=file.pk %}">
+                                AI 진짜요약
+                            </a>
                             <!-- 파일 삭제 버튼 추가 -->
                             <form id="delete-form-{{ file.id }}" method="post" action="{% url 'summary:delete_file_summary' file.id %}" style="display:inline;">
                                 {% csrf_token %}
