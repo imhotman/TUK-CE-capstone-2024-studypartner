@@ -176,87 +176,65 @@ def stt_view(request, file_id):
 
 ######################## 에러 나는 구간 ##########################
 
-
 os.environ['HF_TOKEN'] = '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'
 
-# 모델과 토크나이저 설정
 model_id = "meta-llama/Meta-Llama-3-8B-Instruct"
+
+# 파인 튜닝
+#pipeline = transformers.pipeline(
+#    "text-generation",
+#    model=model_id,
+#    model_kwargs={"torch_dtype": torch.bfloat16},
+#    device_map="auto",
+#)
+
 tokenizer = AutoTokenizer.from_pretrained(model_id)
 model = AutoModelForCausalLM.from_pretrained(
     model_id,
-    torch_dtype=torch.float16,
+    torch_dtype = torch.bfloat16,
+    device_map = "auto",
 )
 
 
 
 def generate_response(sys_message, user_message):
-    # 메시지 포맷 설정
-    messages = [
-        {"role": "system", "content": f"{sys_message}"},
-        {"role": "user", "content": f"{user_message}"},
-    ]
+  messages = [
+    {"role": "system", "content": f"{sys_message}"},
+    {"role": "user", "content": f"{user_message}"},
+  ]
 
-    # 입력 토큰 생성
-    input_ids = tokenizer.apply_chat_template(
-        messages,
-        add_generation_prompt=True,
-        return_tensors="pt"
-    ).to(model.device)
+  input_ids = tokenizer.apply_chat_template(
+      messages,
+      add_generation_prompt=True,
+      return_tensors="pt"
+  ).to(model.device)
 
-    # 종료 토큰 설정
-    terminators = [
-        tokenizer.eos_token_id,
-        tokenizer.convert_tokens_to_ids("<|eot_id|>")
-    ]
+  terminators = [
+      tokenizer.eos_token_id,
+      tokenizer.convert_tokens_to_ids("<|eot_id|>")
+  ]
 
-    # 모델을 사용해 텍스트 생성
-    outputs = model.generate(
-        input_ids,
-        max_new_tokens=256,
-        eos_token_id=terminators,
-        do_sample=True,
-        temperature=0.6,
-        top_p=0.9,
-    )
-    
-    # 응답 텍스트 디코딩
-    response = outputs[0][input_ids.shape[-1]:]
-    summary_text = tokenizer.decode(response, skip_special_tokens=True)
-    
-    return summary_text
+  outputs = model.generate(
+      input_ids,
+      max_new_tokens=256,
+      eos_token_id=terminators,
+      do_sample=True,
+      temperature=0.6,
+      top_p=0.9,
+  )
+  response = outputs[0][input_ids.shape[-1]:]
 
-# Django 뷰 함수
-def show_summary_view(request, file_id):
-    try:
-        audio_file = get_object_or_404(UploadFile_summary, pk=file_id)
-        text = stt(audio_file.file_name.path)  # stt 함수는 정의된 곳에서 가져오기
+  return tokenizer.decode(response, skip_special_tokens = True)
 
-        print("텍스트 출력:", text)
+sys_message = '너는 요약을 수행하는 챗봇이야. 핵심 내용만 256토큰 이내로 요약해줘 in korean'
+ori_txt = """'다음과 같다. 여야는 16일 의대 증원 배분을 멈춰달라는 의료계의 집행정지 신청을 각하·기각한 법원의 결정을 두고 온도차를 보였다.
+국민의힘 정광재 대변인은 이날 구두 논평에서 법원의 판단에 대해 "정부가 추진하는 의대 증원 정책이 합리적인 근거에 기반했다는 점을 인정한 결정"이라고 평가했다.
+정 대변인은 이어 "의대 증원은 국민적 요구이자 공공, 필수, 지방 의료 공백을 막기 위한 시대적 개혁 과제"라며 "차질 없이 진행될 수 있도록 국민의힘도 당력을 집중할 것"이라고 강조했다.
+그러면서 "의료계는 이제 국민의 생명과 건강을 지키기 위해 환자 곁으로 돌아와 주시길 바란다"고 촉구했다.'"""
 
-        if not text:
-            raise ValueError("STT 함수에서 텍스트를 반환하지 못했습니다.")
-
-        summary = generate_response(
-            sys_message = "너는 요약을 수행하는 챗봇이야. 핵심 내용만 256토큰 이내로 한국어로 요약해줘", 
-            user_message = text
-            )
-        print("summary 출력:", summary)
-
-        context = {
-            'summary': summary,
-            'audio_file': audio_file
-        }
-
-        return render(request, 'summary/show_summary.html', context)
-    
-    except ValueError as ve:
-        print(f"ValueError in show_summary_view: {ve}")
-        return render(request, 'summary/show_summary.html', {'summary': "요약 생성 중 오류가 발생했습니다.", 'audio_file': None})
-    
-    except Exception as e:
-        print(f"Error in show_summary_view: {e}")
-        return render(request, 'summary/show_summary.html', {'summary': "요약 생성 중 오류가 발생했습니다.", 'audio_file': None})
-
+if __name__ == "__main__":
+    summary_text = generate_response(sys_message, ori_txt)
+    print(summary_text)
 
 
 
