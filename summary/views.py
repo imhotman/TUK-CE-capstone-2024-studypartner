@@ -227,7 +227,10 @@ def show_summary_view(request, file_id):
         if not text:
             raise ValueError("STT 함수에서 텍스트를 반환하지 못했습니다.")
 
-        summary = generate_response()
+        summary = generate_response(
+            sys_message = "너는 요약을 수행하는 챗봇이야. 항상 한국어로 요약해. 핵심 내용만 256토큰 이내로 한국어로 요약해서 중괄호 안에 넣어줘", 
+            user_message = text
+            )
         print("summary 출력:", summary)
 
         # 불필요한 문구 제거
