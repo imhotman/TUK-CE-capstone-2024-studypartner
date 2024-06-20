@@ -301,24 +301,29 @@ def generate_response(sys_message, user_message):
         temperature=0.6,
         top_p=0.9,
    )
-    response = outputs[0][input_ids.shape[-1]:]
-
-    return tokenizer.decode(response, skip_special_tokens = True)
+    response = outputs[0].tolist()  # tensor를 list로 변환
+    summary_text = tokenizer.decode(response, skip_special_tokens=True)
+    extracted_text = extract_text(summary_text)
+    
+    return extracted_text
 
 
 def extract_text(text):
     extracted = re.findall(r'\{([^}]*\})', text)
     return ' '.join(extracted)
 
-# sys_message = '너는 요약을 수행하는 챗봇이야. 핵심 내용만 256토큰 이내로 요약해줘 in korean'
-# ori_txt = """'다음과 같다. 여야는 16일 의대 증원 배분을 멈춰달라는 의료계의 집행정지 신청을 각하·기각한 법원의 결정을 두고 온도차를 보였다.
-# 국민의힘 정광재 대변인은 이날 구두 논평에서 법원의 판단에 대해 "정부가 추진하는 의대 증원 정책이 합리적인 근거에 기반했다는 점을 인정한 결정"이라고 평가했다.
-# 정 대변인은 이어 "의대 증원은 국민적 요구이자 공공, 필수, 지방 의료 공백을 막기 위한 시대적 개혁 과제"라며 "차질 없이 진행될 수 있도록 국민의힘도 당력을 집중할 것"이라고 강조했다.
-# 그러면서 "의료계는 이제 국민의 생명과 건강을 지키기 위해 환자 곁으로 돌아와 주시길 바란다"고 촉구했다.'"""
 
-# if __name__ == "__main__":
-#     summary_text = generate_response(sys_message, ori_txt)
-#     print(summary_text)
+
+
+sys_message = '너는 요약을 수행하는 챗봇이야. 핵심 내용만 256토큰 이내로 요약해줘 in korean'
+ori_txt = """'다음과 같다. 여야는 16일 의대 증원 배분을 멈춰달라는 의료계의 집행정지 신청을 각하·기각한 법원의 결정을 두고 온도차를 보였다.
+국민의힘 정광재 대변인은 이날 구두 논평에서 법원의 판단에 대해 "정부가 추진하는 의대 증원 정책이 합리적인 근거에 기반했다는 점을 인정한 결정"이라고 평가했다.
+정 대변인은 이어 "의대 증원은 국민적 요구이자 공공, 필수, 지방 의료 공백을 막기 위한 시대적 개혁 과제"라며 "차질 없이 진행될 수 있도록 국민의힘도 당력을 집중할 것"이라고 강조했다.
+그러면서 "의료계는 이제 국민의 생명과 건강을 지키기 위해 환자 곁으로 돌아와 주시길 바란다"고 촉구했다.'"""
+
+if __name__ == "__main__":
+    summary_text = generate_response(sys_message, ori_txt)
+    print(summary_text)
 
 
 
