@@ -301,7 +301,7 @@ def generate_response(sys_message, user_message):
         temperature=0.6,
         top_p=0.9,
    )
-    response = outputs[0].tolist()  # tensor를 list로 변환
+    response = outputs[0][input_ids.shape[-1]:]
     summary_text = tokenizer.decode(response, skip_special_tokens=True)
     extracted_text = extract_text(summary_text)
     
