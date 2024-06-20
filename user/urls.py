@@ -11,7 +11,7 @@ urlpatterns = [
     path('lecture/', views.lecture_view, name='lecture'),
     path('add_lecture_chapter/', views.add_lecture_chapter_view, name='add_lecture_chapter'),
     path('timer/', views.timer_view, name='timer'),
-    path('test1/', views.test1_view, name='test1'),
+    path('friend_record/', views.friend_record_view, name='friend_record'),
     path('today_records/', views.today_records_view, name='today_records'),
     
     path('handwriting/<str:lecture_name>/<str:chapter_name>/', views.handwriting_view, name='handwriting'),

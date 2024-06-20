@@ -7,7 +7,9 @@
     <title>show STT</title>
 </head>
 <body>
-    <h1>STT Result for {{ audio_file.title }}</h1>
+    <h1>STT 테스트 변환 결과입니다.</h1>
+    <h2>STT 파일 제목: {{ audio_file.file_title }}</h2>
+    <h2>STT 파일 이름: {{ audio_file.file_name.name }}</h2>
     <p>{{ text }}</p>
 
 </body>
