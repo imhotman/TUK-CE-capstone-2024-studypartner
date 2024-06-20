@@ -155,12 +155,23 @@ def lecture_view(request):
     else:
         today_record = None
 
+    # 친구들의 오늘의 공부 기록 가져오기
+    friends_records = []
+    for friendship in friends:
+        friend = friendship.friend
+        today_sessions = Study_TimerSession.objects.filter(user=friend, date__date=today)
+        if today_sessions:
+            best_record = max(today_sessions, key=lambda session: session.records)
+            friends_records.append((friend.username, best_record.records))
+
     context = {
         'request_user': user,
         'friend_requests': friend_requests,
         'friends': friends,
         'lectures': lectures,
-        'today_record': today_record
+        'today_record': today_record,
+        'friends_records': friends_records,
+        
         }
     
     return render(request, "user/lecture.html", context)
@@ -344,57 +355,36 @@ def convert_to_day(record):
 
 
 # 뷰 함수
-def test1_view(request):
-    if request.user.is_authenticated:
-        # 현재 사용자의 모든 공부 세션 가져오기 (날짜 역순 정렬)
-        sessions = Study_TimerSession.objects.filter(user=request.user).order_by('-date')
+def friend_record_view(request):
+    # 현재 사용자의 친구 요청 가져오기
+    friend_requests = FriendRequest.objects.filter(to_user=request.user)
 
-        # 기록을 timedelta 형식으로 변환
-        for session in sessions:
-            session.records = convert_to_timedelta(session.records)
+    # 현재 사용자의 친구 목록 가져오기
+    user = request.user
+    friends = Friendship.objects.filter(user=user).select_related('friend')
 
-        # 한국 시간대로 변환
-        korea_tz = pytz.timezone('Asia/Seoul')
-        for session in sessions:
-            session.date = session.date.astimezone(korea_tz)
+    # 오늘의 날짜 범위 계산
+    today = timezone.now().date()
+    start_of_day = timezone.make_aware(datetime.combine(today, datetime.min.time()))
+    end_of_day = start_of_day + timedelta(days=1)
 
-        # 오늘의 기록 가져오기 (가장 높은 기록)
-        today = date.today()
-        today_sessions = sessions.filter(date__date=today)
+    # 친구들의 오늘의 공부 기록 가져오기
+    friends_records = []
+    for friendship in friends:
+        friend = friendship.friend
+        today_sessions = Study_TimerSession.objects.filter(user=friend, date__range=(start_of_day, end_of_day))
         if today_sessions:
-            today_record = max(today_sessions, key=lambda session: session.records)
-        else:
-            today_record = None
+            best_record = max(today_sessions, key=lambda session: session.records)
+            friends_records.append((friend.username, best_record.records))
 
-        # 각 날짜별로 가장 높은 기록을 가진 세션 찾기
-        highest_records = []
-        if sessions:
-            previous_date = sessions[0].date.date()
-            highest_record = sessions[0]
-            for session in sessions[1:]:
-                current_date = session.date.date()
-                if current_date != previous_date:
-                    highest_records.append(highest_record)
-                    highest_record = session
-                    previous_date = current_date
-                else:
-                    if convert_to_day(session.records) > convert_to_day(highest_record.records):
-                        highest_record = session
-            highest_records.append(highest_record)
-
-        else:
-            highest_records = None
-
-        context = {
-            'sessions': sessions,
-            'highest_record': highest_records,
-            'today_record': today_record,
-        }
-
-    else:
-        context = {'message': '로그인 되지 않았습니다.'}
-
-    return render(request, 'user/test1.html', context)
+    context = {
+        'request_user': user,
+        'friend_requests': friend_requests,
+        'friends': friends,
+        'friends_records': friends_records,
+    }
+    
+    return render(request, 'user/friend.html', context)
 
 
 
@@ -533,23 +523,23 @@ def send_friend_request(request):
             # 동일한 사용자인지 확인
             if friend_user == request.user:
                 print("동일한 사용자입니다.")
-                return redirect('user:test1')
+                return redirect('user:lecture')
             
             # 이미 친구인지 또는 이미 요청을 보낸 경우인지 확인
             if Friendship.objects.filter(user=request.user, friend=friend_user).exists() or FriendRequest.objects.filter(from_user=request.user, to_user=friend_user).exists():
                 print("이미 친구이거나 요청을 보낸 사용자입니다.")
-                return redirect('user:test1')
+                return redirect('user:lecture')
             
             # 친구 요청 생성 및 저장
             friend_request = FriendRequest.objects.create(from_user=request.user, to_user=friend_user)
             print("친구 요청 완료")
-            return redirect('user:friend')  # 요청을 보낸 후 홈 페이지로 리다이렉트
+            return redirect('user:lecture')  # 요청을 보낸 후 홈 페이지로 리다이렉트
             
         except User.DoesNotExist:
             pass
     # POST 요청이 아니거나 요청 수신자가 잘못된 경우
     print("친구 요청 에러")
-    return redirect('user:friend')  # 에러 페이지로 리다이렉트
+    return redirect('user:lecture')  # 에러 페이지로 리다이렉트
     
 
 
