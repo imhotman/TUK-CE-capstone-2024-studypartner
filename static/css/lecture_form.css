@@ -21,7 +21,7 @@
 }
 .lecture-box2 {
     position: fixed;
-    top: 60%;
+    top: 50%;
     left: 85%;
     width: 500px;
     padding: 2.5rem; /* 원하는 padding 값을 설정 */

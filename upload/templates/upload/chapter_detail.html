@@ -39,6 +39,11 @@
 
     <!-- 강의실 사이드 네비게이터 & 타이머 포함할 부분 -->
     {% include "user/lecture_sidebar.html" %}
+    <!-- 강의실 사이드 네비게이터 & 타이머 포함할 끝 부분 -->
+
+    <!-- 친구 간 최고기록 순위 포함할 부분 --><br>
+    {% include "user/friend_record.html" %}
+    <!-- 친구 간 최고기록 순위 포함할 끝 부분 -->
 
     <!-- 사용자의 챕터 상세정보 -->
     <div class="custom-body">
@@ -73,12 +78,6 @@
         </div>
     </div>
     <!-- 사용자의 챕터 상세정보 끝부분-->
-
-     <!-- 오늘의 공부기록 포함할 부분 -->
-     <div class="lecture-box3">
-        {% include "user/today_records.html" %}
-    </div>
-    <!-- 오늘의 공부기록 포함할 부분 끝 부분-->
 
     <!-- 친구 시스템 포함할 부분 -->
     <div class="lecture-box2">
