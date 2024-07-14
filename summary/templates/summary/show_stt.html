@@ -1,16 +1,78 @@
 {% load static %}
+{% block content %}
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>show STT</title>
-</head>
-<body>
-    <h1>STT 텍스트 변환 결과입니다.</h1>
-    <h2>STT 파일 제목: {{ audio_file.file_title }}</h2>
-    <h2>STT 파일 이름: {{ audio_file.file_name.name }}</h2>
-    <p>{{ text }}</p>
 
+    <!-- CSS -->
+    <!-- <link rel="stylesheet" href="{% static 'css/lecture.css' %}">
+    <link rel="stylesheet" href="{% static 'css/lecture_form.css' %}">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}"> -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+
+    <title>show STT</title>
+    <style>
+        .show_stt-container {
+            max-height: 100px; /* 최대 높이 설정 */
+            overflow-y: auto; /* 수직 스크롤 추가 */
+            border: 1px solid #ccc; /* 경계선 추가 */
+            padding: 10px; /* 내부 여백 추가 */
+            margin-top: 10px; /* 상단 여백 추가 */
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- 강의실 사이드 네비게이터 & 타이머 포함할 부분 -->
+    {% include "user/lecture_sidebar.html" %}
+    <!-- 강의실 사이드 네비게이터 & 타이머 포함할 끝 부분 -->
+
+    <!-- 친구 간 최고기록 순위 포함할 부분 --><br>
+    {% include "user/friend_record.html" %}
+    <!-- 친구 간 최고기록 순위 포함할 끝 부분 -->
+
+    <a href="{% url 'user:lecture' %}">
+        <ion-icon name="arrow-back-outline" class="lecture_urllink2 nav__toggle2 study-partner-backion" id="back-toggle"></ion-icon>
+    </a>
+
+
+    <div class="lecture-box4 bg-white p-3 rounded-lg shadow-md">
+        <div>
+            <h1><b>STT 텍스트 변환 결과</b></h1>
+            <a href="{% url 'user:lecture' %}">
+                <ion-icon name="arrow-back-outline" class="lecture_urllink2 nav__toggle2 study-partner-backion" id="back-toggle"></ion-icon>
+            </a>
+        </div><br>
+        <hr style="border-top: 0.5px solid #ccc; width: 100%; margin: 7px 0;">
+        <h3><b>STT 파일 제목:</b></h3><br>
+        <div style="border: 1px solid #ccc;">
+            <h2>{{ audio_file.file_title }}</h2>
+        </div>
+        <hr style="border-top: 0.5px solid #ccc; width: 100%; margin: 7px 0;">
+        <h3><b>STT 파일 이름:</b></h3><br>
+        <div style="border: 1px solid #ccc;">
+            <h2>{{ audio_file.file_name.name }}</h2>
+        </div>
+        <hr style="border-top: 0.5px solid #ccc; width: 100%; margin: 7px 0;">
+        <h3><b>STT 파일 변환내용:</b></h3>
+        
+        <div class="show_stt-container">
+            <p>{{ text }}</p>
+        </div>
+        
+    </div><br>
+    
+    
+    </body>
+
+    <!-- 친구 시스템 포함할 부분 -->
+    <div class="lecture-box2">
+        {% include "user/friend.html" %}
+    </div>
+    <!-- 친구 시스템 포함할 부분 끝 부분-->
+
+    
 </body>
 </html>
+{% endblock %}
