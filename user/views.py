@@ -7,9 +7,9 @@ from .forms import LectureChapterForm, UploadFile_handwritingForm
 from django.urls import reverse
 from django.http import JsonResponse
 from .models import Study_TimerSession, FriendRequest, Friendship
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta, date
 import json
-from datetime import date
+from django.utils import timezone
 import pytz
 
 
@@ -147,22 +147,41 @@ def lecture_view(request):
     user = request.user
     friends = Friendship.objects.filter(user=user).select_related('friend')
 
-    # 오늘의 가장 높은 기록 가져오기
-    today = date.today()
-    today_sessions = Study_TimerSession.objects.filter(user=user, date__date=today)
+    # 오늘의 날짜 범위 계산
+    today = timezone.now().date()
+    start_of_day = timezone.make_aware(datetime.combine(today, datetime.min.time()))
+    end_of_day = start_of_day + timedelta(days=1)
+
+    # 현재 사용자의 모든 공부 세션 가져오기 (날짜 역순 정렬)
+    sessions = Study_TimerSession.objects.filter(user=request.user).order_by('-date')
+
+    # 기록을 timedelta 형식으로 변환
+    for session in sessions:
+        session.records = convert_to_timedelta(session.records)
+
+    # 오늘의 기록 가져오기 (가장 높은 기록)
+    today_sessions = sessions.filter(date__date=today)
+    today_record_value = None
     if today_sessions:
         today_record = max(today_sessions, key=lambda session: session.records)
-    else:
-        today_record = None
+        today_record_value = convert_to_timedelta(today_record.records)  # timedelta로 변환
 
     # 친구들의 오늘의 공부 기록 가져오기
     friends_records = []
     for friendship in friends:
         friend = friendship.friend
-        today_sessions = Study_TimerSession.objects.filter(user=friend, date__date=today)
-        if today_sessions:
-            best_record = max(today_sessions, key=lambda session: session.records)
-            friends_records.append((friend.username, best_record.records))
+        friend_today_sessions = Study_TimerSession.objects.filter(user=friend, date__range=(start_of_day, end_of_day))
+
+        if friend_today_sessions:
+            best_record = max(friend_today_sessions, key=lambda session: session.records)
+            friends_records.append((friend.username, convert_to_timedelta(best_record.records)))
+
+    # 나의 기록을 friends_records에 추가
+    if today_record_value:
+        friends_records.append((user.username, today_record_value))
+
+    # 기록을 기준으로 내림차순 정렬
+    friends_records.sort(key=lambda x: x[1], reverse=True)
 
     context = {
         'request_user': user,
@@ -284,13 +303,43 @@ def lecture_detail_view(request, lecture_name):
     user = request.user
     friends = Friendship.objects.filter(user=user).select_related('friend')
 
-    # 오늘의 가장 높은 기록 가져오기
-    today = date.today()
-    today_sessions = Study_TimerSession.objects.filter(user=user, date__date=today)
+    # 오늘의 날짜 범위 계산
+    today = timezone.now().date()
+    start_of_day = timezone.make_aware(datetime.combine(today, datetime.min.time()))
+    end_of_day = start_of_day + timedelta(days=1)
+
+    # 현재 사용자의 모든 공부 세션 가져오기 (날짜 역순 정렬)
+    sessions = Study_TimerSession.objects.filter(user=request.user).order_by('-date')
+
+    # 기록을 timedelta 형식으로 변환
+    for session in sessions:
+        session.records = convert_to_timedelta(session.records)
+
+    # 오늘의 기록 가져오기 (가장 높은 기록)
+    today_sessions = sessions.filter(date__date=today)
+    today_record_value = None
     if today_sessions:
         today_record = max(today_sessions, key=lambda session: session.records)
-    else:
-        today_record = None
+        today_record_value = convert_to_timedelta(today_record.records)  # timedelta로 변환
+
+    # 친구들의 오늘의 공부 기록 가져오기
+    friends_records = []
+    for friendship in friends:
+        friend = friendship.friend
+        friend_today_sessions = Study_TimerSession.objects.filter(user=friend, date__range=(start_of_day, end_of_day))
+
+        if friend_today_sessions:
+            best_record = max(friend_today_sessions, key=lambda session: session.records)
+            friends_records.append((friend.username, convert_to_timedelta(best_record.records)))
+
+    # 나의 기록을 friends_records에 추가
+    if today_record_value:
+        friends_records.append((user.username, today_record_value))
+
+    # 기록을 기준으로 내림차순 정렬
+    friends_records.sort(key=lambda x: x[1], reverse=True)
+
+    
 
     context = {
         'lecture_name': lecture_name,
@@ -298,6 +347,7 @@ def lecture_detail_view(request, lecture_name):
         'lectures': lectures,
         'request_user': user,
         'friend_requests': friend_requests,
+        'friends_records': friends_records,
         'friends': friends,
         'today_record': today_record
         }
@@ -355,7 +405,42 @@ def convert_to_day(record):
 
 
 # 뷰 함수
+# def friend_record_view(request):
+#     # 현재 사용자의 친구 요청 가져오기
+#     friend_requests = FriendRequest.objects.filter(to_user=request.user)
+
+#     # 현재 사용자의 친구 목록 가져오기
+#     user = request.user
+#     friends = Friendship.objects.filter(user=user).select_related('friend')
+
+#     # 오늘의 날짜 범위 계산
+#     today = timezone.now().date()
+#     start_of_day = timezone.make_aware(datetime.combine(today, datetime.min.time()))
+#     end_of_day = start_of_day + timedelta(days=1)
+
+#     # 친구들의 오늘의 공부 기록 가져오기
+#     friends_records = []
+#     for friendship in friends:
+#         friend = friendship.friend
+#         today_sessions = Study_TimerSession.objects.filter(user=friend, date__range=(start_of_day, end_of_day))
+#         if today_sessions:
+#             best_record = max(today_sessions, key=lambda session: session.records)
+#             friends_records.append((friend.username, best_record.records))
+
+#     context = {
+#         'request_user': user,
+#         'friend_requests': friend_requests,
+#         'friends': friends,
+#         'friends_records': friends_records,
+#     }
+    
+#     return render(request, 'user/friend.html', context)
+
+
 def friend_record_view(request):
+    if not request.user.is_authenticated:
+        return render(request, 'user/friend.html', {'message': '로그인 되지 않았습니다.'})
+
     # 현재 사용자의 친구 요청 가져오기
     friend_requests = FriendRequest.objects.filter(to_user=request.user)
 
@@ -368,23 +453,47 @@ def friend_record_view(request):
     start_of_day = timezone.make_aware(datetime.combine(today, datetime.min.time()))
     end_of_day = start_of_day + timedelta(days=1)
 
+    # 현재 사용자의 모든 공부 세션 가져오기 (날짜 역순 정렬)
+    sessions = Study_TimerSession.objects.filter(user=request.user).order_by('-date')
+
+    # 기록을 timedelta 형식으로 변환
+    for session in sessions:
+        session.records = convert_to_timedelta(session.records)
+
+    # 오늘의 기록 가져오기 (가장 높은 기록)
+    today_sessions = sessions.filter(date__date=today)
+    today_record_value = None
+    if today_sessions:
+        today_record = max(today_sessions, key=lambda session: session.records)
+        today_record_value = convert_to_timedelta(today_record.records)  # timedelta로 변환
+
     # 친구들의 오늘의 공부 기록 가져오기
     friends_records = []
     for friendship in friends:
         friend = friendship.friend
-        today_sessions = Study_TimerSession.objects.filter(user=friend, date__range=(start_of_day, end_of_day))
-        if today_sessions:
-            best_record = max(today_sessions, key=lambda session: session.records)
-            friends_records.append((friend.username, best_record.records))
+        friend_today_sessions = Study_TimerSession.objects.filter(user=friend, date__range=(start_of_day, end_of_day))
+
+        if friend_today_sessions:
+            best_record = max(friend_today_sessions, key=lambda session: session.records)
+            friends_records.append((friend.username, convert_to_timedelta(best_record.records)))
+
+    # 나의 기록을 friends_records에 추가
+    if today_record_value:
+        friends_records.append((user.username, today_record_value))
+
+    # 기록을 기준으로 내림차순 정렬
+    friends_records.sort(key=lambda x: x[1], reverse=True)
 
     context = {
         'request_user': user,
         'friend_requests': friend_requests,
-        'friends': friends,
         'friends_records': friends_records,
+        'today_record': today_record,
     }
-    
-    return render(request, 'user/friend.html', context)
+
+    return render(request, 'user/friend_record.html', context)
+
+
 
 
 
@@ -674,13 +783,41 @@ def handwriting_view(request, lecture_name, chapter_name):
     user = request.user
     friends = Friendship.objects.filter(user=user).select_related('friend')
 
-    # 오늘의 가장 높은 기록 가져오기
-    today = date.today()
-    today_sessions = Study_TimerSession.objects.filter(user=user, date__date=today)
+    # 오늘의 날짜 범위 계산
+    today = timezone.now().date()
+    start_of_day = timezone.make_aware(datetime.combine(today, datetime.min.time()))
+    end_of_day = start_of_day + timedelta(days=1)
+
+    # 현재 사용자의 모든 공부 세션 가져오기 (날짜 역순 정렬)
+    sessions = Study_TimerSession.objects.filter(user=request.user).order_by('-date')
+
+    # 기록을 timedelta 형식으로 변환
+    for session in sessions:
+        session.records = convert_to_timedelta(session.records)
+
+    # 오늘의 기록 가져오기 (가장 높은 기록)
+    today_sessions = sessions.filter(date__date=today)
+    today_record_value = None
     if today_sessions:
         today_record = max(today_sessions, key=lambda session: session.records)
-    else:
-        today_record = None
+        today_record_value = convert_to_timedelta(today_record.records)  # timedelta로 변환
+
+    # 친구들의 오늘의 공부 기록 가져오기
+    friends_records = []
+    for friendship in friends:
+        friend = friendship.friend
+        friend_today_sessions = Study_TimerSession.objects.filter(user=friend, date__range=(start_of_day, end_of_day))
+
+        if friend_today_sessions:
+            best_record = max(friend_today_sessions, key=lambda session: session.records)
+            friends_records.append((friend.username, convert_to_timedelta(best_record.records)))
+
+    # 나의 기록을 friends_records에 추가
+    if today_record_value:
+        friends_records.append((user.username, today_record_value))
+
+    # 기록을 기준으로 내림차순 정렬
+    friends_records.sort(key=lambda x: x[1], reverse=True)
 
     context = {
         'chapter': chapter,
@@ -690,6 +827,7 @@ def handwriting_view(request, lecture_name, chapter_name):
         'form': form,  # 폼을 context에 추가
         'request_user': user,
         'friend_requests': friend_requests,
+        'friends_records': friends_records,
         'friends': friends,
         'today_record': today_record
         }

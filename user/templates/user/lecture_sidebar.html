@@ -10,6 +10,15 @@
     <link rel="stylesheet" href="{% static 'css/lecture.css' %}">
     <link rel="stylesheet" href="{% static 'css/lecture_form.css' %}">
     <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    <style>
+     .lecture_sidebar-container {
+        max-height: 700px; /* 최대 높이 설정 */
+        overflow-y: auto; /* 수직 스크롤 추가 */
+        overflow-x: hidden; /* 수평 스크롤 숨기기 */
+        /* border: 1px solid #ccc; 경계선 추가 */
+        margin-top: 1px; /* 상단 여백 추가 */
+    }
+    </style>
 
 </head>
 <body id="body-pd">
@@ -31,7 +40,7 @@
                 <ion-icon name="menu-outline" class="nav__toggle" id="nav-toggle"></ion-icon>
                 {% if request.user.is_authenticated %}
                     <a href="#" class="nav__logo">
-                        <span>{{ request.user.username }} 님</span>
+                        <span>&nbsp;&nbsp;{{ request.user.username }} 님</span>
                     </a>
                 {% else %}
                     <a href="{% url 'user:login' %}" class="nav__logo">
@@ -41,17 +50,18 @@
             </div>
 
             {% if request.user.is_authenticated %}
+            <div class="lecture_sidebar-container">
                 <div class="nav__list">
                     <a href="{% url 'index' %}" class="nav__link active">
                         <ion-icon name="home-outline" class="nav__icon"></ion-icon>
-                        <span class="nav_name">메인화면</span>
+                        <span class="nav_name">&nbsp;&nbsp;메인화면</span>
                     </a>
 
                     {% for lecture in lectures %}
                         <div class="nav__link collapse">
                             <ion-icon name="folder-outline" class="nav__icon"></ion-icon>
                             <span class="nav_name" id="my-courses">
-                                <a class="lecture_urllink" href="{% url 'user:lecture_detail' lecture_name=lecture.lecture %}">{{ lecture.lecture }}</a>
+                                <a class="lecture_urllink" href="{% url 'user:lecture_detail' lecture_name=lecture.lecture %}">&nbsp;&nbsp;{{ lecture.lecture }}</a>
                             </span>
                             <div class="collapse__link">
                                 <!-- <ion-icon name="add" id="collapse-link"></ion-icon> -->
@@ -74,7 +84,7 @@
 
                     <a href="{% url 'user:logout' %}" id="lecture-logout-button" class="nav__link">
                         <ion-icon name="log-out-outline" class="nav__icon"></ion-icon>
-                        <span class="nav_name">로그아웃</span>
+                        <span class="nav_name">&nbsp;&nbsp;로그아웃</span>
                     </a>
                 </div>
             {% else %}
@@ -85,6 +95,7 @@
                     </a>
                 </div>
             {% endif %}
+            </div>
         </div>
     </nav>
 </div>
