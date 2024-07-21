@@ -10,6 +10,7 @@ from django.http import Http404
 from datetime import date
 from django.utils import timezone
 from datetime import datetime, timedelta
+import openai
 import speech_recognition as sr
 import wave
 from transformers import AutoTokenizer, AutoModelForCausalLM
@@ -386,35 +387,50 @@ model = AutoModelForCausalLM.from_pretrained(
 
 
 def generate_response(sys_message, user_message):
-    messages = [
-        {"role": "system", "content": f"{sys_message}"},
-        {"role": "user", "content": f"{user_message}"},
-   ]
+    openai.api_key = "sk-proj-NqO61PwWQm2GaklioGBWT3BlbkFJZgZMblf61OdRuWcy1esI"
 
-    input_ids = tokenizer.apply_chat_template(
-        messages,
-        add_generation_prompt=True,
-        return_tensors="pt"
-   ).to(model.device)
-
-    terminators = [
-        tokenizer.eos_token_id,
-        tokenizer.convert_tokens_to_ids("<|eot_id|>")
-   ]
-
-    outputs = model.generate(
-        input_ids,
-        max_new_tokens=256,
-        eos_token_id=terminators,
-        do_sample=True,
-        temperature=0.6,
-        top_p=0.9,
-   )
-    response = outputs[0][input_ids.shape[-1]:]
-    summary_text = tokenizer.decode(response, skip_special_tokens=True)
-    extracted_text = extract_text(summary_text)
+    response = openai.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": f"{sys_message}"},
+            {"role": "user", "content": f"{user_message}"}
+        ]
+    )
+    
+    extracted_text = extract_text(response['choices'][0]['message']['content'].strip())
     
     return extracted_text
+
+#   Llama3 사용
+#     messages = [
+#         {"role": "system", "content": f"{sys_message}"},
+#         {"role": "user", "content": f"{user_message}"},
+#    ]
+
+#     input_ids = tokenizer.apply_chat_template(
+#         messages,
+#         add_generation_prompt=True,
+#         return_tensors="pt"
+#    ).to(model.device)
+
+#     terminators = [
+#         tokenizer.eos_token_id,
+#         tokenizer.convert_tokens_to_ids("<|eot_id|>")
+#    ]
+
+#     outputs = model.generate(
+#         input_ids,
+#         max_new_tokens=256,
+#         eos_token_id=terminators,
+#         do_sample=True,
+#         temperature=0.6,
+#         top_p=0.9,
+#    )
+#     response = outputs[0][input_ids.shape[-1]:]
+#     summary_text = tokenizer.decode(response, skip_special_tokens=True)
+#     extracted_text = extract_text(summary_text)
+    
+#     return extracted_text
 
 
 def extract_text(text):
@@ -433,17 +449,4 @@ ori_txt = """'다음과 같다. 여야는 16일 의대 증원 배분을 멈춰�
 if __name__ == "__main__":
     summary_text = generate_response(sys_message, ori_txt)
     print(summary_text)
-
-
-
-
-
-
-
-
-
-
-
-
-
 
