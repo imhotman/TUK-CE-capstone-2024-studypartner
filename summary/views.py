@@ -440,9 +440,9 @@ def show_summary_view(request, file_id):
 ######################## 에러 나는 구간 ##########################
 
 
-os.environ['HF_TOKEN'] = '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'
+#os.environ['HF_TOKEN'] = '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'
 
-model_id = "meta-llama/Meta-Llama-3-8B-Instruct"
+#model_id = "meta-llama/Meta-Llama-3-8B-Instruct"
 
 # 파인 튜닝
 #pipeline = transformers.pipeline(
@@ -452,12 +452,12 @@ model_id = "meta-llama/Meta-Llama-3-8B-Instruct"
 #    device_map="auto",
 #)
 
-tokenizer = AutoTokenizer.from_pretrained(model_id)
-model = AutoModelForCausalLM.from_pretrained(
-    model_id,
-    torch_dtype = torch.bfloat16,
-    device_map = "auto",
-)
+#tokenizer = AutoTokenizer.from_pretrained(model_id)
+#model = AutoModelForCausalLM.from_pretrained(
+#    model_id,
+#    torch_dtype = torch.bfloat16,
+#    device_map = "auto",
+#)
 
 
 
@@ -466,7 +466,7 @@ model = AutoModelForCausalLM.from_pretrained(
 def generate_response(sys_message, user_message):
     openai.api_key = "sk-proj-NqO61PwWQm2GaklioGBWT3BlbkFJZgZMblf61OdRuWcy1esI"
 
-    response = openai.chat.completions.create(
+    response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": f"{sys_message}"},
