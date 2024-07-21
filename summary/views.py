@@ -10,7 +10,7 @@ from django.http import Http404
 from datetime import date
 from django.utils import timezone
 from datetime import datetime, timedelta
-from dotenv import load_dotenv
+from dotenv import load_dotenv # type: ignore
 import openai # type: ignore
 import speech_recognition as sr # type: ignore
 import wave
