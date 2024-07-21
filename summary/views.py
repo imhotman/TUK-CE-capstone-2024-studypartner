@@ -10,6 +10,7 @@ from django.http import Http404
 from datetime import date
 from django.utils import timezone
 from datetime import datetime, timedelta
+from dotenv import load_dotenv
 import openai # type: ignore
 import speech_recognition as sr # type: ignore
 import wave
@@ -428,31 +429,32 @@ def show_summary_view(request, file_id):
 ######################## 에러 나는 구간 ##########################
 
 
-os.environ['HF_TOKEN'] = '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'
+# os.environ['HF_TOKEN'] = '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'
 
-model_id = "meta-llama/Meta-Llama-3-8B-Instruct"
+# model_id = "meta-llama/Meta-Llama-3-8B-Instruct"
 
-# 파인 튜닝
-#pipeline = transformers.pipeline(
-#    "text-generation",
-#    model=model_id,
-#    model_kwargs={"torch_dtype": torch.bfloat16},
-#    device_map="auto",
-#)
+# # 파인 튜닝
+# #pipeline = transformers.pipeline(
+# #    "text-generation",
+# #    model=model_id,
+# #    model_kwargs={"torch_dtype": torch.bfloat16},
+# #    device_map="auto",
+# #)
 
-tokenizer = AutoTokenizer.from_pretrained(model_id)
-model = AutoModelForCausalLM.from_pretrained(
-    model_id,
-    torch_dtype = torch.bfloat16,
-    device_map = "auto",
-)
+# tokenizer = AutoTokenizer.from_pretrained(model_id)
+# model = AutoModelForCausalLM.from_pretrained(
+#     model_id,
+#     torch_dtype = torch.bfloat16,
+#     device_map = "auto",
+# )
 
 
 
 
 
 def generate_response(sys_message, user_message):
-    openai.api_key = "sk-proj-NqO61PwWQm2GaklioGBWT3BlbkFJZgZMblf61OdRuWcy1esI"
+    load_dotenv()
+    openai.api_key = os.getenv('GPT_API_KEY')
 
     response = openai.chat.completion.create(
         model="gpt-3.5-turbo",
