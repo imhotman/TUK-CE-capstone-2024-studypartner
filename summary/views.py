@@ -10,6 +10,7 @@ from django.http import Http404
 from datetime import date
 from django.utils import timezone
 from datetime import datetime, timedelta
+import pytz
 from dotenv import load_dotenv # type: ignore
 import openai # type: ignore
 import speech_recognition as sr # type: ignore
@@ -91,7 +92,8 @@ def summary_detail_view(request, lecture_name, chapter_name):
     friends = Friendship.objects.filter(user=user).select_related('friend')
 
     # 오늘의 날짜 범위 계산
-    today = timezone.now().date()
+    user_timezone = pytz.timezone('Asia/Seoul')  # 사용자의 시간대로 설정
+    today = timezone.now().astimezone(user_timezone).date()
     start_of_day = timezone.make_aware(datetime.combine(today, datetime.min.time()))
     end_of_day = start_of_day + timedelta(days=1)
 
@@ -229,7 +231,8 @@ def stt_view(request, file_id):
     friends = Friendship.objects.filter(user=user).select_related('friend')
 
     # 오늘의 날짜 범위 계산
-    today = timezone.now().date()
+    user_timezone = pytz.timezone('Asia/Seoul')  # 사용자의 시간대로 설정
+    today = timezone.now().astimezone(user_timezone).date()
     start_of_day = timezone.make_aware(datetime.combine(today, datetime.min.time()))
     end_of_day = start_of_day + timedelta(days=1)
 
@@ -369,7 +372,8 @@ def show_summary_view(request, file_id):
         friend_requests = FriendRequest.objects.filter(to_user=request.user)
         friends = Friendship.objects.filter(user=user).select_related('friend')
 
-        today = timezone.now().date()
+        user_timezone = pytz.timezone('Asia/Seoul')  # 사용자의 시간대로 설정
+        today = timezone.now().astimezone(user_timezone).date()
         start_of_day = timezone.make_aware(datetime.combine(today, datetime.min.time()))
         end_of_day = start_of_day + timedelta(days=1)
         sessions = Study_TimerSession.objects.filter(user=request.user).order_by('-date')
