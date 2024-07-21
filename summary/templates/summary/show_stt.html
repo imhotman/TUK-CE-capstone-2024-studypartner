@@ -6,21 +6,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- CSS -->
-    <!-- <link rel="stylesheet" href="{% static 'css/lecture.css' %}">
-    <link rel="stylesheet" href="{% static 'css/lecture_form.css' %}">
-    <link rel="stylesheet" href="{% static 'css/custom.css' %}"> -->
-    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- Font Awesome CSS 추가 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <title>show STT</title>
     <style>
         .show_stt-container {
-            max-height: 100px; /* 최대 높이 설정 */
+            max-height: 180px; /* 최대 높이 설정 */
             overflow-y: auto; /* 수직 스크롤 추가 */
             border: 1px solid #ccc; /* 경계선 추가 */
             padding: 10px; /* 내부 여백 추가 */
             margin-top: 10px; /* 상단 여백 추가 */
         }
+
+        .show_stt-container::-webkit-scrollbar-thumb {
+            background-color: #ff99ff; /* 스크롤바 색상 */
+            border-radius: 4px; /* 스크롤바 둥글게 */
+        }
+
+            /* 스크롤바 스타일 */
+        .show_stt-container::-webkit-scrollbar {
+            width: 8px; /* 스크롤바 너비 */
+        }
+
+        .show_stt-container::-webkit-scrollbar-thumb:hover {
+            background-color: #ff77ff; /* hover 시 색상 변경 */
+        }
+
+        .back-icon {
+            font-size: 1.1rem; /* 아이콘 크기 조정 */
+            color: #000; /* 아이콘 색상 조정 */
+            float: right; /* 아이콘을 오른쪽으로 배치 */
+        }
+
+        .back-link {
+        padding: 10px; /* 클릭 영역 확대 */
+        float: right; /* 아이콘을 오른쪽으로 배치 */
+    }
     </style>
 </head>
 <body class="bg-gray-100">
@@ -32,17 +54,14 @@
     {% include "user/friend_record.html" %}
     <!-- 친구 간 최고기록 순위 포함할 끝 부분 -->
 
-    <a href="{% url 'user:lecture' %}">
-        <ion-icon name="arrow-back-outline" class="lecture_urllink2 nav__toggle2 study-partner-backion" id="back-toggle"></ion-icon>
-    </a>
 
-
-    <div class="lecture-box4 bg-white p-3 rounded-lg shadow-md">
+    <div class="lecture-box4 p-3 rounded-lg shadow-md" style="background-color: #e5ddff">
         <div>
-            <h1><b>STT 텍스트 변환 결과</b></h1>
-            <a href="{% url 'user:lecture' %}">
-                <ion-icon name="arrow-back-outline" class="lecture_urllink2 nav__toggle2 study-partner-backion" id="back-toggle"></ion-icon>
+            <h1><b>STT 텍스트 변환 결과</b>
+            <a href="javascript:history.back()" class="back-link">
+                <i class="fas fa-arrow-left back-icon"></i>
             </a>
+            </h1>
         </div><br>
         <hr style="border-top: 0.5px solid #ccc; width: 100%; margin: 7px 0;">
         <h3><b>STT 파일 제목:</b></h3><br>
@@ -55,14 +74,13 @@
             <h2>{{ audio_file.file_name.name }}</h2>
         </div>
         <hr style="border-top: 0.5px solid #ccc; width: 100%; margin: 7px 0;">
-        <h3><b>STT 파일 변환내용:</b></h3>
+        <h3><b>STT 파일 변환내용:</b></h3><br>
         
         <div class="show_stt-container">
             <p>{{ text }}</p>
         </div>
         
     </div><br>
-    
     
     </body>
 
@@ -72,7 +90,6 @@
     </div>
     <!-- 친구 시스템 포함할 부분 끝 부분-->
 
-    
 </body>
 </html>
 {% endblock %}
