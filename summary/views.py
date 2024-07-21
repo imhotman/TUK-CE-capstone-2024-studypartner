@@ -262,6 +262,9 @@ def stt_view(request, file_id):
     friends_records.sort(key=lambda x: x[1], reverse=True)
 
     context = {
+        'chapter': chapter,
+        'lectures': lectures,
+        'chapter_name': chapter_name,
         'request_user': user,
         'friend_requests': friend_requests,
         'friends': friends,
