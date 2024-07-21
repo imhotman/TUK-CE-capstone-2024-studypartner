@@ -5,6 +5,7 @@ from user.models import Lecture, LectureChapter, FriendRequest, Friendship, Stud
 from django.urls import reverse
 from django.utils import timezone
 from datetime import datetime, timedelta
+import pytz
 
 
 
@@ -43,7 +44,8 @@ def chapter_detail_view(request, lecture_name, chapter_name):
     friends = Friendship.objects.filter(user=user).select_related('friend')
 
     # 오늘의 날짜 범위 계산
-    today = timezone.now().date()
+    user_timezone = pytz.timezone('Asia/Seoul')  # 사용자의 시간대로 설정
+    today = timezone.now().astimezone(user_timezone).date()
     start_of_day = timezone.make_aware(datetime.combine(today, datetime.min.time()))
     end_of_day = start_of_day + timedelta(days=1)
 
