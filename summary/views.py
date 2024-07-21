@@ -10,11 +10,11 @@ from django.http import Http404
 from datetime import date
 from django.utils import timezone
 from datetime import datetime, timedelta
-import openai
-import speech_recognition as sr
+import openai # type: ignore
+import speech_recognition as sr # type: ignore
 import wave
-from transformers import AutoTokenizer, AutoModelForCausalLM
-import torch
+from transformers import AutoTokenizer, AutoModelForCausalLM # type: ignore
+import torch # type: ignore
 import os
 import re
 
@@ -104,6 +104,7 @@ def summary_detail_view(request, lecture_name, chapter_name):
     # 오늘의 기록 가져오기 (가장 높은 기록)
     today_sessions = sessions.filter(date__date=today)
     today_record_value = None
+    today_record = None  # today_record 변수를 미리 정의
     if today_sessions:
         today_record = max(today_sessions, key=lambda session: session.records)
         today_record_value = convert_to_timedelta(today_record.records)  # timedelta로 변환
@@ -196,7 +197,7 @@ def stt(file_path):
         return f"요청 실패: {e}"
 
 
-# AI 요약하기를 처리할 view 함수
+# 텍스트 변환 페이지
 def stt_view(request, file_id):
     audio_file = get_object_or_404(UploadFile_summary, pk=file_id)
     text = stt(audio_file.file_name.path)
@@ -241,6 +242,7 @@ def stt_view(request, file_id):
     # 오늘의 기록 가져오기 (가장 높은 기록)
     today_sessions = sessions.filter(date__date=today)
     today_record_value = None
+    today_record = None  # today_record 변수를 미리 정의
     if today_sessions:
         today_record = max(today_sessions, key=lambda session: session.records)
         today_record_value = convert_to_timedelta(today_record.records)  # timedelta로 변환
@@ -326,13 +328,74 @@ def clean_summary(summary):
 
 
 
-# Django 뷰 함수
+# AI 요약하기 페이지
 def show_summary_view(request, file_id):
     try:
         audio_file = get_object_or_404(UploadFile_summary, pk=file_id)
         text = stt(audio_file.file_name.path)  # stt 함수는 정의된 곳에서 가져오기
 
-        print("텍스트 출력:", text)
+        user = request.user
+        lecture_chapters = LectureChapter.objects.filter(user=user).select_related('lecture').order_by('lecture__title')
+
+        lectures = []
+        for chapter in lecture_chapters:
+            lecture_title = chapter.lecture.title
+            chapter_name = chapter.chapter_name
+            lecture_url = reverse('user:lecture_detail', kwargs={'lecture_name': lecture_title})
+            chapter_url = reverse('upload:chapter_detail', kwargs={'lecture_name': lecture_title, 'chapter_name': chapter_name})
+
+            # 현재 강의가 lectures 리스트에 없으면 추가
+            if not any(lecture['lecture'] == lecture_title for lecture in lectures):
+                lectures.append({'lecture': lecture_title, 'chapters': []})
+
+            # 현재 챕터 추가
+            lectures[-1]['chapters'].append({'chapter_name': chapter_name, 'chapter_url': chapter_url, 'lecture_url': lecture_url})
+
+
+        # 현재 사용자의 친구 요청 가져오기
+        friend_requests = FriendRequest.objects.filter(to_user=request.user)
+
+        # 현재 사용자의 친구 목록 가져오기
+        user = request.user
+        friends = Friendship.objects.filter(user=user).select_related('friend')
+
+        # 오늘의 날짜 범위 계산
+        today = timezone.now().date()
+        start_of_day = timezone.make_aware(datetime.combine(today, datetime.min.time()))
+        end_of_day = start_of_day + timedelta(days=1)
+
+        # 현재 사용자의 모든 공부 세션 가져오기 (날짜 역순 정렬)
+        sessions = Study_TimerSession.objects.filter(user=request.user).order_by('-date')
+
+        # 기록을 timedelta 형식으로 변환
+        for session in sessions:
+            session.records = convert_to_timedelta(session.records)
+
+        # 오늘의 기록 가져오기 (가장 높은 기록)
+        today_sessions = sessions.filter(date__date=today)
+        today_record_value = None
+        today_record = None  # today_record 변수를 미리 정의
+        if today_sessions:
+            today_record = max(today_sessions, key=lambda session: session.records)
+            today_record_value = convert_to_timedelta(today_record.records)  # timedelta로 변환
+
+        # 친구들의 오늘의 공부 기록 가져오기
+        friends_records = []
+        for friendship in friends:
+            friend = friendship.friend
+            friend_today_sessions = Study_TimerSession.objects.filter(user=friend, date__range=(start_of_day, end_of_day))
+
+            if friend_today_sessions:
+                best_record = max(friend_today_sessions, key=lambda session: session.records)
+                friends_records.append((friend.username, convert_to_timedelta(best_record.records)))
+
+        # 나의 기록을 friends_records에 추가
+        if today_record_value:
+            friends_records.append((user.username, today_record_value))
+
+        # 기록을 기준으로 내림차순 정렬
+        friends_records.sort(key=lambda x: x[1], reverse=True)
+
 
         if not text:
             raise ValueError("STT 함수에서 텍스트를 반환하지 못했습니다.")
@@ -348,6 +411,17 @@ def show_summary_view(request, file_id):
 
         context = {
             'summary': summary,
+            'audio_file': audio_file,
+            'chapter': chapter,
+            'lectures': lectures,
+            'chapter_name': chapter_name,
+            'request_user': user,
+            'friend_requests': friend_requests,
+            'friends': friends,
+            'lectures': lectures,
+            'today_record': today_record,
+            'friends_records': friends_records,
+            'text': text,
             'audio_file': audio_file
         }
 
@@ -355,11 +429,11 @@ def show_summary_view(request, file_id):
     
     except ValueError as ve:
         print(f"ValueError in show_summary_view: {ve}")
-        return render(request, 'summary/show_summary.html', {'summary': "요약 생성 중 오류가 발생했습니다.", 'audio_file': None})
+        return render(request, 'summary/show_summary.html', {'summary': "요약 생성 중 오류가 발생했습니다. - ValueError", 'audio_file': None})
     
     except Exception as e:
         print(f"Error in show_summary_view: {e}")
-        return render(request, 'summary/show_summary.html', {'summary': "요약 생성 중 오류가 발생했습니다.", 'audio_file': None})
+        return render(request, 'summary/show_summary.html', {'summary': "요약 생성 중 오류가 발생했습니다. - Exception", 'audio_file': None})
 
 
 
@@ -443,13 +517,13 @@ def extract_text(text):
 
 
 
-sys_message = '너는 요약을 수행하는 챗봇이야. 핵심 내용만 256토큰 이내로 요약해줘 in korean'
-ori_txt = """'다음과 같다. 여야는 16일 의대 증원 배분을 멈춰달라는 의료계의 집행정지 신청을 각하·기각한 법원의 결정을 두고 온도차를 보였다.
-국민의힘 정광재 대변인은 이날 구두 논평에서 법원의 판단에 대해 "정부가 추진하는 의대 증원 정책이 합리적인 근거에 기반했다는 점을 인정한 결정"이라고 평가했다.
-정 대변인은 이어 "의대 증원은 국민적 요구이자 공공, 필수, 지방 의료 공백을 막기 위한 시대적 개혁 과제"라며 "차질 없이 진행될 수 있도록 국민의힘도 당력을 집중할 것"이라고 강조했다.
-그러면서 "의료계는 이제 국민의 생명과 건강을 지키기 위해 환자 곁으로 돌아와 주시길 바란다"고 촉구했다.'"""
+# sys_message = '너는 요약을 수행하는 챗봇이야. 핵심 내용만 256토큰 이내로 요약해줘 in korean'
+# ori_txt = """'다음과 같다. 여야는 16일 의대 증원 배분을 멈춰달라는 의료계의 집행정지 신청을 각하·기각한 법원의 결정을 두고 온도차를 보였다.
+# 국민의힘 정광재 대변인은 이날 구두 논평에서 법원의 판단에 대해 "정부가 추진하는 의대 증원 정책이 합리적인 근거에 기반했다는 점을 인정한 결정"이라고 평가했다.
+# 정 대변인은 이어 "의대 증원은 국민적 요구이자 공공, 필수, 지방 의료 공백을 막기 위한 시대적 개혁 과제"라며 "차질 없이 진행될 수 있도록 국민의힘도 당력을 집중할 것"이라고 강조했다.
+# 그러면서 "의료계는 이제 국민의 생명과 건강을 지키기 위해 환자 곁으로 돌아와 주시길 바란다"고 촉구했다.'"""
 
-if __name__ == "__main__":
-    summary_text = generate_response(sys_message, ori_txt)
-    print(summary_text)
+# if __name__ == "__main__":
+#     summary_text = generate_response(sys_message, ori_txt)
+#     print(summary_text)
 
