@@ -454,7 +454,7 @@ def show_summary_view(request, file_id):
 def generate_response(sys_message, user_message):
     openai.api_key = "sk-proj-NqO61PwWQm2GaklioGBWT3BlbkFJZgZMblf61OdRuWcy1esI"
 
-    response = openai.ChatCompletion.create(
+    response = openai.chat.completion.create(
         model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": f"{sys_message}"},
