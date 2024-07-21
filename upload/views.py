@@ -57,6 +57,7 @@ def chapter_detail_view(request, lecture_name, chapter_name):
     # 오늘의 기록 가져오기 (가장 높은 기록)
     today_sessions = sessions.filter(date__date=today)
     today_record_value = None
+    today_record = None  # today_record 변수를 미리 정의
     if today_sessions:
         today_record = max(today_sessions, key=lambda session: session.records)
         today_record_value = convert_to_timedelta(today_record.records)  # timedelta로 변환
