@@ -334,6 +334,22 @@ def show_summary_view(request, file_id):
         audio_file = get_object_or_404(UploadFile_summary, pk=file_id)
         text = stt(audio_file.file_name.path)  # stt 함수는 정의된 곳에서 가져오기
 
+        if not text:
+            raise ValueError("STT 함수에서 텍스트를 반환하지 못했습니다.")
+
+        # 요약 생성
+        try:
+            summary = generate_response(
+                sys_message="너는 요약을 수행하는 챗봇이야. 항상 한국어로 요약해. 핵심 내용만 256토큰 이내로 한국어로 요약해서 중괄호 안에 넣어줘", 
+                user_message=text
+            )
+        except Exception as e:
+            raise ValueError(f"요약 생성 중 오류가 발생했습니다: {e}")
+
+        # 불필요한 문구 제거
+        summary = clean_summary(summary)
+
+        # 강의 및 친구 정보 가져오기
         user = request.user
         lecture_chapters = LectureChapter.objects.filter(user=user).select_related('lecture').order_by('lecture__title')
 
@@ -344,42 +360,29 @@ def show_summary_view(request, file_id):
             lecture_url = reverse('user:lecture_detail', kwargs={'lecture_name': lecture_title})
             chapter_url = reverse('upload:chapter_detail', kwargs={'lecture_name': lecture_title, 'chapter_name': chapter_name})
 
-            # 현재 강의가 lectures 리스트에 없으면 추가
             if not any(lecture['lecture'] == lecture_title for lecture in lectures):
                 lectures.append({'lecture': lecture_title, 'chapters': []})
 
-            # 현재 챕터 추가
             lectures[-1]['chapters'].append({'chapter_name': chapter_name, 'chapter_url': chapter_url, 'lecture_url': lecture_url})
 
-
-        # 현재 사용자의 친구 요청 가져오기
         friend_requests = FriendRequest.objects.filter(to_user=request.user)
-
-        # 현재 사용자의 친구 목록 가져오기
-        user = request.user
         friends = Friendship.objects.filter(user=user).select_related('friend')
 
-        # 오늘의 날짜 범위 계산
         today = timezone.now().date()
         start_of_day = timezone.make_aware(datetime.combine(today, datetime.min.time()))
         end_of_day = start_of_day + timedelta(days=1)
-
-        # 현재 사용자의 모든 공부 세션 가져오기 (날짜 역순 정렬)
         sessions = Study_TimerSession.objects.filter(user=request.user).order_by('-date')
 
-        # 기록을 timedelta 형식으로 변환
         for session in sessions:
             session.records = convert_to_timedelta(session.records)
 
-        # 오늘의 기록 가져오기 (가장 높은 기록)
         today_sessions = sessions.filter(date__date=today)
         today_record_value = None
-        today_record = None  # today_record 변수를 미리 정의
+        today_record = None
         if today_sessions:
             today_record = max(today_sessions, key=lambda session: session.records)
-            today_record_value = convert_to_timedelta(today_record.records)  # timedelta로 변환
+            today_record_value = convert_to_timedelta(today_record.records)
 
-        # 친구들의 오늘의 공부 기록 가져오기
         friends_records = []
         for friendship in friends:
             friend = friendship.friend
@@ -389,25 +392,10 @@ def show_summary_view(request, file_id):
                 best_record = max(friend_today_sessions, key=lambda session: session.records)
                 friends_records.append((friend.username, convert_to_timedelta(best_record.records)))
 
-        # 나의 기록을 friends_records에 추가
         if today_record_value:
             friends_records.append((user.username, today_record_value))
 
-        # 기록을 기준으로 내림차순 정렬
         friends_records.sort(key=lambda x: x[1], reverse=True)
-
-
-        if not text:
-            raise ValueError("STT 함수에서 텍스트를 반환하지 못했습니다.")
-
-        summary = generate_response(
-            sys_message = "너는 요약을 수행하는 챗봇이야. 항상 한국어로 요약해. 핵심 내용만 256토큰 이내로 한국어로 요약해서 중괄호 안에 넣어줘", 
-            user_message = text
-            )
-        print("summary 출력:", summary)
-
-        # 불필요한 문구 제거
-        summary = clean_summary(summary)
 
         context = {
             'summary': summary,
@@ -475,8 +463,41 @@ def generate_response(sys_message, user_message):
     )
     
     extracted_text = extract_text(response['choices'][0]['message']['content'].strip())
+    print(response.choices[0].message['content'])
     
     return extracted_text
+
+# def generate_response(sys_message, user_message):
+#     try:
+#         openai.api_key = "sk-proj-NqO61PwWQm2GaklioGBWT3BlbkFJZgZMblf61OdRuWcy1esI"
+
+#         response = openai.ChatCompletion.create(
+#             model="gpt-3.5-turbo",
+#             messages=[
+#                 {"role": "system", "content": sys_message},
+#                 {"role": "user", "content": user_message}
+#             ]
+#         )
+
+#         message_content = response.choices[0].message['content'].strip()
+#         extracted_text = extract_text(message_content)
+#         return extracted_text
+
+#     except openai.error.RateLimitError as e:
+#         print(f"Rate limit error in generate_response: {e}")
+#         raise ValueError("쿼타를 초과했습니다. 나중에 다시 시도해 주세요.")
+    
+#     except openai.error.APIError as e:
+#         print(f"API error in generate_response: {e}")
+#         raise ValueError("API 호출 중 오류가 발생했습니다. 나중에 다시 시도해 주세요.")
+    
+#     except Exception as e:
+#         print(f"Unexpected error in generate_response: {e}")
+#         raise ValueError(f"요약 생성 중 오류가 발생했습니다: {e}")
+
+
+
+
 
 #   Llama3 사용
 #     messages = [
