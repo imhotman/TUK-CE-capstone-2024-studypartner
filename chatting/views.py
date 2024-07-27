@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.http import JsonResponse
 from .models import Study_TimerSession, FriendRequest, Friendship
+from .models import PrivateChatRoom, PrivateMessage
 from datetime import datetime, timedelta, date
 import json
 from django.utils import timezone
@@ -97,3 +98,28 @@ def convert_to_timedelta(record):
     hours, minutes, seconds = map(int, record.split(':'))
     # timedelta 객체로 변환하여 반환
     return timedelta(hours=hours, minutes=minutes, seconds=seconds)
+
+
+
+def private_chat_room(request, user_id):
+    other_user = get_object_or_404(User, id=user_id)
+    
+    # 채팅방 생성 또는 가져오기
+    chat_room, created = PrivateChatRoom.objects.get_or_create(
+        user1=request.user if request.user.id < other_user.id else other_user,
+        user2=other_user if request.user.id < other_user.id else request.user
+    )
+    
+    # 읽지 않은 메시지를 읽은 상태로 업데이트
+    unread_messages = PrivateMessage.objects.filter(chat_room=chat_room, receiver=request.user, is_read=False)
+    unread_messages.update(is_read=True)
+
+    # 템플릿에 전달할 context
+    context = {
+        'user_id': user_id,
+        'unread_messages': unread_messages.count(),
+        'created': created,  # 채팅방이 새로 생성되었는지 여부를 context에 추가
+        'room_name': chat_room.id  # WebSocket과 연결하기 위한 방 이름
+    }
+    
+    return render(request, 'chatting/chatting_room.html', context)

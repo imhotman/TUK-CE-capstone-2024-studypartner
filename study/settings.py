@@ -136,5 +136,16 @@ MEDIA_URL = '/'
 # MEDIA_URL에 매핑될 폴더 경로
 MEDIA_ROOT = BASE_DIR
 
+ASGI_APPLICATION = 'study.asgi.application'
 
-
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [
+                ('127.0.0.1', 6379),  # 로컬 Redis 서버
+                ('52.78.81.223', 6379)  # 원격 Redis 서버
+            ],
+        },
+    },
+}
