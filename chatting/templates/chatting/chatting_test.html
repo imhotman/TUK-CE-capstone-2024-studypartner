@@ -1,0 +1,73 @@
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- CSS -->
+    <!-- <link rel="stylesheet" href="{% static 'css/lecture.css' %}">
+    <link rel="stylesheet" href="{% static 'css/lecture_form.css' %}">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}"> -->
+
+    <title>채팅시스템 테스트 | 스터디파트너</title>
+</head>
+<body>
+    <!-- 강의실 사이드 네비게이터 & 타이머 포함할 부분 -->
+    {% include "user/lecture_sidebar.html" %}
+    <!-- 강의실 사이드 네비게이터 & 타이머 포함할 끝 부분 -->
+
+    <!-- 친구 간 최고기록 순위 포함할 부분 --><br>
+    {% include "user/friend_record.html" %}
+    <!-- 친구 간 최고기록 순위 포함할 끝 부분 -->
+
+    <div class="custom-body">
+        <div class="lecture-box">
+            <h2>Study Partner</h2>
+
+            <!-- 강의 별 form -->
+            <form method="post" action="{% url 'user:add_lecture_chapter' %}" id="add-lecture-form">
+                {% csrf_token %}
+                
+            <div class="user-box">
+                <input name="lecture_name" type="text" name="" required="">
+                <span></span>
+                <label>강의 이름 (필수)</label>
+            </div>
+            <div class="user-box">
+                <input name="chapter_name" type="text" name="" required="">
+                <label>강의 하위목록 (필수)</label>
+            </div>
+            <div class="index_studypartner_buttonlist" style="text-align: center;">     
+                <button type="submit" id="add-lecture-button" style="margin-left: 5.43rem;">강의 추가</button>&nbsp;&nbsp;
+                <button type="reset" class="reverse dark" style="background-color: darkcyan;">모두 삭제</button>    
+            </div>
+                       
+            </form>         
+        </div>
+    </div>
+
+    <!-- 친구 시스템 포함할 부분 -->
+    <div class="lecture-box2">
+        {% include "user/friend.html" %}
+    </div>
+    <!-- 친구 시스템 포함할 부분 끝 부분-->
+
+
+    <script>
+        document.getElementById('add-lecture-button').addEventListener('click', function() {
+            if (window.confirm('강의를 추가하시겠습니까?')) {
+                alert("강의가 정상적으로 추가되었습니다.")
+                document.getElementById('add-lecture-form').submit();  
+            } else {
+                // 추가하기 전에 아무 동작도 하지 않음
+                event.preventDefault();
+                alert("강의 추가를 취소하였습니다.")
+            }
+        });
+    </script>
+    
+</body>
+</html>
+{% endblock %}
