@@ -196,6 +196,8 @@ def lecture_view(request):
     
     return render(request, "user/lecture.html", context)
 
+
+
 # 강의 추가
 @login_required
 def add_lecture_chapter_view(request):

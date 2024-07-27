@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'user',
     'upload',
-    'summary'
+    'summary',
+    'chatting'
 ]
 
 MIDDLEWARE = [

@@ -34,6 +34,7 @@ urlpatterns = [
     path('user/', include('user.urls')),
     path('upload/', include('upload.urls')),
     path('summary/', include('summary.urls')),
+    path('chatting/', include('chatting.urls')),
     path('delete_done/', views.delete_done, name='delete_done'),
     path('delete_record/<int:record_id>/', views.delete_record_view, name='delete_record'),
 ]
