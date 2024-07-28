@@ -23,12 +23,15 @@
     {% if created %}
         <p>새로운 채팅방이 생성되었습니다!</p>
     {% else %}
-        <p>기존 채팅방에 접근하고 있습니다.</p>
+        <p>기존 채팅방에 접속하였습니다.</p>
     {% endif %}
 
     <!-- 대화 상대 정보 표시 -->
     <p>대화 상대 1: {{ current_user.username }}님</p>
     <p>대화 상대 2: {{ other_user.username }}님</p>
+
+    <!-- 접속 중인 방 이름 표시 -->
+    <p>현재 접속 중인 방: {{ room_name }}</p>
 
     <!-- 기존 메시지 표시 -->
     <div id="chat-log">
@@ -62,20 +65,27 @@
         };
 
         document.querySelector('#chat-message-input').focus();
-        document.querySelector('#chat-message-input').onkeyup = function(e) {
-            if (e.keyCode === 13) {  // Enter key
-                document.querySelector('#chat-message-submit').click();
+        document.querySelector('#chat-message-input').onkeydown = function(e) {
+            if (e.key === 'Enter') {  // Enter key
+                e.preventDefault();  // 기본 동작 방지
+                sendMessage();
             }
         };
 
         document.querySelector('#chat-message-submit').onclick = function(e) {
+            sendMessage();
+        };
+
+        function sendMessage() {
             const messageInputDom = document.querySelector('#chat-message-input');
             const message = messageInputDom.value;
-            chatSocket.send(JSON.stringify({
-                'message': message
-            }));
-            messageInputDom.value = '';
-        };
+            if (message.trim() !== "") {
+                chatSocket.send(JSON.stringify({
+                    'message': message
+                }));
+                messageInputDom.value = '';
+            }
+        }
     </script>
 </body>
 </html>
