@@ -11,6 +11,17 @@ from datetime import datetime, timedelta, date
 import json
 from django.utils import timezone
 import pytz
+import locale
+from datetime import datetime
+
+
+# locale 설정
+locale.setlocale(locale.LC_TIME, 'ko_KR.UTF-8')
+
+
+# timestamp 시간 형식 변경
+def format_timestamp(timestamp):
+    return timestamp.strftime('%Y. %m. %d. %p %I:%M:%S').replace('AM', '오전').replace('PM', '오후')
 
 
 # 채팅시스템
@@ -164,6 +175,8 @@ def get_or_create_chat_room(user1, user2):
         user2=max(user1, user2, key=lambda x: x.id)
     )
     return chat_room, created
+
+
 
 
 # 채팅방
