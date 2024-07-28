@@ -14,6 +14,7 @@
         .message {
             display: block;
             margin-bottom: 13px;
+            clear: both; /* 플로트 해제 */
         }
         .message .user {
             font-weight: bold;
@@ -24,18 +25,38 @@
             align-items: flex-end;
         }
         .message .content {
-            background-color: #f1f1f1;
             border-radius: 10px;
             padding: 10px;
             display: inline-block;
             max-width: 70%;
             word-wrap: break-word;
-            margin-right: 5px;
         }
         .message .timestamp {
             font-size: 0.8em;
             color: gray;
-            align-self: flex-end; /* 오른쪽 정렬 */
+            align-self: flex-end;
+        }
+        .message.current-user {
+            text-align: left;
+            float: left;
+        }
+        .message.current-user .content-wrapper {
+            flex-direction: row; /* current_user 메시지의 기본 정렬 */
+        }
+        .message.other-user {
+            text-align: right;
+            float: right;
+        }
+        .message.other-user .content-wrapper {
+            flex-direction: row-reverse; /* other_user 메시지의 반대 정렬 */
+        }
+        .message.current-user .content {
+            background-color: #d1ffd1; /* current_user 메시지 색상 */
+            margin-right: 5px;
+        }
+        .message.other-user .content {
+            background-color: #f1f1f1; /* other_user 메시지 색상 */
+            margin-left: 5px;
         }
         #chat-message-input {
             width: 80%;
@@ -61,7 +82,7 @@
     <!-- 기존 메시지 표시 -->
     <div id="chat-log">
         {% for message in messages %}
-            <div class="message">
+            <div class="message {% if message.sender == current_user %}current-user{% else %}other-user{% endif %}">
                 <span class="user">{{ message.sender.username }}</span>
                 <div class="content-wrapper">
                     <span class="content">{{ message.content }}</span>
@@ -77,6 +98,7 @@
         // WebSocket URL 자동 감지 (ws 또는 wss)
         const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
         const roomName = "{{ room_name }}";
+        const currentUser = "{{ current_user.username }}";
         const chatSocket = new WebSocket(
             `${protocol}://${window.location.host}/ws/chat/${roomName}/`
         );
@@ -89,6 +111,11 @@
             const chatLog = document.querySelector('#chat-log');
             const messageElement = document.createElement('div');
             messageElement.classList.add('message');
+            if (data.user === currentUser) {
+                messageElement.classList.add('current-user');
+            } else {
+                messageElement.classList.add('other-user');
+            }
             messageElement.innerHTML = `
                 <span class="user">${data.user}</span>
                 <div class="content-wrapper">
