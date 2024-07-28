@@ -129,10 +129,14 @@
                             {% csrf_token %}
                             <!-- 친구 삭제 -->
                             &nbsp;
-                            <button type="button"
+                            <!-- <button type="button"
                                 style="background-color: #ac1aef; border: none; color: white; padding: 6px 12px; text-align: center; text-decoration: none; 
                                         display: inline-block; font-size: 13px; margin: 4px 2px; cursor: pointer;border-radius: 7px;">채팅
-                            </button>  
+                            </button>   -->
+                            <a href="{% url 'chatting:private_chat_room' user_id=friendship.friend.id %}"
+                               style="background-color: #ac1aef; border: none; color: white; padding: 6px 12px; text-align: center; text-decoration: none; 
+                                       display: inline-block; font-size: 13px; margin: 4px 2px; cursor: pointer; border-radius: 7px; text-decoration: none;">채팅
+                            </a> 
                             <button type="button" onclick="confirmDelete('{{ friendship.friend.id }}')" 
                                 style="background-color: #df048b; border: none; color: white; padding: 6px 12px; text-align: center; text-decoration: none; 
                                         display: inline-block; font-size: 13px; margin: 4px 2px; cursor: pointer;border-radius: 7px;">친구 삭제

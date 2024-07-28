@@ -1,4 +1,5 @@
 django
 pandas
 scikit-learn
-channels==4.1.0
+channels
+channels_redis
