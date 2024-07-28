@@ -30,7 +30,6 @@
             display: inline-block;
             max-width: 70%;
             word-wrap: break-word;
-            margin-right: 5px;
         }
         .message .timestamp {
             font-size: 0.8em;
@@ -41,18 +40,28 @@
             text-align: left;
             float: left;
         }
+        .message.current-user .content-wrapper {
+            flex-direction: row; /* current_user 메시지의 기본 정렬 */
+        }
         .message.other-user {
             text-align: right;
             float: right;
         }
+        .message.other-user .content-wrapper {
+            flex-direction: row-reverse; /* other_user 메시지의 반대 정렬 */
+        }
         .message.current-user .content {
             background-color: #d1ffd1; /* current_user 메시지 색상 */
+            margin-right: 5px;
         }
         .message.other-user .content {
             background-color: #f1f1f1; /* other_user 메시지 색상 */
+            margin-left: 5px;
         }
         #chat-message-input {
             width: 80%;
+            height: 50px; /* textarea 높이 설정 */
+            resize: none; /* 크기 조절 비활성화 */
         }
         #chat-message-submit {
             width: 18%;
