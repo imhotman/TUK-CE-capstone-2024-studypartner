@@ -13,12 +13,15 @@
         }
         .message {
             display: block;
-            flex-direction: column;
-            margin-bottom: 12px;
+            margin-bottom: 13px;
         }
         .message .user {
             font-weight: bold;
             margin-bottom: 5px;
+        }
+        .message .content-wrapper {
+            display: flex;
+            align-items: flex-end;
         }
         .message .content {
             background-color: #f1f1f1;
@@ -27,12 +30,12 @@
             display: inline-block;
             max-width: 70%;
             word-wrap: break-word;
+            margin-right: 5px;
         }
         .message .timestamp {
             font-size: 0.8em;
             color: gray;
-            margin-top: 5px;
-            text-align: right;
+            align-self: flex-end; /* 오른쪽 정렬 */
         }
         #chat-message-input {
             width: 80%;
@@ -52,16 +55,18 @@
 
     <!-- 대화 상대 정보 표시 -->
     <p>대화 상대 1: {{ current_user.username }}님</p>
-    <p>대화 상대 2: {{ other_user.username }}님</p>
-    <p>현재 접속중인 채팅방: {{ room_name }}</p>
+    <p>대화 상대 2: {{ other_user.username }}님</p><br>
+    <p>채팅창</p>
 
     <!-- 기존 메시지 표시 -->
     <div id="chat-log">
         {% for message in messages %}
             <div class="message">
                 <span class="user">{{ message.sender.username }}</span>
-                <span class="content">{{ message.content }}</span>
-                <span class="timestamp">{{ message.timestamp|date:"Y년 m월 d일 H:i:s" }}</span>
+                <div class="content-wrapper">
+                    <span class="content">{{ message.content }}</span>
+                    <span class="timestamp">{{ message.timestamp|date:"Y년 m월 d일 H:i:s" }}</span>
+                </div>
             </div>
         {% endfor %}
     </div>
@@ -86,8 +91,10 @@
             messageElement.classList.add('message');
             messageElement.innerHTML = `
                 <span class="user">${data.user}</span>
-                <span class="content">${escapedMessage}</span>
-                <span class="timestamp">${timestamp}</span>
+                <div class="content-wrapper">
+                    <span class="content">${escapedMessage}</span>
+                    <span class="timestamp">${timestamp}</span>
+                </div>
             `;
             chatLog.appendChild(messageElement);
             chatLog.scrollTop = chatLog.scrollHeight;
@@ -117,6 +124,13 @@
                 messageInputDom.value = '';
             }
         };
+
+        // 페이지 로드 후 스크롤을 맨 아래로 이동
+        window.onload = function() {
+            const chatLog = document.querySelector('#chat-log');
+            chatLog.scrollTop = chatLog.scrollHeight;
+        };
+        
     </script>
 </body>
 </html>
