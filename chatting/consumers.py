@@ -293,6 +293,7 @@ from asgiref.sync import sync_to_async
 from django.contrib.auth.models import User
 from .models import PrivateChatRoom, PrivateMessage
 from .views import get_or_create_chat_room
+from datetime import datetime
 
 class ChatConsumer(AsyncWebsocketConsumer):
     # WebSocket 연결 시 실행되는 함수
@@ -332,11 +333,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
         
-        print(f"클라이언트로부터 메시지 수신됨.: {message}")
+        print(f"클라이언트로부터 수신된 메시지 : {message}")
 
         # 메시지를 데이터베이스에 저장
         private_message = await self.create_message(message)
-        print(f"DB에 메시지를 저장하였습니다.: {private_message.content}")
+        print(f"DB에 저장할 메시지 : {private_message.content}")
 
         # 채널 레이어를 통해 그룹에 메시지 전송
         try:
@@ -349,13 +350,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     'user': self.user.username,
                     'message_id': private_message.id,
                     'is_read': private_message.is_read,
+                    'timestamp': private_message.timestamp.isoformat(),  # 타임스탬프 추가
                 }
             )
-            print(f"메시지 보낼 그룹 - user_id : {self.room_group_name}")
+            print(f"Message sent to group: {self.room_group_name}")
         except Exception as e:
             print(f"Error sending message to group: {e}")
-
-
 
     # 그룹에서 메시지를 수신할 때 호출되는 함수
     async def chat_message(self, event):
@@ -365,7 +365,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
         user = event['user']  # 사용자 이름
         message_id = event['message_id']  # 메시지 ID
         is_read = event['is_read']  # 읽음 여부
-        print(f"{user} 의 메시지 : {message} ")  # 프론트엔드로 전송 로그
+        timestamp = event['timestamp']  # 타임스탬프
+
+        print(f"{user}의 메시지 : {message}")  # 프론트엔드로 전송 로그
 
 
         # 메시지를 클라이언트에게 전송
@@ -374,6 +376,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             'user': user,
             'message_id': message_id,
             'is_read': is_read,
+            'timestamp': timestamp,  # 타임스탬프 포함
         }))
         print("프론트엔드로 메시지 전송이 완료되었습니다.")  # 메시지 전송 완료 로그
 
@@ -396,6 +399,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             return User.objects.get(id=user_id)
         except User.DoesNotExist:
             return None
+
 
 
 
