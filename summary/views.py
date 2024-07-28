@@ -11,7 +11,7 @@ from datetime import date
 from django.utils import timezone
 from datetime import datetime, timedelta
 import pytz
-from dotenv import load_dotenv # type: ignore
+# from dotenv import load_dotenv # type: ignore
 import openai # type: ignore
 import speech_recognition as sr # type: ignore
 import wave
@@ -19,6 +19,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM # type: ignore
 import torch # type: ignore
 import os
 import re
+import environ
 
 
 
