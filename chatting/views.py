@@ -101,25 +101,94 @@ def convert_to_timedelta(record):
 
 
 
+# def private_chat_room(request, user_id):
+    
+#     current_user = request.user
+#     other_user = get_object_or_404(User, id=user_id)
+    
+#     # 채팅방 생성 또는 가져오기
+#     chat_room, created = PrivateChatRoom.objects.get_or_create(
+#         user1=request.user if request.user.id < other_user.id else other_user,
+#         user2=other_user if request.user.id < other_user.id else request.user
+#     )
+    
+#     # 읽지 않은 메시지를 읽은 상태로 업데이트
+#     unread_messages = PrivateMessage.objects.filter(chat_room=chat_room, receiver=request.user, is_read=False)
+#     unread_messages.update(is_read=True)
+
+#     # 템플릿에 전달할 context
+#     context = {
+#         'user_id': user_id,
+#         'unread_messages': unread_messages.count(),
+#         'created': created,  # 채팅방이 새로 생성되었는지 여부를 context에 추가
+#         'room_name': chat_room.id,  # WebSocket과 연결하기 위한 방 이름
+#         'current_user' : current_user,
+#         'other_user' : other_user
+#     }
+    
+#     return render(request, 'chatting/chatting_room.html', context)
+
+
+
+
+# def private_chat_room(request, user_id):
+#     current_user = request.user
+#     other_user = get_object_or_404(User, id=user_id)
+    
+#     # 채팅방 생성 또는 가져오기
+#     chat_room, created = PrivateChatRoom.objects.get_or_create(
+#         user1=current_user if current_user.id < other_user.id else other_user,
+#         user2=other_user if current_user.id < other_user.id else current_user
+#     )
+    
+#     # 읽지 않은 메시지를 읽은 상태로 업데이트
+#     unread_messages = PrivateMessage.objects.filter(chat_room=chat_room, receiver=current_user, is_read=False)
+#     unread_messages.update(is_read=True)
+
+#     context = {
+#         'user_id': user_id,
+#         'unread_messages': unread_messages.count(),
+#         'created': created,
+#         'room_name': user_id,  # WebSocket과 연결하기 위한 방 이름
+#         'current_user': current_user,
+#         'other_user': other_user
+#     }
+    
+#     return render(request, 'chatting/chatting_room.html', context)
+
+
+# 채팅방 생성 또는 가져오는 함수
+def get_or_create_chat_room(user1, user2):
+    chat_room, created = PrivateChatRoom.objects.get_or_create(
+        user1=min(user1, user2, key=lambda x: x.id),
+        user2=max(user1, user2, key=lambda x: x.id)
+    )
+    return chat_room, created
+
+
+# 채팅방
 def private_chat_room(request, user_id):
+    current_user = request.user
     other_user = get_object_or_404(User, id=user_id)
     
     # 채팅방 생성 또는 가져오기
-    chat_room, created = PrivateChatRoom.objects.get_or_create(
-        user1=request.user if request.user.id < other_user.id else other_user,
-        user2=other_user if request.user.id < other_user.id else request.user
-    )
+    chat_room, created = get_or_create_chat_room(current_user, other_user)
     
     # 읽지 않은 메시지를 읽은 상태로 업데이트
-    unread_messages = PrivateMessage.objects.filter(chat_room=chat_room, receiver=request.user, is_read=False)
+    unread_messages = PrivateMessage.objects.filter(chat_room=chat_room, receiver=current_user, is_read=False)
     unread_messages.update(is_read=True)
-
-    # 템플릿에 전달할 context
+    
+    # 기존 메시지를 가져오기
+    messages = PrivateMessage.objects.filter(chat_room=chat_room).order_by('timestamp')
+    
     context = {
         'user_id': user_id,
         'unread_messages': unread_messages.count(),
-        'created': created,  # 채팅방이 새로 생성되었는지 여부를 context에 추가
-        'room_name': chat_room.id  # WebSocket과 연결하기 위한 방 이름
+        'created': created,
+        'room_name': user_id,  # WebSocket과 연결하기 위한 방 이름
+        'current_user': current_user,
+        'other_user': other_user,
+        'messages': messages  # 기존 메시지를 컨텍스트에 추가
     }
     
     return render(request, 'chatting/chatting_room.html', context)
