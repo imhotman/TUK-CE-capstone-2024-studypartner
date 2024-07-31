@@ -20,3 +20,34 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
+# import os
+# import sys
+
+# def main():
+#     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'study.settings')
+#     try:
+#         from django.core.management import execute_from_command_line
+#     except ImportError as exc:
+#         raise ImportError(
+#             "Couldn't import Django. Are you sure it's installed and "
+#             "available on your PYTHONPATH environment variable? Did you "
+#             "forget to activate a virtual environment?"
+#         ) from exc
+
+#     if len(sys.argv) > 1 and sys.argv[1] == 'runserver':
+#         # 기존 runserver 명령어를 대체하지 않도록 합니다.
+#         execute_from_command_line(sys.argv)
+#     elif len(sys.argv) > 1 and sys.argv[1] == 'rundaphne':
+#         from daphne import server # type: ignore
+#         server.run(
+#             "study.asgi:application",
+#             port=8000,
+#             host="127.0.0.1"
+#         )
+#     else:
+#         execute_from_command_line(sys.argv)
+
+# if __name__ == '__main__':
+#     main()
