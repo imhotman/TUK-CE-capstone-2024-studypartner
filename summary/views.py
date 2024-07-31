@@ -459,9 +459,9 @@ def show_summary_view(request, file_id):
 
 def generate_response(sys_message, user_message):
     load_dotenv()
-    openai.api_key = os.getenv('GPT_API_KEY')
+    openai.api_key = "os.getenv('GPT_API_KEY')"
 
-    response = openai.chat.completion.create(
+    response = openai.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": f"{sys_message}"},
