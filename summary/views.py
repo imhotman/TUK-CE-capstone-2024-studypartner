@@ -7,7 +7,6 @@ from .models import UploadFile_summary
 from .forms import UploadFile_summaryForm  # UploadFileForm을 가져옴
 from django.urls import reverse
 from django.http import Http404
-from dotenv import load_dotenv # type: ignore
 from datetime import date
 from django.utils import timezone
 from datetime import datetime, timedelta
@@ -21,7 +20,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM # type: ignore
 import torch # type: ignore
 import os
 import re
-# import environ
+import environ
 
 
 
@@ -331,7 +330,6 @@ def clean_summary(summary):
     ]
     for phrase in remove_phrases:
         summary = summary.replace(phrase, "")
-    
     # 중괄호 제거
     if summary.endswith('}'):
         summary = summary[:-1].strip()
@@ -440,7 +438,6 @@ def show_summary_view(request, file_id):
 
 ######################## AI 요약하기 함수 ##########################
 
-
 # os.environ['HF_TOKEN'] = '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'
 
 # model_id = "meta-llama/Meta-Llama-3-8B-Instruct"
@@ -459,7 +456,6 @@ def show_summary_view(request, file_id):
 #     torch_dtype = torch.bfloat16,
 #     device_map = "auto",
 # )
-
 
 
 
@@ -559,5 +555,4 @@ def generate_response(sys_message, user_message):
 def extract_text(text):
     extracted = re.findall(r'\{([^}]*\})', text)
     return ' '.join(extracted)
-
 
