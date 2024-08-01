@@ -11,8 +11,9 @@ from datetime import date
 from django.utils import timezone
 from datetime import datetime, timedelta
 import pytz
-from dotenv import load_dotenv # type: ignore
 import openai # type: ignore
+from dotenv import load_dotenv # type: ignore
+from openai import OpenAI # type: ignore
 import speech_recognition as sr # type: ignore
 import wave
 from transformers import AutoTokenizer, AutoModelForCausalLM # type: ignore
@@ -322,13 +323,17 @@ def stt_view(request, file_id):
 
 
 def clean_summary(summary):
-    # 불필요한 문구 제거
+    # 불필요한 문구와 중괄호 제거
     remove_phrases = [
         "Here's a summary of the content in 256 tokens of less in korean:",
         "Let me know if you'd like me to make any changes!"
     ]
     for phrase in remove_phrases:
         summary = summary.replace(phrase, "")
+    # 중괄호 제거
+    if summary.endswith('}'):
+        summary = summary[:-1].strip()
+    
     return summary.strip()
 
 
@@ -431,8 +436,7 @@ def show_summary_view(request, file_id):
 
 
 
-######################## 에러 나는 구간 ##########################
-
+######################## AI 요약하기 함수 ##########################
 
 # os.environ['HF_TOKEN'] = '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'
 
@@ -457,20 +461,30 @@ def show_summary_view(request, file_id):
 
 
 
-def generate_response(sys_message, user_message):
-    load_dotenv()
-    openai.api_key = os.getenv('GPT_API_KEY')
 
-    response = openai.chat.completions.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": f"{sys_message}"},
-            {"role": "user", "content": f"{user_message}"}
-        ]
+def generate_response(sys_message, user_message):
+
+    load_dotenv()  # .env 파일을 로드합니다
+
+    OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+
+    client = OpenAI(api_key=OPENAI_API_KEY)
+    model = "gpt-3.5-turbo"
+    
+    messages = [
+        {"role": "system", "content": sys_message},
+        {"role": "user", "content": user_message}
+    ]
+    
+    response = client.chat.completions.create(
+        model=model,
+        messages=messages,
+        temperature=0
     )
     
-    extracted_text = extract_text(response['choices'][0]['message']['content'].strip())
-    print(response.choices[0].message['content'])
+    response_message = response.choices[0].message.content.strip()
+    extracted_text = extract_text(response_message)
+    print(response_message)
     
     return extracted_text
 
@@ -541,17 +555,4 @@ def generate_response(sys_message, user_message):
 def extract_text(text):
     extracted = re.findall(r'\{([^}]*\})', text)
     return ' '.join(extracted)
-
-
-
-
-# sys_message = '너는 요약을 수행하는 챗봇이야. 핵심 내용만 256토큰 이내로 요약해줘 in korean'
-# ori_txt = """'다음과 같다. 여야는 16일 의대 증원 배분을 멈춰달라는 의료계의 집행정지 신청을 각하·기각한 법원의 결정을 두고 온도차를 보였다.
-# 국민의힘 정광재 대변인은 이날 구두 논평에서 법원의 판단에 대해 "정부가 추진하는 의대 증원 정책이 합리적인 근거에 기반했다는 점을 인정한 결정"이라고 평가했다.
-# 정 대변인은 이어 "의대 증원은 국민적 요구이자 공공, 필수, 지방 의료 공백을 막기 위한 시대적 개혁 과제"라며 "차질 없이 진행될 수 있도록 국민의힘도 당력을 집중할 것"이라고 강조했다.
-# 그러면서 "의료계는 이제 국민의 생명과 건강을 지키기 위해 환자 곁으로 돌아와 주시길 바란다"고 촉구했다.'"""
-
-# if __name__ == "__main__":
-#     summary_text = generate_response(sys_message, ori_txt)
-#     print(summary_text)
 
