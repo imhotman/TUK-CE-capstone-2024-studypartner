@@ -42,7 +42,7 @@
         .back-link {
         padding: 10px; /* 클릭 영역 확대 */
         float: right; /* 아이콘을 오른쪽으로 배치 */
-    }
+        }
     </style>
 </head>
 <body class="bg-gray-100">
@@ -58,8 +58,8 @@
     <div class="lecture-box4 p-3 rounded-lg shadow-md" style="background-color: #e5ddff">
         <div>
             <h1><b>STT 텍스트 변환 결과</b>
-            <a href="javascript:history.back()" class="back-link">
-                <i class="fas fa-arrow-left back-icon"></i>
+            <a href="{% url 'summary:summary_detail' lecture_name=chapter.lecture.title chapter_name=chapter.chapter_name %}">
+                <ion-icon name="arrow-back-outline" class="lecture_urllink2 nav__toggle2 study-partner-backion" id="back-toggle" style="color: #000;"></ion-icon>
             </a>
             </h1>
         </div><br>

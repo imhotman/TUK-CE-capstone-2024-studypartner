@@ -58,8 +58,8 @@
     <div class="lecture-box4 p-3 rounded-lg shadow-md" style="background-color: #e5ddff">
         <div>
             <h1><b>CHAT-GPT AI 요약 결과</b>
-            <a href="javascript:history.back()" class="back-link">
-                <i class="fas fa-arrow-left back-icon"></i>
+            <a href="{% url 'summary:summary_detail' lecture_name=chapter.lecture.title chapter_name=chapter.chapter_name %}">
+                <ion-icon name="arrow-back-outline" class="lecture_urllink2 nav__toggle2 study-partner-backion" id="back-toggle" style="color: #000;"></ion-icon>
             </a>
             </h1>
         </div><br>
