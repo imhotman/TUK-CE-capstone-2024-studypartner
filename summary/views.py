@@ -368,8 +368,6 @@ def show_summary_view(request, lecture_name, chapter_name, file_id):
         # 불필요한 문구 제거
         summary = clean_summary(summary)
 
-
-
         # 강의명과 챕터명이 일치하는 LectureChapter 객체를 가져옴
         chapter = LectureChapter.objects.filter(lecture__title=lecture_name, chapter_name=chapter_name).first()
 
@@ -394,9 +392,7 @@ def show_summary_view(request, lecture_name, chapter_name, file_id):
 
             # 현재 챕터 추가
             lectures[-1]['chapters'].append({'chapter_name': chapter_name, 'chapter_url': chapter_url, 'lecture_url': lecture_url})
-
-
-
+            
 
         friend_requests = FriendRequest.objects.filter(to_user=request.user)
         friends = Friendship.objects.filter(user=user).select_related('friend')
