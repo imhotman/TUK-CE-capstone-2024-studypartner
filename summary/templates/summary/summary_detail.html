@@ -15,16 +15,23 @@
             border: 8px solid #f3f3f3;
             border-radius: 50%;
             border-top: 8px solid #ff77ff;
-            width: 60px;
-            height: 60px;
+            width: 65px;
+            height: 65px;
             animation: spin 2s linear infinite;
             display: none; /* 처음엔 숨김 상태 */
             margin: 20px auto;
         }
 
+        .loader-position {
+            position: fixed; /* 화면에서 고정 위치 */
+            top: 43.5%; /* 화면 중앙의 수직 위치 */
+            left: 47.6%; /* 화면 중앙의 수평 위치 */
+        }
+
         #loader-container {
             display: none; /* 처음에는 숨김 상태 */
             text-align: center; /* 내용 중앙 정렬 */
+
         }
 
         @keyframes spin {
@@ -155,7 +162,7 @@
         <div id="progress-container"><br><br>
             <div id="progress-bar"></div>
         </div>
-        <div id="loader" class="loader"></div>
+        <div id="loader" class="loader loader-position"></div>
     </div>
 
     <!-- JavaScript 추가 -->
