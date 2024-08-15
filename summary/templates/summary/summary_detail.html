@@ -205,7 +205,7 @@
         function simulateProgress() {
             let progress = 0;
             const interval = setInterval(() => {
-                progress += 0.6;
+                progress += 0.5;
                 updateProgressBar(progress);
                 if (progress >= 100) {
                     clearInterval(interval);
@@ -213,9 +213,9 @@
                     setTimeout(() => {
                         hideProcess();
                         showSpinner();
-                    }, 1500); // 1.5초 (1500ms) 지연
+                    }, 1000); // 1.0초 (1000ms) 지연
                 }
-            }, 50); // 0.05초마다 0.6%씩 진행 상황 업데이트
+            }, 50); // 0.05초마다 0.45%씩 진행 상황 업데이트
         }
 
         
