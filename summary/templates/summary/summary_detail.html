@@ -6,66 +6,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- 기존 CSS -->
+    <!-- CSS -->
     <!-- <link rel="stylesheet" href="{% static 'css/lecture.css' %}">
     <link rel="stylesheet" href="{% static 'css/lecture_form.css' %}">
     <link rel="stylesheet" href="{% static 'css/custom.css' %}"> -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
 
-    <!-- Font Awesome CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
-    <!-- 로딩 스피너 CSS -->
-    <style>
-        .loader {
-            border: 8px solid #f3f3f3;
-            border-radius: 50%;
-            border-top: 8px solid #3498db;
-            width: 60px;
-            height: 60px;
-            animation: spin 2s linear infinite;
-            display: none; /* 처음엔 숨김 상태 */
-            margin: 20px auto;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .show_stt-container {
-            max-height: 180px; /* 최대 높이 설정 */
-            overflow-y: auto; /* 수직 스크롤 추가 */
-            border: 1px solid #ccc; /* 경계선 추가 */
-            padding: 10px; /* 내부 여백 추가 */
-            margin-top: 10px; /* 상단 여백 추가 */
-        }
-
-        .show_stt-container::-webkit-scrollbar-thumb {
-            background-color: #ff99ff; /* 스크롤바 색상 */
-            border-radius: 4px; /* 스크롤바 둥글게 */
-        }
-
-        /* 스크롤바 스타일 */
-        .show_stt-container::-webkit-scrollbar {
-            width: 8px; /* 스크롤바 너비 */
-        }
-
-        .show_stt-container::-webkit-scrollbar-thumb:hover {
-            background-color: #ff77ff; /* hover 시 색상 변경 */
-        }
-
-        .back-icon {
-            font-size: 1.1rem; /* 아이콘 크기 조정 */
-            color: #000; /* 아이콘 색상 조정 */
-            float: right; /* 아이콘을 오른쪽으로 배치 */
-        }
-
-        .back-link {
-            padding: 10px; /* 클릭 영역 확대 */
-            float: right; /* 아이콘을 오른쪽으로 배치 */
-        }
-    </style>
 
     <title>{{ chapter.lecture.title }} 챕터 상세 정보</title>
 </head>
@@ -112,9 +58,7 @@
                             <a style="margin-left: 10px; color: rgb(92, 194, 107);" class="lecture_urllink" href="{% url 'summary:stt_view' file_id=file.pk %}">
                                 텍스트 변환
                             </a>
-                            <!-- AI 요약하기 버튼 -->
-                            <a style="margin-left: 10px; color: rgb(213, 221, 7);" class="lecture_urllink" 
-                               href="{% url 'summary:show_summary_view' file_id=file.pk %}" onclick="showLoader()">
+                            <a style="margin-left: 10px; color: rgb(213, 221, 7);" class="lecture_urllink" href="{% url 'summary:show_summary_view' file_id=file.pk %}">
                                 AI 요약하기
                             </a>
                             <!-- 파일 삭제 버튼 추가 -->
@@ -149,7 +93,6 @@
     </div>
     <!-- 친구 시스템 포함할 끝 부분-->
 
-    <!-- JavaScript 추가 -->
     <script>
         function confirmDelete(fileId) {
             if (confirm("정말로 이 파일을 삭제하시겠습니까?")) {
@@ -161,10 +104,6 @@
 
         function resetUploadForm() {
             document.getElementById('upload-form').reset();
-        }
-
-        function showLoader() {
-            document.getElementById('loader').style.display = 'block'; // 로딩 스피너 표시
         }
     </script>
 
