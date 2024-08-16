@@ -184,6 +184,7 @@ def delete_file_summary(request, file_id):
     lecture_name = file_to_delete.chapter.lecture.title
     chapter_name = file_to_delete.chapter.chapter_name
     file_to_delete.delete()
+    print("파일이 삭제되었습니다.")
     return redirect('summary:summary_detail', lecture_name=lecture_name, chapter_name=chapter_name)
 
 

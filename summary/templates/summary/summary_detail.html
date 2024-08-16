@@ -45,7 +45,7 @@
         }
 
         #progress-container {
-            width: 90%;
+            width: 88%;
             background-color: #f3f3f3;
             border-radius: 5px;
             overflow: hidden;
@@ -190,7 +190,7 @@
             // 페이지 이동을 지연시키고 프로그레스 바의 진행 상황을 업데이트
             setTimeout(() => {
                 window.location.href = event.target.href; // 페이지 이동
-            }, 150); // 0.15초 후에 페이지 이동
+            }, 2500); // 2.5초 후에 페이지 이동
         }
 
         function updateProgressBar(percent) {
@@ -212,17 +212,17 @@
         function simulateProgress() {
             let progress = 0;
             const interval = setInterval(() => {
-                progress += 0.5;
+                progress += 0.235;
                 updateProgressBar(progress);
                 if (progress >= 100) {
                     clearInterval(interval);
-                    // 프로그레스 바가 100%에 도달한 후 1.5초 뒤에 프로세스 바 숨김 & 로딩 스피너를 보여줌
+                    // 프로그레스 바가 100%에 도달한 후 1.7초 뒤에 프로세스 바 숨김 & 로딩 스피너를 보여줌
                     setTimeout(() => {
                         hideProcess();
                         showSpinner();
-                    }, 1000); // 1.0초 (1000ms) 지연
+                    }, 2000); // 2.0초 (1700ms) 지연
                 }
-            }, 50); // 0.05초마다 0.45%씩 진행 상황 업데이트
+            }, 30); // 0.03초마다 0.235%씩 진행 상황 업데이트
         }
 
         

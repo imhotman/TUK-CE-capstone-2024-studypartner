@@ -24,6 +24,8 @@ urlpatterns = [
     path('update-session/', views.update_session_view, name='update_session'),
     path('add_timer/', views.add_timer_view, name='add_timer'),
     path('lecture_sidebar/', views.lecture_sidebar_view, name='lecture_sidebar'),
+    path('delete_lecture/', views.delete_lecture_view, name='delete_lecture'),
+
     path('delete_account/', views.delete_account_view, name='delete_account'),
     path('lecture/<int:lecture_id>/delete_chapter/<int:chapter_id>/', views.delete_chapter, name='delete_chapter'),
     path('friend/', views.friend_view, name='friend'),

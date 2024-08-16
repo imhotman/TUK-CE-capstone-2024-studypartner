@@ -610,6 +610,21 @@ def lecture_sidebar_view(request):
     return render(request, "user/lecture_sidebar.html", context)
 
 
+# 강의 삭제
+@login_required
+def delete_lecture_view(request):
+    if request.method == 'POST':
+        lecture_title = request.POST.get('lecture_title')
+        lecture = get_object_or_404(Lecture, title=lecture_title)
+        
+        # Lecture와 연결된 모든 LectureChapter가 자동으로 삭제됨
+        lecture.delete()
+        print("강의와 챕터가 삭제되었습니다.")
+    
+    # 강의 삭제 후 사이드바 페이지로 리다이렉트
+    return redirect('user:lecture')
+
+
 # 챕터 삭제
 @login_required
 def delete_chapter(request, lecture_id, chapter_id):

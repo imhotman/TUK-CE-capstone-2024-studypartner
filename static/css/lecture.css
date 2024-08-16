@@ -3,7 +3,7 @@
 
 /* VARIABLES CSS */
 :root {
-    --nav--width: 97px;
+    --nav--width: 93.7px;
 
     /* Colores */
     --first-color: #0c5df4;
@@ -145,6 +145,7 @@ a {
 
 .collapse__link {
     justify-self: flex-end;
+    display: flex;
     transition: .5;
 }
 

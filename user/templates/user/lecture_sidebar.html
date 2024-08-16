@@ -12,11 +12,24 @@
     <link rel="stylesheet" href="{% static 'css/custom.css' %}">
     <style>
      .lecture_sidebar-container {
-        max-height: 700px; /* 최대 높이 설정 */
+        max-height: 650px; /* 최대 높이 설정 */
         overflow-y: auto; /* 수직 스크롤 추가 */
         overflow-x: hidden; /* 수평 스크롤 숨기기 */
-        /* border: 1px solid #ccc; 경계선 추가 */
         margin-top: 1px; /* 상단 여백 추가 */
+    }
+
+    .lecture_sidebar-container::-webkit-scrollbar-thumb {
+        background-color: #91cafc; /* 스크롤바 색상 */
+        border-radius: 4px; /* 스크롤바 둥글게 */
+    }
+
+    /* 스크롤바 스타일 */
+    .lecture_sidebar-container::-webkit-scrollbar {
+        width: 8px; /* 스크롤바 너비 */
+    }
+
+    .lecture_sidebar-container::-webkit-scrollbar-thumb:hover {
+        background-color: #65b6fd; /* hover 시 색상 변경 */
     }
     </style>
 
@@ -30,99 +43,108 @@
     <!-- 타이머를 포함할 부분 -->
     {% include "user/timer.html" %}
 
-    <!-- <h2>Study Partner</h2> -->
-
-<!-- 사이드 네비게이션 바 -->
-<div class="l-navbar" id="navbar">
-    <nav class="nav">
-        <div>
-            <div class="nav__brand">
-                <ion-icon name="menu-outline" class="nav__toggle" id="nav-toggle"></ion-icon>
-                {% if request.user.is_authenticated %}
-                    <a href="#" class="nav__logo">
-                        <span>&nbsp;&nbsp;{{ request.user.username }} 님</span>
-                    </a>
-                {% else %}
-                    <a href="{% url 'user:login' %}" class="nav__logo">
-                        <span>로그인 후 이용하세요.</span>
-                    </a>
-                {% endif %}
-            </div>
-
-            {% if request.user.is_authenticated %}
-            <div class="lecture_sidebar-container">
-                <div class="nav__list">
-                    <a href="{% url 'index' %}" class="nav__link active">
-                        <ion-icon name="home-outline" class="nav__icon"></ion-icon>
-                        <span class="nav_name">&nbsp;&nbsp;메인화면</span>
-                    </a>
-
-                    {% for lecture in lectures %}
-                        <div class="nav__link collapse">
-                            <ion-icon name="folder-outline" class="nav__icon"></ion-icon>
-                            <span class="nav_name" id="my-courses">
-                                <a class="lecture_urllink" href="{% url 'user:lecture_detail' lecture_name=lecture.lecture %}">&nbsp;&nbsp;{{ lecture.lecture }}</a>
-                            </span>
-                            <div class="collapse__link">
-                                <!-- <ion-icon name="add" id="collapse-link"></ion-icon> -->
-                                <ion-icon name="chevron-down-outline"></ion-icon>
-                            </div>
-                            <ul class="collapse__menu text_element" id="collapse-menu">
-                                {% for chapter in lecture.chapters %}
-                                    <li class="collapse__sublink">
-                                        <!-- <a class="lecture_urllink" href="{% url 'upload:chapter_detail' lecture_name=lecture.lecture chapter_name=chapter.chapter_name %}">
-                                            {{ chapter.chapter_name }}
-                                        </a> -->
-                                        <a class="lecture_urllink" href="{% url 'upload:chapter_detail' lecture_name=lecture.lecture chapter_name=chapter.chapter_name %}">
-                                            {{ chapter.chapter_name }}
-                                        </a>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    {% endfor %}
-
-                    <a href="{% url 'user:logout' %}" id="lecture-logout-button" class="nav__link">
-                        <ion-icon name="log-out-outline" class="nav__icon"></ion-icon>
-                        <span class="nav_name">&nbsp;&nbsp;로그아웃</span>
-                    </a>
+    <!-- 사이드 네비게이션 바 -->
+    <div class="l-navbar" id="navbar">
+        <nav class="nav">
+            <div>
+                <div class="nav__brand">
+                    <ion-icon name="menu-outline" class="nav__toggle" id="nav-toggle"></ion-icon>
+                    {% if request.user.is_authenticated %}
+                        <a href="#" class="nav__logo">
+                            <span>&nbsp;&nbsp;{{ request.user.username }} 님</span>
+                        </a>
+                    {% else %}
+                        <a href="{% url 'user:login' %}" class="nav__logo">
+                            <span>로그인 후 이용하세요.</span>
+                        </a>
+                    {% endif %}
                 </div>
-            {% else %}
+
+                {% if request.user.is_authenticated %}
+                <div class="lecture_sidebar-container">
+                    <div class="nav__list">
+                        <a href="{% url 'index' %}" class="nav__link active">
+                            <ion-icon name="home-outline" class="nav__icon"></ion-icon>
+                            <span class="nav_name">&nbsp;&nbsp;메인화면</span>
+                        </a>
+
+                        {% for lecture in lectures %}
+                            <div class="nav__link collapse">
+                                <ion-icon name="folder-outline" class="nav__icon"></ion-icon>
+                                <span class="nav_name" id="my-courses">
+                                    <a class="lecture_urllink" href="{% url 'user:lecture_detail' lecture_name=lecture.lecture %}">&nbsp;&nbsp;{{ lecture.lecture }}</a>
+                                </span>
+                                <div class="collapse__link">
+                                    <!-- 강의 삭제 폼 -->
+                                    <form id="delete-lecture-form" method="post" action="{% url 'user:delete_lecture' %}" style="display:inline;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="lecture_title" value="{{ lecture.lecture }}">
+                                        <button type="submit" class="remove-icon">
+                                            <ion-icon name="remove"></ion-icon>
+                                        </button>
+                                    </form>
+                                    <ion-icon name="chevron-down-outline"></ion-icon>
+                                </div>
+                                <ul class="collapse__menu text_element" id="collapse-menu">
+                                    {% for chapter in lecture.chapters %}
+                                        <li class="collapse__sublink">
+                                            <a class="lecture_urllink" href="{% url 'upload:chapter_detail' lecture_name=lecture.lecture chapter_name=chapter.chapter_name %}">
+                                                {{ chapter.chapter_name }}
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endfor %}
+
+                        <a href="{% url 'user:logout' %}" id="lecture-logout-button" class="nav__link">
+                            <ion-icon name="log-out-outline" class="nav__icon"></ion-icon>
+                            <span class="nav_name">&nbsp;&nbsp;로그아웃</span>
+                        </a>
+                    </div>
+                </div>
+                {% else %}
                 <div class="nav__list">
                     <a href="{% url 'index' %}" class="nav__link active">
                         <ion-icon name="home-outline" class="nav__icon"></ion-icon>
                         <span class="nav_name">메인화면</span>
                     </a>
                 </div>
-            {% endif %}
+                {% endif %}
             </div>
-        </div>
-    </nav>
-</div>
-<!-- 사이드 네비게이션 바 끝부분 -->
+        </nav>
+    </div>
+    <!-- 사이드 네비게이션 바 끝부분 -->
 
-<script>
-    document.getElementById('lecture-logout-button').addEventListener('click', function(event) {
-        if (window.confirm('로그아웃 하시겠습니까?')) {
-            // 로그아웃을 처리하는 URL로 이동
-            window.location.href = "{% url 'user:logout' %}";
-        } else {
-            // 취소를 클릭했을 때 아무 동작도 하지 않음
-            event.preventDefault();
-        }
-    });
-</script>
+    <script>
+        // 로그아웃 버튼 클릭 시 확인 메시지
+        document.getElementById('lecture-logout-button').addEventListener('click', function(event) {
+            if (!window.confirm('로그아웃 하시겠습니까?')) {
+                event.preventDefault(); // 로그아웃 취소 시 페이지 이동 막기
+            }
+        });
 
-<!-- IONICONS -->
-<script src="https://unpkg.com/ionicons@5.2.3/dist/ionicons.js"></script>
-<!-- JS -->
-<script src="{% static 'js/lecture.js' %}"></script>
+        // 강의 삭제 버튼 클릭 시 확인 메시지
+        document.querySelectorAll('#delete-lecture-form').forEach(form => {
+            form.addEventListener('submit', function(event) {
+                if (!confirm('강의를 삭제하시겠습니까?\n삭제 시 해당 강의의 모든 챕터와 파일이 삭제됩니다.')) {
+                    event.preventDefault(); // 삭제 취소 시 폼 제출 막기
+                }
+            });
+        });
+    </script>
 
-<script>
-    const chapterUrl = "{% url 'chapter' %}";
-</script>    
-<!-- JavaScript 코드 -->
+    <!-- IONICONS -->
+    <script src="https://unpkg.com/ionicons@5.2.3/dist/ionicons.js"></script>
+    <!-- JS -->
+    <script src="{% static 'js/lecture.js' %}"></script>
+
+    <script>
+        const chapterUrl = "{% url 'chapter' %}";
+    </script>    
+    <!-- JavaScript 코드 -->
 
 </body>
 </html>
+
 {% endblock %}
