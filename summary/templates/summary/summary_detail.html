@@ -44,22 +44,25 @@
             text-align: center;
         }
 
+        /* 프로그레스 바 컨테이너 */
         #progress-container {
-            width: 88%;
-            background-color: #f3f3f3;
-            border-radius: 5px;
-            overflow: hidden;
-            margin-top: 10px;
-            margin-left: 5%;
-            margin-right: 5%;
+            width: 85%; /* 전체 화면의 85% 너비 */
+            position: fixed; /* 컨테이너를 화면 하단에 고정 */
+            left: calc(50% - 42.75%); /* 화면의 중앙에서 컨테이너의 너비의 절반을 뺀 위치에 고정 */
+            margin-left: 2.85%;
+            bottom: 9.7vh; /* 화면 하단에서 9.7vh 위에 위치 */
+            height: 10px; /* 컨테이너의 높이를 프로그레스 바와 맞춤 */
+            background-color: rgba(186, 186, 186, 0.91); /* 배경색 설정 (필요에 따라 제거 가능) */
+            border-radius: 5px; /* 둥근 모서리 */
         }
 
+        /* 프로그레스 바 */
         #progress-bar {
-            height: 10px;
+            height: 100%; /* 부모 요소의 높이를 100% 차지 */
             background-color: #ff99ff;
-            width: 0%;
-            transition: width 0.4s ease;
-            border-radius: 5px;
+            width: 0%; /* 초기 너비 */
+            transition: width 0.4s ease; /* 너비 애니메이션 */
+            border-radius: 5px; /* 둥근 모서리 */
         }
 
 
@@ -159,7 +162,7 @@
 
     <!-- 로딩 스피너와 프로그레스 바 -->
     <div id="loader-container">
-        <div id="progress-container"><br><br>
+        <div id="progress-container">
             <div id="progress-bar"></div>
         </div>
         <div id="loader" class="loader loader-position"></div>
@@ -190,7 +193,7 @@
             // 페이지 이동을 지연시키고 프로그레스 바의 진행 상황을 업데이트
             setTimeout(() => {
                 window.location.href = event.target.href; // 페이지 이동
-            }, 2500); // 2.5초 후에 페이지 이동
+            }, 100); // 0.1초 후에 페이지 이동
         }
 
         function updateProgressBar(percent) {
@@ -212,7 +215,7 @@
         function simulateProgress() {
             let progress = 0;
             const interval = setInterval(() => {
-                progress += 0.235;
+                progress += 0.230;
                 updateProgressBar(progress);
                 if (progress >= 100) {
                     clearInterval(interval);
@@ -220,9 +223,9 @@
                     setTimeout(() => {
                         hideProcess();
                         showSpinner();
-                    }, 2000); // 2.0초 (1700ms) 지연
+                    }, 2700); // 2.7초 (2700ms) 지연
                 }
-            }, 30); // 0.03초마다 0.235%씩 진행 상황 업데이트
+            }, 30); // 0.03초마다 0.230%씩 진행 상황 업데이트
         }
 
         
