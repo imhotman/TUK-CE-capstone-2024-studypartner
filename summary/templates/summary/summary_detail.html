@@ -29,19 +29,13 @@
         }
 
         #loader-container {
-            display: none; /* 처음에는 숨김 상태 */
+            display: none; /* 기본적으로 숨김 */
             text-align: center; /* 내용 중앙 정렬 */
-
         }
 
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
-        }
-
-        #loader-container {
-            display: none; /* 기본적으로 숨김 */
-            text-align: center;
         }
 
         /* 프로그레스 바 컨테이너 */
@@ -50,7 +44,7 @@
             position: fixed; /* 컨테이너를 화면 하단에 고정 */
             left: calc(50% - 42.75%); /* 화면의 중앙에서 컨테이너의 너비의 절반을 뺀 위치에 고정 */
             margin-left: 2.85%;
-            bottom: 9.7vh; /* 화면 하단에서 9.7vh 위에 위치 */
+            bottom: 8.5vh; /* 화면 하단에서 8.5vh 위에 위치 */
             height: 10px; /* 컨테이너의 높이를 프로그레스 바와 맞춤 */
             background-color: rgba(186, 186, 186, 0.91); /* 배경색 설정 (필요에 따라 제거 가능) */
             border-radius: 5px; /* 둥근 모서리 */
@@ -65,7 +59,6 @@
             border-radius: 5px; /* 둥근 모서리 */
         }
 
-
         .back-icon {
             font-size: 1.1rem; /* 아이콘 크기 조정 */
             color: #000; /* 아이콘 색상 조정 */
@@ -76,12 +69,64 @@
             padding: 10px; /* 클릭 영역 확대 */
             float: right; /* 아이콘을 오른쪽으로 배치 */
         }
+
+        /* 커스터마이즈된 파일 선택 버튼 스타일 */
+        .custom-file-upload {
+            border: 1px solid #cce5ff;
+            display: inline-block;
+            padding: 6px 12px;
+            cursor: pointer;
+            background-color: #ac1aef;
+            color: white;
+            border-radius: 7px;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        /* 파일 선택 버튼과 파일 이름 표시를 수평으로 배치하는 컨테이너 */
+        .file-upload-container {
+            display: flex;
+            align-items: center;
+            gap: 10px; /* 버튼과 텍스트 사이의 간격 */
+        }
+
+        .file-name {
+            color: #cce5ff;
+            font-size: 14px;
+        }
+
+        .form-container {
+            margin-top: 20px;
+        }
+
+        .uploaded_file_list-container {
+            max-height: 85px; /* 최대 높이 설정 */
+            overflow-y: auto; /* 수직 스크롤 추가 */
+            /* border: 1px solid #bababa; */
+            padding: 10px; /* 내부 여백 추가 */
+            margin-top: 10px; /* 상단 여백 추가 */
+        }
+
+        /* 스크롤바 스타일 */
+        .uploaded_file_list-container::-webkit-scrollbar {
+            width: 7px; /* 스크롤바 너비 */
+        }
+
+        .uploaded_file_list-container::-webkit-scrollbar-thumb:hover {
+            background-color: #b0f2c2; /* hover 시 색상 변경 */
+        }
+
+        .uploaded_file_list-container::-webkit-scrollbar-thumb {
+            background-color: #d8f8e1; /* 스크롤바 색상 */
+            border-radius: 4px; /* 스크롤바 둥글게 */
+        }
+
     </style>
 
     <title>{{ chapter.lecture.title }} 챕터 상세 정보</title>
 </head>
 <body id="body-pd">
-    
+
     <!-- 강의실 사이드 네비게이터 & 타이머 포함할 부분 -->
     {% include "user/lecture_sidebar.html" %}
     <!-- 강의실 사이드 네비게이터 & 타이머 포함할 끝 부분 -->
@@ -93,7 +138,7 @@
     <!-- 사용자의 챕터 상세정보 -->
     <div class="custom-body">
         <div class="lecture-box">
-            <h2>        
+            <h2>
                 <span>Study Partner</span>
                 <a href="{% url 'upload:chapter_detail' lecture_name=chapter.lecture.title chapter_name=chapter.chapter_name %}">
                     <ion-icon name="arrow-back-outline" class="lecture_urllink2 nav__toggle2 study-partner-backion" id="back-toggle"></ion-icon>
@@ -101,17 +146,16 @@
             </h2>
 
             <div class="user-box">
-                <p style="color:white">사용자: {{ user.username }} </p>
+                <p style="color:white"><b>사용자:</b> &nbsp;&nbsp;{{ user.username }} 님</p>
             </div>
             <div class="user-box">
-                <p style="color:white">강의명: {{ chapter.lecture.title }} </p>
+                <p style="color:white"><b>강의 및 챕터명:</b> &nbsp;&nbsp;{{ chapter.lecture.title }} - {{ chapter.chapter_name }}</p>
             </div>
-            <div class="user-box">
-                <p style="color:white">챕터명: {{ chapter.chapter_name }} </p>
-            </div><br>
-            
-            <div class="user-box">
-                <p style="color:white">업로드된 파일 목록: </p>
+            <hr style="border-top: 0.8px solid #bababa; width: 100%; margin: 7px 0;"><br>
+
+            <div class="user-box">    
+                <p style="color:white; margin-bottom: 2px;"><b>업로드된 파일 목록:</b> </p>
+                <div class="uploaded_file_list-container">
                 <ul>
                     {% for file in uploaded_files %}
                         <li>
@@ -136,24 +180,40 @@
                         </li>
                     {% endfor %} 
                 </ul>
+                </div>
             </div><br>
-            <div>
-                <p style="color:white">파일 업로드: </p>
+            <hr style="border-top: 0.8px solid #bababa; width: 100%; margin: 7px 0;">
+
+            <div class="form-container">
+                <p style="color:white; margin-bottom: 8px;"><b>파일 업로드:</b> </p>
                 <form id="upload-form" method="post" action="{% url 'summary:upload_file_summary' lecture_name=chapter.lecture.title chapter_name=chapter.chapter_name %}" enctype="multipart/form-data" style="color: darkgray">
                     {% csrf_token %}
-                    {{ form.as_p }}
+                    <div>
+                        <p style="color: #cce5ff;">{{ form.file_title.label_tag }} <!-- file_title 라벨 -->
+                        <span style="color: black; margin-left: 15px;">{{ form.file_title }}</span> <!-- file_title 입력 필드 --></p>
+                    </div>
+
+                    <div class="file-upload-container" style="margin-top: 5px;">
+                        <p style="color: #cce5ff;">File name:</p>
+                        <!-- 커스터마이즈된 파일 선택 버튼 -->
+                        <label for="file-upload" class="custom-file-upload">
+                            파일 선택
+                        </label>
+                        <input id="file-upload" type="file" name="file_name" style="display: none;" onchange="updateFileName()">
+                        <!-- 선택된 파일 이름 표시 -->
+                        <span id="file-name" class="file-name">선택된 파일이 없습니다.</span>
+                    </div>
                     <br>
-                    <div class="index_studypartner_buttonlist" style="text-align: center; display: ruby-text;">     
+                    <div class="index_studypartner_buttonlist" style="text-align: center; display: ruby-text;">
                         <button type="submit" style="margin-left: 0px;">파일 업로드</button>&nbsp;&nbsp;
                         <button type="button" onclick="resetUploadForm()" class="reverse dark" style="background-color: darkcyan;">모두 삭제</button>&nbsp;&nbsp;
                     </div>
                 </form>
-                
             </div>
         </div>
     </div>
     <!-- 사용자의 챕터 상세정보 끝부분-->
-    
+
     <!-- 친구 시스템 포함할 부분 -->
     <div class="lecture-box2">
         {% include "user/friend.html" %}
@@ -180,6 +240,17 @@
 
         function resetUploadForm() {
             document.getElementById('upload-form').reset();
+            document.getElementById('file-name').textContent = '선택된 파일이 없습니다.';
+        }
+
+        function updateFileName() {
+            const fileInput = document.getElementById('file-upload');
+            const fileNameSpan = document.getElementById('file-name');
+            if (fileInput.files.length > 0) {
+                fileNameSpan.textContent = fileInput.files[0].name;
+            } else {
+                fileNameSpan.textContent = '선택된 파일이 없습니다.';
+            }
         }
 
         function showLoader(event) {
@@ -215,21 +286,18 @@
         function simulateProgress() {
             let progress = 0;
             const interval = setInterval(() => {
-                progress += 0.230;
+                progress += 0.222;
                 updateProgressBar(progress);
                 if (progress >= 100) {
                     clearInterval(interval);
-                    // 프로그레스 바가 100%에 도달한 후 1.7초 뒤에 프로세스 바 숨김 & 로딩 스피너를 보여줌
+                    // 프로그레스 바가 100%에 도달한 후 2.8초 뒤에 프로세스 바 숨김 & 로딩 스피너를 보여줌
                     setTimeout(() => {
                         hideProcess();
                         showSpinner();
-                    }, 2700); // 2.7초 (2700ms) 지연
+                    }, 3000); // 3.0초 (3000ms) 지연
                 }
-            }, 30); // 0.03초마다 0.230%씩 진행 상황 업데이트
+            }, 30); // 0.03초마다 0.222%씩 진행 상황 업데이트
         }
-
-        
-        
     </script>
 
 </body>

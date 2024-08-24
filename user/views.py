@@ -610,19 +610,39 @@ def lecture_sidebar_view(request):
     return render(request, "user/lecture_sidebar.html", context)
 
 
+# # 강의 삭제
+# @login_required
+# def delete_lecture_view(request):
+#     if request.method == 'POST':
+#         lecture_title = request.POST.get('lecture_title')
+#         lecture = get_object_or_404(Lecture, title=lecture_title)
+        
+#         # Lecture와 연결된 모든 LectureChapter가 자동으로 삭제됨
+#         lecture.delete()
+#         print("강의와 챕터가 삭제되었습니다.")
+    
+#     # 강의 삭제 후 사이드바 페이지로 리다이렉트
+#     return redirect('user:lecture')
+
 # 강의 삭제
 @login_required
 def delete_lecture_view(request):
     if request.method == 'POST':
         lecture_title = request.POST.get('lecture_title')
-        lecture = get_object_or_404(Lecture, title=lecture_title)
-        
-        # Lecture와 연결된 모든 LectureChapter가 자동으로 삭제됨
-        lecture.delete()
-        print("강의와 챕터가 삭제되었습니다.")
+        try:
+            lecture = get_object_or_404(Lecture, title=lecture_title)
+            # Lecture와 연결된 모든 LectureChapter가 자동으로 삭제됨
+            lecture.delete()
+            print("강의와 챕터가 삭제되었습니다.")
+            return JsonResponse({'success': True})
+        except Lecture.DoesNotExist:
+            return JsonResponse({'success': False, 'error': '강의를 찾을 수 없습니다.'})
+        except Exception as e:
+            print(f"삭제 중 오류 발생: {e}")
+            return JsonResponse({'success': False, 'error': '강의 삭제 중 오류가 발생했습니다.'})
     
-    # 강의 삭제 후 사이드바 페이지로 리다이렉트
-    return redirect('user:lecture')
+    # POST가 아닐 경우
+    return JsonResponse({'success': False, 'error': '잘못된 요청입니다.'})
 
 
 # 챕터 삭제
@@ -638,6 +658,7 @@ def delete_chapter(request, lecture_id, chapter_id):
 
     # 삭제 후 강의 상세 페이지로 리다이렉트
     return redirect('user:lecture_detail', lecture_name=lecture.title)
+
 
 
 # 친구 요청
