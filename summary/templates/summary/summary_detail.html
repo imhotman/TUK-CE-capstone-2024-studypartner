@@ -303,21 +303,21 @@
             let downloadDuration = 0;
 
             if (fileSizeMB <= 5) {  // 5MB 이하의 파일
-                downloadDuration = 23;  
+                downloadDuration = 22;  
             } else if (fileSizeMB <= 10) {  // 10MB 이하의 파일
-                downloadDuration = 28;
+                downloadDuration = 27;
             } else if (fileSizeMB <= 15) {  // 15MB 이하의 파일
-                downloadDuration = 35;
+                downloadDuration = 33;
             } else if (fileSizeMB <= 17) {  // 17MB 이하의 파일
-                downloadDuration = 42;
+                downloadDuration = 40;
             } else if (fileSizeMB <= 18.5) {  // 18.5MB 이하의 파일
-                downloadDuration = 49;
+                downloadDuration = 46;
             } else if (fileSizeMB <= 20) {  // 20MB 이하의 파일
-                downloadDuration = 56;
+                downloadDuration = 53;
             } else if (fileSizeMB <= 25) {  // 25MB 이하의 파일
-                downloadDuration = 63;
+                downloadDuration = 60;
             } else {
-                downloadDuration = 63 + ((fileSizeMB - 20) * (4 / 10));
+                downloadDuration = 60 + ((fileSizeMB - 20) * (4 / 10));
             }
     
             const progressPerSecond = 100 / downloadDuration; // 0.2초당 이동하는 퍼센트
