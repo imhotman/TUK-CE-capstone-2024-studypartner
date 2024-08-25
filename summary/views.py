@@ -10,6 +10,7 @@ from django.http import Http404
 from datetime import date
 from django.utils import timezone
 from datetime import datetime, timedelta
+from django.http import JsonResponse
 import pytz
 import openai # type: ignore
 from dotenv import load_dotenv # type: ignore
@@ -233,7 +234,6 @@ def stt_view(request, lecture_name, chapter_name, file_id):
         # 현재 챕터 추가
         lectures[-1]['chapters'].append({'chapter_name': chapter_name, 'chapter_url': chapter_url, 'lecture_url': lecture_url})
 
-
     # 현재 사용자의 친구 요청 가져오기
     friend_requests = FriendRequest.objects.filter(to_user=request.user)
 
@@ -290,7 +290,7 @@ def stt_view(request, lecture_name, chapter_name, file_id):
         'today_record': today_record,
         'friends_records': friends_records,
         'text': text,
-        'audio_file': audio_file
+        'audio_file': audio_file,
     }
 
     return render(request, 'summary/show_stt.html', context)
@@ -579,3 +579,24 @@ def extract_text(text):
     return ' '.join(extracted)
 
 
+
+# def get_file_size(request, file_id):
+#     file = get_object_or_404(UploadFile_summary, pk=file_id)
+#     file_size = file.file_name.size  # 파일 크기 (바이트 단위)
+#     return JsonResponse({'file_size': file_size})
+
+def get_file_size(request, file_id):
+    try:
+        file = UploadFile_summary.objects.get(id=file_id)
+        file_size = file.file_name.size  # 파일 크기 (바이트 단위)
+        file_name = file.file_name.name  # 파일 이름
+        print(file)
+        print(file_size)
+        print(file_name)
+        
+        return JsonResponse({
+            'file_size': file_size,
+            'file_name': file_name
+        })
+    except UploadFile_summary.DoesNotExist:
+        return JsonResponse({'error': '파일을 찾을 수 없습니다.'}, status=404)

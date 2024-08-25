@@ -164,12 +164,14 @@
                             <a href="{{ file.file_name.url }}" class="lecture_urllink" style="margin-left: 30px; color: rgb(250, 173, 30);" download="{{ file.file_name.name }}">
                                 다운로드
                             </a> 
-                            <a style="margin-left: 10px; color: rgb(92, 194, 107);" class="lecture_urllink" href="{% url 'summary:stt_view' lecture_name=chapter.lecture.title chapter_name=chapter.chapter_name file_id=file.pk %}" onclick="showLoader(event); return false;">
-                                텍스트 변환
+                            <a style="margin-left: 10px; color: rgb(92, 194, 107);" class="lecture_urllink"
+                            href="{% url 'summary:stt_view' lecture_name=chapter.lecture.title chapter_name=chapter.chapter_name file_id=file.pk %}"
+                            data-action="텍스트 변환" data-file-id="{{ file.id }}" onclick="showLoader(event)">
+                            텍스트 변환
                             </a>
-                            <!-- AI 요약하기 버튼 -->
-                            <a style="margin-left: 10px; color: rgb(213, 221, 7);" class="lecture_urllink" 
-                               href="{% url 'summary:show_summary_view' lecture_name=chapter.lecture.title chapter_name=chapter.chapter_name file_id=file.pk %}" onclick="showLoader(event); return false;">
+                            <a style="margin-left: 10px; color: rgb(213, 221, 7);" class="lecture_urllink"
+                                href="{% url 'summary:show_summary_view' lecture_name=chapter.lecture.title chapter_name=chapter.chapter_name file_id=file.pk %}"
+                                data-action="AI 요약하기" data-file-id="{{ file.id }}" onclick="showLoader(event)">
                                 AI 요약하기
                             </a>
                             <!-- 파일 삭제 버튼 추가 -->
@@ -204,9 +206,9 @@
                         <span id="file-name" class="file-name">선택된 파일이 없습니다.</span>
                     </div>
                     <br>
-                    <div class="index_studypartner_buttonlist" style="text-align: center; display: ruby-text;">
+                    <div class="index_studypartner_buttonlist" style="text-align: center; display: ruby-text; padding-left: 18%;">
                         <button type="submit" style="margin-left: 0px;">파일 업로드</button>&nbsp;&nbsp;
-                        <button type="button" onclick="resetUploadForm()" class="reverse dark" style="background-color: darkcyan;">모두 삭제</button>&nbsp;&nbsp;
+                        <button type="button" onclick="resetUploadForm()" class="reverse dark" style="background-color: darkcyan;">모두 삭제</button>
                     </div>
                 </form>
             </div>
@@ -230,6 +232,8 @@
 
     <!-- JavaScript 추가 -->
     <script>
+        let fileSizeMB = 0; // 전역 변수 선언
+    
         function confirmDelete(fileId) {
             if (confirm("정말로 이 파일을 삭제하시겠습니까?")) {
                 document.getElementById('delete-form-' + fileId).submit();
@@ -237,12 +241,12 @@
                 alert("파일 삭제를 취소하였습니다.");
             }
         }
-
+    
         function resetUploadForm() {
             document.getElementById('upload-form').reset();
             document.getElementById('file-name').textContent = '선택된 파일이 없습니다.';
         }
-
+    
         function updateFileName() {
             const fileInput = document.getElementById('file-upload');
             const fileNameSpan = document.getElementById('file-name');
@@ -252,51 +256,111 @@
                 fileNameSpan.textContent = '선택된 파일이 없습니다.';
             }
         }
-
+        
+        // 프로그레스 바 및 로딩 스피너
         function showLoader(event) {
             event.preventDefault(); // 기본 동작 방지
+    
+            // data-action과 data-file-id를 HTML 요소에서 읽어오기
+            const element = event.target;
+            const action = element.getAttribute('data-action');
+            const fileId = element.getAttribute('data-file-id');
+    
             document.getElementById('loader-container').style.display = 'block'; // 로딩 스피너와 프로그레스 바 표시
             document.getElementById('progress-bar').style.width = '0%'; // 프로그레스 바 초기화
-
+    
+            // 파일 크기 계산 및 표시
+            calculateFileSize(fileId, action);
+    
             // 프로그레스 바의 진행 상황을 업데이트
-            simulateProgress(); // 프로그레스 바 시뮬레이션
-
-            // 페이지 이동을 지연시키고 프로그레스 바의 진행 상황을 업데이트
+            // 파일 크기에 따라 프로그레스 바 시뮬레이션
             setTimeout(() => {
-                window.location.href = event.target.href; // 페이지 이동
-            }, 100); // 0.1초 후에 페이지 이동
+                simulateProgress(); // 프로그레스 바 시뮬레이션
+                setTimeout(() => {
+                    window.location.href = event.target.href; // 페이지 이동
+                }, 100); // 0.1초 후에 페이지 이동
+            }, 100); // 파일 크기 계산 후 프로그레스 바 시뮬레이션 시작
         }
-
+    
         function updateProgressBar(percent) {
             document.getElementById('progress-bar').style.width = percent + '%'; // 프로그레스 바 업데이트
         }
-
+    
         function hideLoader() {
             document.getElementById('loader-container').style.display = 'none'; // 로딩 스피너와 프로그레스 바 숨기기
         }
-
+    
         function showSpinner() {
             document.getElementById('loader').style.display = 'block'; // 로딩 스피너 표시
         }
-
+    
         function hideProcess() {
             document.getElementById('progress-container').style.display = 'none';   // 프로그레스 바를 숨기기
         }
-
+    
         function simulateProgress() {
             let progress = 0;
+            let downloadDuration = 0;
+
+            if (fileSizeMB <= 5) {  // 5MB 이하의 파일
+                downloadDuration = 23;  
+            } else if (fileSizeMB <= 10) {  // 10MB 이하의 파일
+                downloadDuration = 28;
+            } else if (fileSizeMB <= 15) {  // 15MB 이하의 파일
+                downloadDuration = 35;
+            } else if (fileSizeMB <= 17) {  // 17MB 이하의 파일
+                downloadDuration = 42;
+            } else if (fileSizeMB <= 18.5) {  // 18.5MB 이하의 파일
+                downloadDuration = 49;
+            } else if (fileSizeMB <= 20) {  // 20MB 이하의 파일
+                downloadDuration = 56;
+            } else if (fileSizeMB <= 25) {  // 25MB 이하의 파일
+                downloadDuration = 63;
+            } else {
+                downloadDuration = 63 + ((fileSizeMB - 20) * (4 / 10));
+            }
+    
+            const progressPerSecond = 100 / downloadDuration; // 0.2초당 이동하는 퍼센트
+    
             const interval = setInterval(() => {
-                progress += 0.222;
+                progress += progressPerSecond;
+                if (progress > 100) {
+                    progress = 100;
+                }
+
                 updateProgressBar(progress);
                 if (progress >= 100) {
                     clearInterval(interval);
-                    // 프로그레스 바가 100%에 도달한 후 2.8초 뒤에 프로세스 바 숨김 & 로딩 스피너를 보여줌
+                    // 프로그레스 바가 100%에 도달한 후 3초 뒤에 프로세스 바 숨김 & 로딩 스피너를 보여줌
                     setTimeout(() => {
                         hideProcess();
                         showSpinner();
-                    }, 3000); // 3.0초 (3000ms) 지연
+                    }, 2500); // 2.5초 (2500ms) 지연
                 }
-            }, 30); // 0.03초마다 0.222%씩 진행 상황 업데이트
+            }, 350); // 0.35초마다 진행 상황 업데이트
+        }
+    
+        function calculateFileSize(fileId, action) {
+            // 환경을 기반으로 API URL 설정
+            const apiUrl = window.location.hostname === '127.0.0.1' ? 'http://127.0.0.1:8000' : 'http://3.39.12.167:8000/';
+    
+            fetch(`${apiUrl}/summary/get_file_size/${fileId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    const fileSizeBytes = data.file_size;
+                    const fileName = data.file_name; // 파일 이름 추가
+                    if (fileSizeBytes) {
+                        // 바이트를 MB로 변환
+                        fileSizeMB = (fileSizeBytes / (1024 * 1024)).toFixed(2);
+                        alert(`파일이름: ${fileName}\n작업: ${action}\n파일 크기: ${fileSizeMB} MB`);
+                    } else {
+                        alert('파일 크기를 가져올 수 없습니다.');
+                    }
+                })
+                .catch(error => {
+                    console.error('파일 크기 가져오기 실패:', error);
+                    alert('파일 크기를 가져오는 데 오류가 발생했습니다.');
+                });
         }
     </script>
 
