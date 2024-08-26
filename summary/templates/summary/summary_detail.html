@@ -126,6 +126,15 @@
             font-family: Arial, Helvetica, sans-serif;
         }
 
+        .index_studypartner_buttonlist {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2px;
+            margin-top: 10px;
+            margin-right: 2px;
+        }
+
     </style>
 
     <title>{{ chapter.lecture.title }} 챕터 상세 정보</title>
@@ -199,7 +208,7 @@
                         <p style="color: #cce5ff;">{{ form.file_title.label_tag }} <!-- file_title 라벨 -->
                         <span style="color: black; margin-left: 15px;">{{ form.file_title }}</span> <!-- file_title 입력 필드 --></p>
                     </div>
-
+            
                     <div class="file-upload-container" style="margin-top: 5px;">
                         <p style="color: #cce5ff;">File name:</p>
                         <!-- 커스터마이즈된 파일 선택 버튼 -->
@@ -211,7 +220,7 @@
                         <span id="file-name" class="file-name">선택된 파일이 없습니다.</span>
                     </div>
                     <br>
-                    <div class="index_studypartner_buttonlist" style="text-align: center; display: ruby-text; padding-left: 18%;">
+                    <div class="index_studypartner_buttonlist">
                         <button type="submit" style="margin-left: 0px;">파일 업로드</button>&nbsp;&nbsp;
                         <button type="button" onclick="resetUploadForm()" class="reverse dark" style="background-color: darkcyan;">모두 삭제</button>
                     </div>
