@@ -178,7 +178,7 @@
                             <a href="{{ file.file_name.url }}" class="lecture_urllink" style="margin-left: 30px; color: rgb(250, 173, 30);" download="{{ file.file_name.name }}">
                                 다운로드
                             </a> 
-                            <a style="margin-left: 10px; color: rgb(92, 194, 107);" class="lecture_urllink"
+                            <a style="margin-left: 10px; color: rgb(102, 178, 255);" class="lecture_urllink"
                             href="{% url 'summary:stt_view' lecture_name=chapter.lecture.title chapter_name=chapter.chapter_name file_id=file.pk %}"
                             data-action="텍스트 변환" data-file-id="{{ file.id }}" onclick="showLoader(event)">
                             텍스트 변환
