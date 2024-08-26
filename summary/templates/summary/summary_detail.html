@@ -342,7 +342,7 @@
     
         function calculateFileSize(fileId, action) {
             // 환경을 기반으로 API URL 설정
-            const apiUrl = window.location.hostname === '127.0.0.1' ? 'http://127.0.0.1:8000' : 'http://3.39.12.167:8000/';
+            const apiUrl = window.location.hostname === '127.0.0.1' ? 'http://127.0.0.1:8000' : 'http://3.39.12.167:8000';
     
             fetch(`${apiUrl}/summary/get_file_size/${fileId}/`)
                 .then(response => response.json())
