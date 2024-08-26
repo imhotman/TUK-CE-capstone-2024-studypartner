@@ -102,6 +102,7 @@
         .uploaded_file_list-container {
             max-height: 85px; /* 최대 높이 설정 */
             overflow-y: auto; /* 수직 스크롤 추가 */
+            overflow-x: auto; /* 수평 스크롤 추가 */
             /* border: 1px solid #bababa; */
             padding: 10px; /* 내부 여백 추가 */
             margin-top: 10px; /* 상단 여백 추가 */
@@ -121,6 +122,10 @@
             border-radius: 4px; /* 스크롤바 둥글게 */
         }
 
+        .chrome_font {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
     </style>
 
     <title>{{ chapter.lecture.title }} 챕터 상세 정보</title>
@@ -136,7 +141,7 @@
     <!-- 친구 간 최고기록 순위 포함할 끝 부분 -->
 
     <!-- 사용자의 챕터 상세정보 -->
-    <div class="custom-body">
+    <div class="custom-body chrome_font">
         <div class="lecture-box">
             <h2>
                 <span>Study Partner</span>
