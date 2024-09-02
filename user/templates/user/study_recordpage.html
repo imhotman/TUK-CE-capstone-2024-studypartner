@@ -76,22 +76,41 @@
         /* 점멸 애니메이션 */
         @keyframes pulse {
             0%, 100% {
-                box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+                box-shadow: 0 0 5px rgba(255, 0, 150, 0.5);
+                transform: scale(1);
             }
             50% {
-                box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.7);
+                box-shadow: 0 0 20px rgba(255, 0, 150, 0.7);
+                transform: scale(1.05);
             }
         }
 
         .toggle-button:hover {
             background: linear-gradient(135deg, #5515c2 0%, #1a58d4 100%);
-            animation: pulse 0.65s infinite;
+            animation: pulse 0.75s infinite;
         }
 
+        .delete-btn {
+            background-color: #ea0090;
+            border: none;
+            color: white;
+            padding: 4px 8px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 12px;
+            cursor: pointer;
+            border-radius: 7px;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            background: linear-gradient(135deg, #009688 0%, #004d40 100%);
+            animation: pulse 0.75s infinite;
+        }
     </style>
 </head>
 <body class="bg-gray-100">
-
     <!-- 강의실 사이드 네비게이터 & 타이머 포함할 부분 -->
     {% include "user/lecture_sidebar.html" %}
     <!-- 강의실 사이드 네비게이터 & 타이머 포함할 끝 부분 -->
@@ -122,8 +141,8 @@
         <!-- <hr style="border-top: 0.5px solid #ccc; width: 100%; margin: 7px 0;"> -->
 
         <!-- 버튼 추가 -->
-        <div class="button-container">
-            <button id="toggle-highest-records" class="toggle-button active">날짜별 높은 기록 보기</button>
+        <div class="button-container" style="text-align: center; margin-right: 7px;">
+            <button id="toggle-highest-records" class="toggle-button active" style="margin-right: 2px;">날짜별 최고기록 보기</button>
             <button id="toggle-recent-sessions" class="toggle-button">모든 공부기록 보기</button>
         </div>
 
@@ -201,7 +220,6 @@
             this.classList.add("active");
             document.getElementById("toggle-highest-records").classList.remove("active");
         });
-
 
         // 아이콘을 클릭하면 삭제 확인을 위한 confirm 창 표시
         document.querySelectorAll('.delete-btn').forEach(function(icon) {
