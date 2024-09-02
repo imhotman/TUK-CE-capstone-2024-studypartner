@@ -34,6 +34,7 @@ urlpatterns = [
     path('delete_friend/<int:friend_id>/', views.delete_friend, name='delete_friend'),
     path('reject_friend_request/<int:request_id>/', views.reject_friend_request, name='reject_friend_request'),
 
+    path('study_recordpage/', views.study_recordpage_view, name='study_recordpage'),
 
 
   

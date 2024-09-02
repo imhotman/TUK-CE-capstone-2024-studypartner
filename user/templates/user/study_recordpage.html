@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>공부기록 페이지</title>
+    <style>
+        /* 공통 스타일 */
+        .study_recordpage-container {
+            max-height: 350px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-right: 3.5px;
+        }
+
+        .study_recordpage-container::-webkit-scrollbar-thumb {
+            background-color: #ffab91;
+            border-radius: 4px;
+        }
+
+        .study_recordpage-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .study_recordpage-container::-webkit-scrollbar-thumb:hover {
+            background-color: #ff7043;
+        }
+
+        .back-icon {
+            font-size: 1.1rem;
+            color: #000;
+            float: right;
+        }
+
+        .back-link {
+            padding: 10px;
+            float: right;
+        }
+
+        .today-high-record {
+            background-color: #b3e5fc;
+            font-weight: bold;
+        }
+
+        .chrome_font {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* 버튼 스타일 */
+        .button-container {
+            margin-bottom: 15px;
+        }
+
+        .toggle-button {
+            padding: 10px 15px;
+            background: linear-gradient(135deg, #fc4a1a 0%, #f7b733 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .toggle-button.active {
+            background: linear-gradient(135deg, #7d13ed 0%, #2575fc 100%);
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 점멸 애니메이션 */
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+            }
+            50% {
+                box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.7);
+            }
+        }
+
+        .toggle-button:hover {
+            background: linear-gradient(135deg, #5515c2 0%, #1a58d4 100%);
+            animation: pulse 0.65s infinite;
+        }
+
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <!-- 강의실 사이드 네비게이터 & 타이머 포함할 부분 -->
+    {% include "user/lecture_sidebar.html" %}
+    <!-- 강의실 사이드 네비게이터 & 타이머 포함할 끝 부분 -->
+
+    <!-- 친구 간 최고기록 순위 포함할 부분 --><br>
+    {% include "user/friend_record.html" %}
+    <!-- 친구 간 최고기록 순위 포함할 끝 부분 -->
+    
+    <div class="lecture-box4 p-3 rounded-lg shadow-md chrome_font" style="background-color: #D2E9E9">
+        {% if request.user.is_authenticated %}
+        <div>
+            <h1><span style="font-size: large;"><b>{{ request.user.username }} 님</b>의 공부 기록 관리 페이지입니다.</span>    
+            <a href="{% url 'user:lecture' %}">
+                <ion-icon name="arrow-back-outline" class="lecture_urllink2 nav__toggle2 study-partner-backion" id="back-toggle" style="color: #000;"></ion-icon>
+            </a>
+            </h1>
+            <span style="font-size: medium; color: rgb(129, 127, 127);">TIP: '모든 공부기록 보기'에서 기록을 삭제할 수 있습니다.</span>
+        </div><br>
+        {% else %}
+        <div>
+            <h1><span style="font-size: large;"><b>로그인 후 이용바랍니다.</span>
+            <a href="{% url 'user:lecture' %}">
+                <ion-icon name="arrow-back-outline" class="lecture_urllink2 nav__toggle2 study-partner-backion" id="back-toggle" style="color: #000;"></ion-icon>
+            </a>
+            </h1>
+        </div><br>
+        {% endif %}
+        <!-- <hr style="border-top: 0.5px solid #ccc; width: 100%; margin: 7px 0;"> -->
+
+        <!-- 버튼 추가 -->
+        <div class="button-container">
+            <button id="toggle-highest-records" class="toggle-button active">날짜별 높은 기록 보기</button>
+            <button id="toggle-recent-sessions" class="toggle-button">모든 공부기록 보기</button>
+        </div>
+
+        <!-- 날짜별 높은 기록 섹션 -->
+        <div id="highest-records-section" class="study_recordpage-container">
+            <h2><p style="padding-bottom: 15px; padding-top: 12px; font-size: 17px"><b>날짜별 높은 기록:</b></p></h2>
+            {% if highest_records %}
+                {% for highest_record in highest_records|slice:":5" %}
+                    <span>
+                    <p class="today-high-record">날짜: {{ highest_record.date|date:"Y년 n월 j일, g:i a" }}</p><br>
+                    <b>목표시간:</b> {{ highest_record.goal_time }}<br>
+                    <b>지난시간:</b> {{ highest_record.elapsed_time }}<br>
+                    <b>목표까지 남은시간:</b> {{ highest_record.remaining_time }}<br>
+                    <b>목표달성률:</b> {{ highest_record.goalpercent }}<br>
+                    <b>기록:</b> {{ highest_record.records }}<br><br>
+                    <hr style="border-top: 0.5px solid #ccc; width: 100%; margin: 7px 0;">
+                    </span>
+                {% endfor %}
+            {% else %}
+                <p>기록된 공부기록이 없습니다.</p>
+            {% endif %}
+        </div>
+
+        <!-- 모든 공부기록 데이터 섹션 -->
+        <div id="recent-sessions-section" class="study_recordpage-container hidden">
+            <h2><p style="padding-bottom: 15px; padding-top: 12px; font-size: 17px"><b>모든 공부기록 보기:</b></p></h2>
+            <ul>
+            {% for session in sessions|slice:":8" %}
+            <li>
+              <div>
+                <form action="{% url 'delete_studyrecord' session.pk %}" method="post" class="delete-form">
+                    <span style="display: flex; justify-content: space-between; align-items: center;" class="today-high-record">
+                        <p style="margin: 0;">
+                            날짜: {{ session.date|date:"Y년 n월 j일, g:i a" }}
+                        </p>
+                        <button type="button" name="close" class="nav__icon delete-btn"
+                                style="background-color: #ea0090; border: none; color: white; padding: 4px 8px; text-align: center; text-decoration: none;
+                                        display: inline-block; font-size: 12px; cursor: pointer; border-radius: 7px;">
+                            기록삭제
+                        </button>
+                    </span>
+                    <br>
+                    <b>목표시간:</b> {{ session.goal_time }}<br>
+                    <b>지난시간:</b> {{ session.elapsed_time }}<br>
+                    <b>목표까지 남은시간:</b> {{ session.remaining_time }}<br>
+                    <b>목표달성률:</b> {{ session.goalpercent }}<br>
+                    <b>기록:</b> {{ session.records }}<br><br>
+                    <hr style="border-top: 0.5px solid #ccc; width: 100%; margin: 7px 0;">
+                    {% csrf_token %}
+                <button type="submit" style="display:none;"></button>
+                </form>
+              </div>
+            </li>
+            {% endfor %}
+            </ul>
+        </div>
+    </div><br>
+
+    <div class="lecture-box2">
+        {% include "user/friend.html" %}
+    </div>
+
+    <script>
+        // JavaScript로 섹션 토글 기능 구현
+        document.getElementById("toggle-highest-records").addEventListener("click", function() {
+            document.getElementById("highest-records-section").classList.remove("hidden");
+            document.getElementById("recent-sessions-section").classList.add("hidden");
+            this.classList.add("active");
+            document.getElementById("toggle-recent-sessions").classList.remove("active");
+        });
+
+        document.getElementById("toggle-recent-sessions").addEventListener("click", function() {
+            document.getElementById("highest-records-section").classList.add("hidden");
+            document.getElementById("recent-sessions-section").classList.remove("hidden");
+            this.classList.add("active");
+            document.getElementById("toggle-highest-records").classList.remove("active");
+        });
+
+
+        // 아이콘을 클릭하면 삭제 확인을 위한 confirm 창 표시
+        document.querySelectorAll('.delete-btn').forEach(function(icon) {
+        icon.addEventListener('click', function() {
+            if (window.confirm('정말 삭제하시겠습니까?\n공부 기록을 삭제하신 후 복구할 수 없습니다.')) {
+            this.closest('.delete-form').submit();
+        }
+      });
+    });
+
+    </script>
+</body>
+</html>

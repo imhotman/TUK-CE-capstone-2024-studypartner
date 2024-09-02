@@ -36,7 +36,9 @@ urlpatterns = [
     path('summary/', include('summary.urls')),
     path('chatting/', include('chatting.urls')),
     path('delete_done/', views.delete_done, name='delete_done'),
+
     path('delete_record/<int:record_id>/', views.delete_record_view, name='delete_record'),
+    path('delete_studyrecord/<int:record_id>/', views.delete_studyrecord_view, name='delete_studyrecord'),
 ]
 
 from django.conf import settings

@@ -11,7 +11,12 @@
 <body class="bg-gray-100">
 
     <div class="max-w-xs bg-white p-3 rounded-lg shadow-md">
-        <h3 class="text-2xl font-semibold mb-4">공부기록 타이머</h3>
+        <h3 class="text-2xl font-semibold mb-4">공부기록 타이머
+            <a href="{% url 'user:study_recordpage' %}"
+                style="background-color: #90AFFF; border: none; color: white; padding: 3px 11px; text-align: center; text-decoration: none; 
+                        font-size: 12px; cursor: pointer; border-radius: 7px; text-decoration: none; float: right;"><b>모든 공부기록 보기</b>
+            </a> 
+        </h3>
         <hr style="border-top: 0.8px solid #ccc; width: 100%; margin: 7px 0;">
 
         <div class="mb-4">

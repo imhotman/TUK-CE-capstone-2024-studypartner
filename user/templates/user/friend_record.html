@@ -39,6 +39,11 @@
         .record-container::-webkit-scrollbar-thumb:hover {
             background-color: #01f780; /* hover 시 색상 변경 */
         }
+
+        .highlight {
+            background-color: #f0f8ff; /* my-record 색상 */
+            font-weight: bold;
+        }
     </style>
 </head>
 
@@ -62,7 +67,7 @@
             {% if friends_records %}
                 <ul style="list-style-type: none; padding-left: 0;">
                     {% for friend_username, best_record in friends_records %}
-                        <li>
+                        <li class="{% if friend_username == request_user.username %}highlight{% endif %}">
                             <span>{{ forloop.counter }}등:</span> <b>{{ friend_username }}</b> 님, 오늘의 최고 기록: <b>{{ best_record }}</b>
                         </li>
                     {% endfor %}

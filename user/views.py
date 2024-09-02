@@ -910,3 +910,107 @@ def delete_file_handwriting(request, file_id):
     chapter_name = file_to_delete.chapter.chapter_name
     file_to_delete.delete()
     return redirect('user:handwriting', lecture_name=lecture_name, chapter_name=chapter_name)
+
+
+### 공부기록을 볼 수 있는 페이지 및 함수들 ###
+def study_recordpage_view(request):
+    user = request.user
+
+    # 사용자의 챕터 목록 가져오기
+    lecture_chapters = LectureChapter.objects.filter(user=user).select_related('lecture').order_by('lecture__title')
+    lectures = organize_lectures(lecture_chapters)
+
+    # 친구 요청 및 친구 목록 가져오기
+    friend_requests = FriendRequest.objects.filter(to_user=user)
+    friends = Friendship.objects.filter(user=user).select_related('friend')
+
+    # 오늘의 기록 및 친구들의 기록 가져오기
+    today_record, friends_records = get_today_and_friends_records(user, friends)
+
+    # 내 모든 공부 세션 및 각 날짜별로 가장 높은 기록 가져오기
+    sessions, highest_records = get_user_sessions(user)
+
+    # 템플릿에 전달할 context 생성
+    context = {
+        'sessions': sessions,
+        'highest_records': highest_records,
+        'request_user': user,
+        'friend_requests': friend_requests,
+        'friends': friends,
+        'lectures': lectures,
+        'today_record': today_record,
+        'friends_records': friends_records,
+    }
+
+    if not request.user.is_authenticated:
+        context = {'message': '로그인 되지 않았습니다.'}
+
+    return render(request, 'user/study_recordpage.html', context)
+
+def organize_lectures(lecture_chapters):
+    lectures = []
+    for chapter in lecture_chapters:
+        lecture_title = chapter.lecture.title
+        chapter_name = chapter.chapter_name
+        chapter_url = reverse('upload:chapter_detail', kwargs={'lecture_name': lecture_title, 'chapter_name': chapter_name})
+
+        if not any(lecture['lecture'] == lecture_title for lecture in lectures):
+            lectures.append({'lecture': lecture_title, 'chapters': []})
+
+        lectures[-1]['chapters'].append({'chapter_name': chapter_name, 'chapter_url': chapter_url})
+    return lectures
+
+def get_today_and_friends_records(user, friends):
+    user_timezone = pytz.timezone('Asia/Seoul')
+    today = timezone.now().astimezone(user_timezone).date()
+
+    start_of_day = timezone.make_aware(datetime.combine(today, datetime.min.time()))
+    end_of_day = start_of_day + timedelta(days=1)
+
+    sessions = Study_TimerSession.objects.filter(user=user).order_by('-date')
+    today_sessions = sessions.filter(date__date=today)
+    
+    today_record = max(today_sessions, key=lambda session: session.records, default=None)
+    today_record_value = convert_to_timedelta(today_record.records) if today_record else None
+
+    friends_records = []
+    for friendship in friends:
+        friend = friendship.friend
+        friend_today_sessions = Study_TimerSession.objects.filter(user=friend, date__range=(start_of_day, end_of_day))
+        if friend_today_sessions:
+            best_record = max(friend_today_sessions, key=lambda session: session.records)
+            friends_records.append((friend.username, convert_to_timedelta(best_record.records)))
+
+    if today_record_value:
+        friends_records.append((user.username, today_record_value))
+    
+    friends_records.sort(key=lambda x: x[1], reverse=True)
+    
+    return today_record, friends_records
+
+def get_user_sessions(user):
+    sessions = Study_TimerSession.objects.filter(user=user).order_by('-date')
+    korea_tz = pytz.timezone('Asia/Seoul')
+    
+    for session in sessions:
+        session.date = session.date.astimezone(korea_tz)
+        session.records = convert_to_timedelta(session.records)
+    
+    highest_records = []
+    if sessions:
+        previous_date = sessions[0].date.date()
+        highest_record = sessions[0]
+        for session in sessions[1:]:
+            current_date = session.date.date()
+            if current_date != previous_date:
+                highest_records.append(highest_record)
+                highest_record = session
+                previous_date = current_date
+            elif convert_to_day(session.records) > convert_to_day(highest_record.records):
+                highest_record = session
+        highest_records.append(highest_record)
+    
+    return sessions, highest_records
+
+### 공부기록을 볼 수 있는 페이지 및 함수들 끝 ###
+

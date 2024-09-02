@@ -136,7 +136,7 @@ def convert_to_day(record):
     return total_seconds / 86400
 
 
-# 타이머 기록 삭제
+# 타이머 기록 삭제 - 마이페이지 전용
 def delete_record_view(request, record_id):
     if request.method == 'POST':
         # POST 요청인 경우에만 실행
@@ -150,3 +150,19 @@ def delete_record_view(request, record_id):
             pass
     # 기록 삭제 후에는 마이페이지로 리다이렉트
     return redirect('mypage')
+
+
+# 타이머 기록 삭제 - 공부기록 관리 페이지 전용
+def delete_studyrecord_view(request, record_id):
+    if request.method == 'POST':
+        # POST 요청인 경우에만 실행
+        try:
+            # 기록 객체 가져오기
+            record = Study_TimerSession.objects.get(pk=record_id)
+            # 기록 삭제
+            record.delete()
+        except Study_TimerSession.DoesNotExist:
+            # 해당 기록이 존재하지 않는 경우 처리
+            pass
+    # 기록 삭제 후에는 마이페이지로 리다이렉트
+    return redirect('user:study_recordpage')
