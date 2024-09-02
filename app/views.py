@@ -165,4 +165,5 @@ def delete_studyrecord_view(request, record_id):
             # 해당 기록이 존재하지 않는 경우 처리
             pass
     # 기록 삭제 후에는 마이페이지로 리다이렉트
+        print(f'{record} 가 정상적으로 삭제되었습니다.')
     return redirect('user:study_recordpage')
