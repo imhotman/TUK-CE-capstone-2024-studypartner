@@ -1,12 +1,22 @@
+{% load static %}
+{% block content %}
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
-    <title>Chat Room</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- CSS -->
+    <!-- <link rel="stylesheet" href="{% static 'css/lecture.css' %}">
+    <link rel="stylesheet" href="{% static 'css/lecture_form.css' %}">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}"> -->
+
+    <title>채팅시스템 | 스터디파트너</title>
     <style>
         /* 간단한 스타일 추가 */
         #chat-log {
             border: 1px solid #ccc;
-            height: 400px;
+            height: 425px;
             overflow-y: scroll;
             margin-bottom: 10px;
             padding: 10px;
@@ -26,9 +36,9 @@
         }
         .message .content {
             border-radius: 10px;
-            padding: 10px;
+            padding: 8px;
             display: inline-block;
-            max-width: 70%;
+            max-width: 65%;
             word-wrap: break-word;
         }
         .message .timestamp {
@@ -62,83 +72,154 @@
             width: 80%;
             height: 50px; /* textarea 높이 설정 */
             resize: none; /* 크기 조절 비활성화 */
+            padding-left: 2px;
         }
         #chat-message-submit {
             width: 18%;
         }
+        .delete-link {
+            color: gray;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.9em;
+            margin-right: 10px;
+        }
+        .delete-link:hover {
+            color: red;
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
-    <!-- 채팅방 생성 여부에 따라 메시지를 표시 -->
-    {% if created %}
-        <p>새로운 채팅방이 생성되었습니다!</p>
-    {% else %}
-        <p>기존 채팅방에 접속하였습니다.</p>
-    {% endif %}
+    <!-- 강의실 사이드 네비게이터 & 타이머 포함할 부분 -->
+    {% include "user/lecture_sidebar.html" %}
+    <!-- 강의실 사이드 네비게이터 & 타이머 포함할 끝 부분 -->
 
-    <!-- 대화 상대 정보 표시 -->
-    <p>대화 상대 1: {{ current_user.username }}님</p>
-    <p>대화 상대 2: {{ other_user.username }}님</p><br>
-    <p>채팅창</p>
+    <!-- 친구 간 최고기록 순위 포함할 부분 --><br>
+    {% include "user/friend_record.html" %}
+    <!-- 친구 간 최고기록 순위 포함할 끝 부분 -->
 
-    <!-- 기존 메시지 표시 -->
-    <div id="chat-log">
-        {% for message in messages %}
-            <div class="message {% if message.sender == current_user %}current-user{% else %}other-user{% endif %}">
-                <span class="user">{{ message.sender.username }}</span>
-                <div class="content-wrapper">
-                    <span class="content">{{ message.content }}</span>
-                    <span class="timestamp">{{ message.timestamp|date:"Y년 m월 d일 H:i:s" }}</span>
+    <!-- 채팅창 부분 -->
+    <div class="lecture-box5 p-3 rounded-lg shadow-md" style="background-color: #e5ddff">
+        <div>
+            <!-- 채팅방 생성 여부에 따라 메시지를 표시 -->
+            {% if created %}
+            <p>새로운 채팅방이 생성되었습니다!</p><br>
+        {% else %}
+            <p>기존 채팅방에 접속하였습니다. <a href="#">
+                <ion-icon name="arrow-back-outline" class="lecture_urllink2 nav__toggle2 study-partner-backion" id="back-toggle" style="color: #000;"></ion-icon>
+            </a></p><br>
+        {% endif %}
+
+        <!-- 대화 상대 정보 표시 -->
+        <p><strong>{{ current_user.username }}</strong> 님과 <strong>{{ other_user.username }}</strong> 님의 대화입니다.</p>
+
+        <!-- 기존 메시지 표시 -->
+        <div id="chat-log">
+            {% for message in messages %}
+                <div class="message {% if message.sender == current_user %}current-user{% else %}other-user{% endif %}">
+                    <span class="user">{{ message.sender.username }}</span>
+                    <div class="content-wrapper">     
+                        <span class="content">{{ message.content }}</span>
+                        <span class="timestamp">
+                            {% if message.sender == current_user %}
+                            <a href="#" class="delete-link" data-message-id="{{ message.id }}">삭제</a>
+                            {% endif %}
+                            <br>{{ message.timestamp|date:"Y년 m월 d일 H:i:s" }}
+                        </span>       
+                    </div>
                 </div>
-            </div>
-        {% endfor %}
+            {% endfor %}
+        </div>
+        <input id="chat-message-input" type="text" size="70">
+        <input id="chat-message-submit" type="button" value="채팅 전송"
+            style="background-color: #df048b; border: none; color: white; padding: 6px 12px; text-align: center; 
+              text-decoration: none; display: inline-block; font-size: 13px; margin: 4px 2px; cursor: pointer; 
+              border-radius: 7px;">
+
+        </div>
     </div>
-    <input id="chat-message-input" type="text" size="100">
-    <input id="chat-message-submit" type="button" value="Send">
+    <!-- 채팅창 부분 끝 부분-->
+
+    <!-- 친구 시스템 포함할 부분 -->
+    <div class="lecture-box2">
+        {% include "user/friend.html" %}
+    </div>
+    <!-- 친구 시스템 포함할 부분 끝 부분-->
 
     <script>
-        // WebSocket URL 자동 감지 (ws 또는 wss)
+        
+    document.addEventListener('DOMContentLoaded', () => {
+        const chatLog = document.querySelector('#chat-log');
         const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
         const roomName = "{{ room_name }}";
         const currentUser = "{{ current_user.username }}";
-        const chatSocket = new WebSocket(
-            `${protocol}://${window.location.host}/ws/chat/${roomName}/`
-        );
+        const chatSocket = new WebSocket(`${protocol}://${window.location.host}/ws/chat/${roomName}/`);
+
+        chatLog.addEventListener('click', (e) => {
+            if (e.target && e.target.classList.contains('delete-link')) {
+                e.preventDefault();
+                const messageId = e.target.getAttribute('data-message-id');
+                if (messageId) {
+                    chatSocket.send(JSON.stringify({
+                        'action': 'delete_message',
+                        'message_id': messageId
+                    }));
+                } else {
+                    console.error('Message ID is undefined');
+                }
+            }
+        });
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
-            // HTML 이스케이프 처리 (simple example)
-            const escapedMessage = data.message.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-            const timestamp = new Date(data.timestamp).toLocaleString('ko-KR'); // 타임스탬프 형식 변경
+
+            if (data.action === 'delete_message') {
+                const messageElement = document.querySelector(`.message [data-message-id="${data.message_id}"]`);
+                if (messageElement) {
+                    messageElement.closest('.message').remove();
+                }
+                return;
+            }
+
+            const escapedMessage = data.message ? data.message.replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
+            const timestamp = new Date(data.timestamp).toLocaleString('ko-KR');
             const chatLog = document.querySelector('#chat-log');
             const messageElement = document.createElement('div');
             messageElement.classList.add('message');
             if (data.user === currentUser) {
                 messageElement.classList.add('current-user');
+                messageElement.innerHTML = `
+                    <span class="user">${data.user}</span>
+                    <div class="content-wrapper">
+                        <span class="content">${escapedMessage}</span>
+                        <span class="timestamp">
+                            <a href="#" class="delete-link" data-message-id="${data.message_id}">삭제</a><br>${timestamp}</span>
+                    </div>
+                `;
             } else {
                 messageElement.classList.add('other-user');
+                messageElement.innerHTML = `
+                    <span class="user">${data.user}</span>
+                    <div class="content-wrapper">
+                        <span class="content">${escapedMessage}</span>
+                        <span class="timestamp"><br>${timestamp}</span>
+                    </div>
+                `;
             }
-            messageElement.innerHTML = `
-                <span class="user">${data.user}</span>
-                <div class="content-wrapper">
-                    <span class="content">${escapedMessage}</span>
-                    <span class="timestamp">${timestamp}</span>
-                </div>
-            `;
             chatLog.appendChild(messageElement);
             chatLog.scrollTop = chatLog.scrollHeight;
         };
 
         chatSocket.onclose = function(e) {
             console.error('Chat socket closed unexpectedly');
-            // 사용자에게 연결 종료 메시지 표시 (optional)
             document.querySelector('#chat-log').innerHTML += '<br>채팅 연결이 종료되었습니다.';
         };
 
         document.querySelector('#chat-message-input').focus();
         document.querySelector('#chat-message-input').onkeyup = function(e) {
-            if (e.keyCode === 13) {  // Enter key
-                e.preventDefault();  // 기본 동작 방지
+            if (e.keyCode === 13) {
+                e.preventDefault();
                 document.querySelector('#chat-message-submit').click();
             }
         };
@@ -146,7 +227,7 @@
         document.querySelector('#chat-message-submit').onclick = function(e) {
             const messageInputDom = document.querySelector('#chat-message-input');
             const message = messageInputDom.value;
-            if (message.trim() !== '') {  // 빈 메시지 전송 방지
+            if (message.trim() !== '') {
                 chatSocket.send(JSON.stringify({
                     'message': message
                 }));
@@ -154,12 +235,18 @@
             }
         };
 
-        // 페이지 로드 후 스크롤을 맨 아래로 이동
         window.onload = function() {
             const chatLog = document.querySelector('#chat-log');
             chatLog.scrollTop = chatLog.scrollHeight;
         };
-        
+    });
+
+
+
+
+
     </script>
+    
 </body>
 </html>
+{% endblock %}

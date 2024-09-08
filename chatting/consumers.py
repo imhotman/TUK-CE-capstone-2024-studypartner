@@ -287,104 +287,205 @@
 
 
 
-import json
+
+
+# 정상코드(9.8일 확인)
+# import json
+# from channels.generic.websocket import AsyncWebsocketConsumer
+# from asgiref.sync import sync_to_async
+# from django.contrib.auth.models import User
+# from .models import PrivateChatRoom, PrivateMessage
+# from .views import get_or_create_chat_room
+# from datetime import datetime
+
+# class ChatConsumer(AsyncWebsocketConsumer):
+#     # WebSocket 연결 시 실행되는 함수
+#     async def connect(self):
+#         self.user = self.scope['user']
+#         self.other_user_id = self.scope['url_route']['kwargs']['room_name']
+#         self.other_user = await self.get_user(self.other_user_id)
+
+#         # 사용자가 인증되지 않았거나 다른 사용자가 존재하지 않으면 연결을 닫음
+#         if not self.user.is_authenticated or not self.other_user:
+#             await self.close()
+
+#         # 채팅 방 이름 설정 (두 사용자 ID를 이용하여 고유하게 생성)
+#         self.room_group_name = f'chat_{min(self.user.id, self.other_user.id)}_{max(self.user.id, self.other_user.id)}'
+
+#         # 채널 레이어를 통해 그룹에 추가
+#         await self.channel_layer.group_add(
+#             self.room_group_name,
+#             self.channel_name
+#         )
+#         print("연결여부: 연결됨.")
+
+#         # WebSocket 연결 수락
+#         await self.accept()
+
+#     # WebSocket 연결 해제 시 실행되는 함수
+#     async def disconnect(self, close_code):
+#         # 채널 레이어에서 그룹 제거
+#         await self.channel_layer.group_discard(
+#             self.room_group_name,
+#             self.channel_name
+#         )
+#         print("연결여부: 연결 해제됨.")
+
+#     # 클라이언트로부터 메시지 수신 시 실행되는 함수
+#     async def receive(self, text_data):
+#         text_data_json = json.loads(text_data)
+#         message = text_data_json['message']
+        
+#         print(f"클라이언트로부터 수신된 메시지 : {message}")
+
+#         # 메시지를 데이터베이스에 저장
+#         private_message = await self.create_message(message)
+#         print(f"DB에 저장할 메시지 : {private_message.content}")
+
+#         # 채널 레이어를 통해 그룹에 메시지 전송
+#         try:
+#             print("채널 레이어를 통해 그룹에 메시지 전송을 시도합니다.")
+#             await self.channel_layer.group_send(
+#                 self.room_group_name,
+#                 {
+#                     'type': 'chat_message',
+#                     'message': message,
+#                     'user': self.user.username,
+#                     'message_id': private_message.id,
+#                     'is_read': private_message.is_read,
+#                     'timestamp': private_message.timestamp.isoformat(),  # 타임스탬프 추가
+#                 }
+#             )
+#             print(f"Message sent to group: {self.room_group_name}")
+#         except Exception as e:
+#             print(f"Error sending message to group: {e}")
+
+#     # 그룹에서 메시지를 수신할 때 호출되는 함수
+#     async def chat_message(self, event):
+#         print(f"chat_message handler called with event: {event}")  # 이벤트 로그
+
+#         message = event['message']  # 메시지 내용
+#         user = event['user']  # 사용자 이름
+#         message_id = event['message_id']  # 메시지 ID
+#         is_read = event['is_read']  # 읽음 여부
+#         timestamp = event['timestamp']  # 타임스탬프
+
+#         print(f"{user}의 메시지 : {message}")  # 프론트엔드로 전송 로그
+
+
+#         # 메시지를 클라이언트에게 전송
+#         await self.send(text_data=json.dumps({
+#             'message': message,
+#             'user': user,
+#             # 'message_id': message_id,
+#             'message_id': str(message_id),  # ID를 문자열로 변환하여 전달
+#             'is_read': is_read,
+#             'timestamp': timestamp,  # 타임스탬프 포함
+#         }))
+#         print("프론트엔드로 메시지 전송이 완료되었습니다.")  # 메시지 전송 완료 로그
+
+#     @sync_to_async
+#     def create_message(self, message):
+#         # 채팅 방을 생성하거나 가져옴
+#         chat_room, created = get_or_create_chat_room(self.user, self.other_user)
+#         # 메시지를 데이터베이스에 저장
+#         private_message = PrivateMessage.objects.create(
+#             chat_room=chat_room,
+#             sender=self.user,
+#             receiver=self.other_user,
+#             content=message
+#         )
+#         return private_message
+
+#     @sync_to_async
+#     def get_user(self, user_id):
+#         try:
+#             return User.objects.get(id=user_id)
+#         except User.DoesNotExist:
+#             return None
+
+
+
+
+
+
+
+
+
+
 from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import sync_to_async
 from django.contrib.auth.models import User
 from .models import PrivateChatRoom, PrivateMessage
 from .views import get_or_create_chat_room
-from datetime import datetime
+import json
 
 class ChatConsumer(AsyncWebsocketConsumer):
-    # WebSocket 연결 시 실행되는 함수
     async def connect(self):
         self.user = self.scope['user']
         self.other_user_id = self.scope['url_route']['kwargs']['room_name']
         self.other_user = await self.get_user(self.other_user_id)
 
-        # 사용자가 인증되지 않았거나 다른 사용자가 존재하지 않으면 연결을 닫음
         if not self.user.is_authenticated or not self.other_user:
             await self.close()
 
-        # 채팅 방 이름 설정 (두 사용자 ID를 이용하여 고유하게 생성)
         self.room_group_name = f'chat_{min(self.user.id, self.other_user.id)}_{max(self.user.id, self.other_user.id)}'
 
-        # 채널 레이어를 통해 그룹에 추가
         await self.channel_layer.group_add(
             self.room_group_name,
             self.channel_name
         )
-        print("연결여부: 연결됨.")
 
-        # WebSocket 연결 수락
         await self.accept()
 
-    # WebSocket 연결 해제 시 실행되는 함수
     async def disconnect(self, close_code):
-        # 채널 레이어에서 그룹 제거
         await self.channel_layer.group_discard(
             self.room_group_name,
             self.channel_name
         )
-        print("연결여부: 연결 해제됨.")
 
-    # 클라이언트로부터 메시지 수신 시 실행되는 함수
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        message = text_data_json['message']
-        
-        print(f"클라이언트로부터 수신된 메시지 : {message}")
+        action = text_data_json.get('action')
 
-        # 메시지를 데이터베이스에 저장
-        private_message = await self.create_message(message)
-        print(f"DB에 저장할 메시지 : {private_message.content}")
+        if action == 'delete_message':
+            message_id = text_data_json.get('message_id')
+            if message_id:
+                await self.delete_message(message_id)
+        else:
+            message = text_data_json.get('message')
+            if message:
+                private_message = await self.create_message(message)
+                await self.channel_layer.group_send(
+                    self.room_group_name,
+                    {
+                        'type': 'chat_message',
+                        'message': message,
+                        'user': self.user.username,
+                        'message_id': str(private_message.id),
+                        'is_read': private_message.is_read,
+                        'timestamp': private_message.timestamp.isoformat(),
+                    }
+                )
 
-        # 채널 레이어를 통해 그룹에 메시지 전송
-        try:
-            print("채널 레이어를 통해 그룹에 메시지 전송을 시도합니다.")
-            await self.channel_layer.group_send(
-                self.room_group_name,
-                {
-                    'type': 'chat_message',
-                    'message': message,
-                    'user': self.user.username,
-                    'message_id': private_message.id,
-                    'is_read': private_message.is_read,
-                    'timestamp': private_message.timestamp.isoformat(),  # 타임스탬프 추가
-                }
-            )
-            print(f"Message sent to group: {self.room_group_name}")
-        except Exception as e:
-            print(f"Error sending message to group: {e}")
-
-    # 그룹에서 메시지를 수신할 때 호출되는 함수
     async def chat_message(self, event):
-        print(f"chat_message handler called with event: {event}")  # 이벤트 로그
+        message = event['message']
+        user = event['user']
+        message_id = event['message_id']
+        is_read = event['is_read']
+        timestamp = event['timestamp']
 
-        message = event['message']  # 메시지 내용
-        user = event['user']  # 사용자 이름
-        message_id = event['message_id']  # 메시지 ID
-        is_read = event['is_read']  # 읽음 여부
-        timestamp = event['timestamp']  # 타임스탬프
-
-        print(f"{user}의 메시지 : {message}")  # 프론트엔드로 전송 로그
-
-
-        # 메시지를 클라이언트에게 전송
         await self.send(text_data=json.dumps({
             'message': message,
             'user': user,
-            'message_id': message_id,
+            'message_id': str(message_id),
             'is_read': is_read,
-            'timestamp': timestamp,  # 타임스탬프 포함
+            'timestamp': timestamp,
         }))
-        print("프론트엔드로 메시지 전송이 완료되었습니다.")  # 메시지 전송 완료 로그
 
     @sync_to_async
     def create_message(self, message):
-        # 채팅 방을 생성하거나 가져옴
         chat_room, created = get_or_create_chat_room(self.user, self.other_user)
-        # 메시지를 데이터베이스에 저장
         private_message = PrivateMessage.objects.create(
             chat_room=chat_room,
             sender=self.user,
@@ -400,10 +501,26 @@ class ChatConsumer(AsyncWebsocketConsumer):
         except User.DoesNotExist:
             return None
 
+    async def delete_message(self, message_id):
+        try:
+            message = await sync_to_async(PrivateMessage.objects.get)(id=message_id)
+            await sync_to_async(message.delete)()
 
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'message_deleted',
+                    'message_id': message_id,
+                }
+            )
+        except PrivateMessage.DoesNotExist:
+            pass
 
-
-
-
+    async def message_deleted(self, event):
+        message_id = event['message_id']
+        await self.send(text_data=json.dumps({
+            'action': 'delete_message',
+            'message_id': message_id,
+        }))
 
 

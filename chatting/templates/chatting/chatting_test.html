@@ -1,73 +1,165 @@
-{% load static %}
-{% block content %}
 <!DOCTYPE html>
-<html lang="ko">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- CSS -->
-    <!-- <link rel="stylesheet" href="{% static 'css/lecture.css' %}">
-    <link rel="stylesheet" href="{% static 'css/lecture_form.css' %}">
-    <link rel="stylesheet" href="{% static 'css/custom.css' %}"> -->
-
-    <title>채팅시스템 테스트 | 스터디파트너</title>
+    <title>Chat Room</title>
+    <style>
+        /* 간단한 스타일 추가 */
+        #chat-log {
+            border: 1px solid #ccc;
+            height: 400px;
+            overflow-y: scroll;
+            margin-bottom: 10px;
+            padding: 10px;
+        }
+        .message {
+            display: block;
+            margin-bottom: 13px;
+            clear: both; /* 플로트 해제 */
+        }
+        .message .user {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .message .content-wrapper {
+            display: flex;
+            align-items: flex-end;
+        }
+        .message .content {
+            border-radius: 10px;
+            padding: 10px;
+            display: inline-block;
+            max-width: 70%;
+            word-wrap: break-word;
+        }
+        .message .timestamp {
+            font-size: 0.8em;
+            color: gray;
+            align-self: flex-end;
+        }
+        .message.current-user {
+            text-align: left;
+            float: left;
+        }
+        .message.current-user .content-wrapper {
+            flex-direction: row; /* current_user 메시지의 기본 정렬 */
+        }
+        .message.other-user {
+            text-align: right;
+            float: right;
+        }
+        .message.other-user .content-wrapper {
+            flex-direction: row-reverse; /* other_user 메시지의 반대 정렬 */
+        }
+        .message.current-user .content {
+            background-color: #e1effb; /* current_user 메시지 색상 */
+            margin-right: 5px;
+        }
+        .message.other-user .content {
+            background-color: #f1f1f1; /* other_user 메시지 색상 */
+            margin-left: 5px;
+        }
+        #chat-message-input {
+            width: 80%;
+            height: 50px; /* textarea 높이 설정 */
+            resize: none; /* 크기 조절 비활성화 */
+        }
+        #chat-message-submit {
+            width: 18%;
+        }
+    </style>
 </head>
 <body>
-    <!-- 강의실 사이드 네비게이터 & 타이머 포함할 부분 -->
-    {% include "user/lecture_sidebar.html" %}
-    <!-- 강의실 사이드 네비게이터 & 타이머 포함할 끝 부분 -->
+    <!-- 채팅방 생성 여부에 따라 메시지를 표시 -->
+    {% if created %}
+        <p>새로운 채팅방이 생성되었습니다!</p>
+    {% else %}
+        <p>기존 채팅방에 접속하였습니다.</p>
+    {% endif %}
 
-    <!-- 친구 간 최고기록 순위 포함할 부분 --><br>
-    {% include "user/friend_record.html" %}
-    <!-- 친구 간 최고기록 순위 포함할 끝 부분 -->
+    <!-- 대화 상대 정보 표시 -->
+    <p>대화 상대 1: {{ current_user.username }}님</p>
+    <p>대화 상대 2: {{ other_user.username }}님</p><br>
+    <p>채팅창</p>
 
-    <div class="custom-body">
-        <div class="lecture-box">
-            <h2>Study Partner</h2>
-
-            <!-- 강의 별 form -->
-            <form method="post" action="{% url 'user:add_lecture_chapter' %}" id="add-lecture-form">
-                {% csrf_token %}
-                
-            <div class="user-box">
-                <input name="lecture_name" type="text" name="" required="">
-                <span></span>
-                <label>강의 이름 (필수)</label>
+    <!-- 기존 메시지 표시 -->
+    <div id="chat-log">
+        {% for message in messages %}
+            <div class="message {% if message.sender == current_user %}current-user{% else %}other-user{% endif %}">
+                <span class="user">{{ message.sender.username }}</span>
+                <div class="content-wrapper">
+                    <span class="content">{{ message.content }}</span>
+                    <span class="timestamp">{{ message.timestamp|date:"Y년 m월 d일 H:i:s" }}</span>
+                </div>
             </div>
-            <div class="user-box">
-                <input name="chapter_name" type="text" name="" required="">
-                <label>강의 하위목록 (필수)</label>
-            </div>
-            <div class="index_studypartner_buttonlist" style="text-align: center;">     
-                <button type="submit" id="add-lecture-button" style="margin-left: 5.43rem;">강의 추가</button>&nbsp;&nbsp;
-                <button type="reset" class="reverse dark" style="background-color: darkcyan;">모두 삭제</button>    
-            </div>
-                       
-            </form>         
-        </div>
+        {% endfor %}
     </div>
-
-    <!-- 친구 시스템 포함할 부분 -->
-    <div class="lecture-box2">
-        {% include "user/friend.html" %}
-    </div>
-    <!-- 친구 시스템 포함할 부분 끝 부분-->
-
+    <input id="chat-message-input" type="text" size="100">
+    <input id="chat-message-submit" type="button" value="Send">
 
     <script>
-        document.getElementById('add-lecture-button').addEventListener('click', function() {
-            if (window.confirm('강의를 추가하시겠습니까?')) {
-                alert("강의가 정상적으로 추가되었습니다.")
-                document.getElementById('add-lecture-form').submit();  
+        // WebSocket URL 자동 감지 (ws 또는 wss)
+        const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+        const roomName = "{{ room_name }}";
+        const currentUser = "{{ current_user.username }}";
+        const chatSocket = new WebSocket(
+            `${protocol}://${window.location.host}/ws/chat/${roomName}/`
+        );
+
+        chatSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            // HTML 이스케이프 처리 (simple example)
+            const escapedMessage = data.message.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            const timestamp = new Date(data.timestamp).toLocaleString('ko-KR'); // 타임스탬프 형식 변경
+            const chatLog = document.querySelector('#chat-log');
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message');
+            if (data.user === currentUser) {
+                messageElement.classList.add('current-user');
             } else {
-                // 추가하기 전에 아무 동작도 하지 않음
-                event.preventDefault();
-                alert("강의 추가를 취소하였습니다.")
+                messageElement.classList.add('other-user');
             }
-        });
+            messageElement.innerHTML = `
+                <span class="user">${data.user}</span>
+                <div class="content-wrapper">
+                    <span class="content">${escapedMessage}</span>
+                    <span class="timestamp">${timestamp}</span>
+                </div>
+            `;
+            chatLog.appendChild(messageElement);
+            chatLog.scrollTop = chatLog.scrollHeight;
+        };
+
+        chatSocket.onclose = function(e) {
+            console.error('Chat socket closed unexpectedly');
+            // 사용자에게 연결 종료 메시지 표시 (optional)
+            document.querySelector('#chat-log').innerHTML += '<br>채팅 연결이 종료되었습니다.';
+        };
+
+        document.querySelector('#chat-message-input').focus();
+        document.querySelector('#chat-message-input').onkeyup = function(e) {
+            if (e.keyCode === 13) {  // Enter key
+                e.preventDefault();  // 기본 동작 방지
+                document.querySelector('#chat-message-submit').click();
+            }
+        };
+
+        document.querySelector('#chat-message-submit').onclick = function(e) {
+            const messageInputDom = document.querySelector('#chat-message-input');
+            const message = messageInputDom.value;
+            if (message.trim() !== '') {  // 빈 메시지 전송 방지
+                chatSocket.send(JSON.stringify({
+                    'message': message
+                }));
+                messageInputDom.value = '';
+            }
+        };
+
+        // 페이지 로드 후 스크롤을 맨 아래로 이동
+        window.onload = function() {
+            const chatLog = document.querySelector('#chat-log');
+            chatLog.scrollTop = chatLog.scrollHeight;
+        };
+        
     </script>
-    
 </body>
 </html>
-{% endblock %}

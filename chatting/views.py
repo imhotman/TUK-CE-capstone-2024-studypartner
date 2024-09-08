@@ -26,7 +26,7 @@ def format_timestamp(timestamp):
 
 # 채팅시스템
 @login_required
-def chatting_test_view(request):
+def private_chat_room(request, user_id):
     user = request.user
     lecture_chapters = LectureChapter.objects.filter(user=user).select_related('lecture').order_by('lecture__title')
 
@@ -90,6 +90,20 @@ def chatting_test_view(request):
     # 기록을 기준으로 내림차순 정렬
     friends_records.sort(key=lambda x: x[1], reverse=True)
 
+
+    current_user = request.user
+    other_user = get_object_or_404(User, id=user_id)
+
+    # 채팅방 생성 또는 가져오기
+    chat_room, created = get_or_create_chat_room(current_user, other_user)
+    
+    # 읽지 않은 메시지를 읽은 상태로 업데이트
+    unread_messages = PrivateMessage.objects.filter(chat_room=chat_room, receiver=current_user, is_read=False)
+    unread_messages.update(is_read=True)
+    
+    # 기존 메시지를 가져오기
+    messages = PrivateMessage.objects.filter(chat_room=chat_room).order_by('timestamp')
+
     context = {
         'request_user': user,
         'friend_requests': friend_requests,
@@ -97,6 +111,13 @@ def chatting_test_view(request):
         'lectures': lectures,
         'today_record': today_record,  # today_record를 context에 포함
         'friends_records': friends_records,
+        'user_id': user_id,
+        'unread_messages': unread_messages.count(),
+        'created': created,
+        'room_name': user_id,  # WebSocket과 연결하기 위한 방 이름
+        'current_user': current_user,
+        'other_user': other_user,
+        'messages': messages  # 기존 메시지를 컨텍스트에 추가
     }
     
     return render(request, "chatting/chatting_test.html", context)
@@ -177,10 +198,8 @@ def get_or_create_chat_room(user1, user2):
     return chat_room, created
 
 
-
-
 # 채팅방
-def private_chat_room(request, user_id):
+def chatting_test_view(request, user_id):
     current_user = request.user
     other_user = get_object_or_404(User, id=user_id)
     
@@ -205,3 +224,16 @@ def private_chat_room(request, user_id):
     }
     
     return render(request, 'chatting/chatting_room.html', context)
+
+
+# 채팅 삭제
+# def delete_message(request):
+#     message_id = request.POST.get('message_id')
+#     try:
+#         message = PrivateMessage.objects.get(id=message_id, sender=request.user)
+#         message.delete()
+#         return JsonResponse({'status': 'success'})
+#     except PrivateMessage.DoesNotExist:
+#         return JsonResponse({'status': 'error', 'message': 'Message not found or not authorized'})
+
+
