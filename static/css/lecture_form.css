@@ -70,6 +70,20 @@
     z-index: 1000; /* 다른 요소들보다 위에 표시하도록 z-index 설정 */
 }
 
+.lecture-box6 {
+    position: fixed; /* position 값을 absolute에서 fixed로 변경 */
+    top: 50%;
+    left: 50%;
+    width: 480px;
+    height: 525px;
+    padding: 30px;
+    transform: translate(-50%, -50%);
+    background: darkslategray;
+    box-sizing: border-box;
+    box-shadow: 0 15px 25px rgba(0,0,0,.6);
+    border-radius: 10px;
+}
+
 
 /* Styles for heading in lecture-box */
 .lecture-box h2 {

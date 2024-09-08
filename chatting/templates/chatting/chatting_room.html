@@ -20,6 +20,16 @@
             overflow-y: scroll;
             margin-bottom: 10px;
             padding: 10px;
+        }     
+        #chat-log::-webkit-scrollbar {
+            width: 10px; /* 스크롤바의 너비 */
+        }
+        #chat-log::-webkit-scrollbar-thumb {
+            background-color: #89a5f7; /* 스크롤바의 thumb 색상 */
+            border-radius: 10px; /* 스크롤바의 둥근 모서리 */
+        }
+        #chat-log::-webkit-scrollbar-thumb:hover {
+            background-color: #5c81f3; /* 스크롤바의 thumb hover 색상 */
         }
         .message {
             display: block;
@@ -32,7 +42,7 @@
         }
         .message .content-wrapper {
             display: flex;
-            align-items: flex-end;
+            align-items: flex-start;
         }
         .message .content {
             border-radius: 10px;
@@ -44,38 +54,54 @@
         .message .timestamp {
             font-size: 0.8em;
             color: gray;
-            align-self: flex-end;
+            align-self: flex-start;
         }
         .message.current-user {
-            text-align: left;
-            float: left;
+            text-align: right;
+            float: right;
         }
         .message.current-user .content-wrapper {
             flex-direction: row; /* current_user 메시지의 기본 정렬 */
         }
         .message.other-user {
-            text-align: right;
-            float: right;
+            text-align: left;
+            float: left;
         }
         .message.other-user .content-wrapper {
             flex-direction: row-reverse; /* other_user 메시지의 반대 정렬 */
         }
         .message.current-user .content {
             background-color: #e1effb; /* current_user 메시지 색상 */
-            margin-right: 5px;
+            margin-left: 5px;
         }
         .message.other-user .content {
             background-color: #f1f1f1; /* other_user 메시지 색상 */
-            margin-left: 5px;
+            margin-right: 5px;
         }
         #chat-message-input {
             width: 80%;
             height: 50px; /* textarea 높이 설정 */
             resize: none; /* 크기 조절 비활성화 */
-            padding-left: 2px;
+            padding: 3px;
         }
         #chat-message-submit {
             width: 18%;
+            background-color: #4a90e2; /* 예쁜 파란색 */
+            border: none;
+            color: white;
+            padding: 6px 12px;
+            text-align: center; 
+            text-decoration: none;
+            display: inline-block;
+            font-size: 13px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 7px;
+            transition: background-color 0.3s, box-shadow 0.3s; /* 애니메이션 효과 추가 */
+        }
+        #chat-message-submit:hover {
+            background-color: #357abd; /* 어두운 파란색 */
+            box-shadow: 0 0 10px rgba(255, 165, 0, 0.5) /* 점멸 효과 */
         }
         .delete-link {
             color: gray;
@@ -100,6 +126,7 @@
             color: white;
             padding: 10px;
             border-radius: 10px;
+            text-align: center; /* 텍스트 중앙 정렬 */
             z-index: 1000;
         }
     </style>
@@ -114,13 +141,13 @@
     <!-- 친구 간 최고기록 순위 포함할 끝 부분 -->
 
     <!-- 채팅창 부분 -->
-    <div class="lecture-box5 p-3 rounded-lg shadow-md" style="background-color: #e5ddff">
+    <div class="lecture-box5 p-3 rounded-lg shadow-md" style="background-color: #cce4ff">
         <div>
             <!-- 채팅방 생성 여부에 따라 메시지를 표시 -->
             {% if created %}
             <p>새로운 채팅방이 생성되었습니다!</p><br>
         {% else %}
-            <p>기존 채팅방에 접속하였습니다. <a href="#">
+            <p>채팅방에 접속하였습니다. <a href="{% url 'user:lecture' %}">
                 <ion-icon name="arrow-back-outline" class="lecture_urllink2 nav__toggle2 study-partner-backion" id="back-toggle" style="color: #000;"></ion-icon>
             </a></p><br>
         {% endif %}
@@ -129,27 +156,27 @@
         <p><strong>{{ current_user.username }}</strong> 님과 <strong>{{ other_user.username }}</strong> 님의 대화입니다.</p>
 
         <!-- 기존 메시지 표시 -->
-        <div id="chat-log">
+        <div id="chat-log" style="background-color: #f9f9f9">
             {% for message in messages %}
                 <div class="message {% if message.sender == current_user %}current-user{% else %}other-user{% endif %}">
                     <span class="user">{{ message.sender.username }}</span>
-                    <div class="content-wrapper">     
-                        <span class="content">{{ message.content }}</span>
+                    <div class="content-wrapper">
                         <span class="timestamp">
                             {% if message.sender == current_user %}
                             <a href="#" class="delete-link" data-message-id="{{ message.id }}">삭제</a>
                             {% endif %}
                             <br>{{ message.timestamp|date:"Y년 m월 d일 H:i:s" }}
-                        </span>       
+                        </span>
+                        <span class="content">{{ message.content }}</span>
                     </div>
                 </div>
             {% endfor %}
         </div>
-        <input id="chat-message-input" type="text" size="70">
-        <input id="chat-message-submit" type="button" value="채팅 전송"
-            style="background-color: #df048b; border: none; color: white; padding: 6px 12px; text-align: center; 
-              text-decoration: none; display: inline-block; font-size: 13px; margin: 4px 2px; cursor: pointer; 
-              border-radius: 7px;">
+        <!-- 채팅 메시지 입력 및 전송 버튼 -->
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <textarea id="chat-message-input" placeholder="여기에 메시지를 입력하세요."></textarea>
+            <input id="chat-message-submit" type="button" value="채팅 전송">
+        </div>
 
         </div>
     </div>
@@ -162,11 +189,9 @@
     <!-- 친구 시스템 포함할 부분 끝 부분-->
 
     <!-- 메시지 삭제 알림 -->
-    <div id="delete-alert">메시지가 삭제되었습니다.</div>
+    <div id="delete-alert">메시지가 삭제되었습니다.<br>상대는 새로고침 시 삭제됩니다.</div>
 
-    
     <script>
-
     document.addEventListener('DOMContentLoaded', () => {
         const chatLog = document.querySelector('#chat-log');
         const deleteAlert = document.querySelector('#delete-alert');
@@ -229,57 +254,56 @@
                 messageElement.innerHTML = `
                     <span class="user">${data.user}</span>
                     <div class="content-wrapper">
-                        <span class="content">${escapedMessage}</span>
                         <span class="timestamp">
-                            <a href="#" class="delete-link" data-message-id="${data.message_id}">삭제</a><br>${timestamp}</span>
+                            <a href="#" class="delete-link" data-message-id="${data.message_id}">삭제</a><br>${timestamp}
+                        </span>
+                        <span class="content">${escapedMessage}</span>
                     </div>
             `;
-        } else {
-            messageElement.classList.add('other-user');
-            messageElement.innerHTML = `
-                <span class="user">${data.user}</span>
-                <div class="content-wrapper">
-                    <span class="content">${escapedMessage}</span>
-                    <span class="timestamp"><br>${timestamp}</span>
-                </div>
-            `;
-        }
-        chatLog.appendChild(messageElement);
-        chatLog.scrollTop = chatLog.scrollHeight;
-    };
+            } else {
+                messageElement.classList.add('other-user');
+                messageElement.innerHTML = `
+                    <span class="user">${data.user}</span>
+                    <div class="content-wrapper">
+                        <span class="timestamp"><br>${timestamp}</span>
+                        <span class="content">${escapedMessage}</span>
+                    </div>
+                `;
+            }
+            chatLog.appendChild(messageElement);
+            chatLog.scrollTop = chatLog.scrollHeight;
+        };
 
-    chatSocket.onclose = function(e) {
-        console.error('Chat socket closed unexpectedly');
-        document.querySelector('#chat-log').innerHTML += '<br>채팅 연결이 종료되었습니다.';
-    };
+        chatSocket.onclose = function(e) {
+            console.error('Chat socket closed unexpectedly');
+            document.querySelector('#chat-log').innerHTML += '<br>채팅 연결이 종료되었습니다.';
+        };
 
-    document.querySelector('#chat-message-input').focus();
-    document.querySelector('#chat-message-input').onkeyup = function(e) {
-        if (e.keyCode === 13) {
-            e.preventDefault();
-            document.querySelector('#chat-message-submit').click();
-        }
-    };
+        document.querySelector('#chat-message-input').focus();
+        document.querySelector('#chat-message-input').onkeyup = function(e) {
+            if (e.keyCode === 13) {
+                e.preventDefault();
+                document.querySelector('#chat-message-submit').click();
+            }
+        };
 
-    document.querySelector('#chat-message-submit').onclick = function(e) {
-        const messageInputDom = document.querySelector('#chat-message-input');
-        const message = messageInputDom.value;
-        if (message.trim() !== '') {
-            chatSocket.send(JSON.stringify({
-                'message': message
-            }));
-            messageInputDom.value = '';
-        }
-    };
+        document.querySelector('#chat-message-submit').onclick = function(e) {
+            const messageInputDom = document.querySelector('#chat-message-input');
+            const message = messageInputDom.value;
+            if (message.trim() !== '') {
+                chatSocket.send(JSON.stringify({
+                    'message': message
+                }));
+                messageInputDom.value = '';
+            }
+        };
 
-    window.onload = function() {
-        const chatLog = document.querySelector('#chat-log');
-        chatLog.scrollTop = chatLog.scrollHeight;
-    };
+        window.onload = function() {
+            const chatLog = document.querySelector('#chat-log');
+            chatLog.scrollTop = chatLog.scrollHeight;
+        };
     });
-    
     </script>
-    
 </body>
 </html>
 {% endblock %}

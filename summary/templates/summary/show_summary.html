@@ -59,7 +59,7 @@
     <div class="lecture-box4 p-3 rounded-lg shadow-md" style="background-color: #e5ddff">
         <div>
             <h1><b>CHAT-GPT AI 요약 결과</b>
-            <a href="{% url 'summary:summary_detail' lecture_name=chapter.lecture.title chapter_name=chapter.chapter_name %}">
+            <a href="{% url 'summary:AI_summarypage' lecture_name=chapter.lecture.title chapter_name=chapter.chapter_name %}">
                 <ion-icon name="arrow-back-outline" class="lecture_urllink2 nav__toggle2 study-partner-backion" id="back-toggle" style="color: #000;"></ion-icon>
             </a>
             </h1>
@@ -75,7 +75,7 @@
             <h2>{{ audio_file.file_name.name }}</h2>
         </div>
         <hr style="border-top: 0.5px solid #ccc; width: 100%; margin: 7px 0;">
-        <h3><b>STT 파일 요약내용:</b></h3><br>
+        <h3><b>CHAT-GPT 요약내용:</b></h3><br>
         
         <div class="show_stt-container">
             {% if summary %}

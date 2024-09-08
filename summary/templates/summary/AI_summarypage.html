@@ -11,6 +11,53 @@
 
     <!-- 로딩 스피너와 프로그레스 바 CSS -->
     <style>
+        .loader {
+            border: 8px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 8px solid #ff77ff;
+            width: 65px;
+            height: 65px;
+            animation: spin 2s linear infinite;
+            display: none; /* 처음엔 숨김 상태 */
+            margin: 20px auto;
+        }
+
+        .loader-position {
+            position: fixed; /* 화면에서 고정 위치 */
+            top: 43.5%; /* 화면 중앙의 수직 위치 */
+            left: 47.6%; /* 화면 중앙의 수평 위치 */
+        }
+
+        #loader-container {
+            display: none; /* 기본적으로 숨김 */
+            text-align: center; /* 내용 중앙 정렬 */
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 프로그레스 바 컨테이너 */
+        #progress-container {
+            width: 85%; /* 전체 화면의 85% 너비 */
+            position: fixed; /* 컨테이너를 화면 하단에 고정 */
+            left: calc(50% - 42.75%); /* 화면의 중앙에서 컨테이너의 너비의 절반을 뺀 위치에 고정 */
+            margin-left: 2.85%;
+            bottom: 8.5vh; /* 화면 하단에서 8.5vh 위에 위치 */
+            height: 10px; /* 컨테이너의 높이를 프로그레스 바와 맞춤 */
+            background-color: rgba(186, 186, 186, 0.91); /* 배경색 설정 (필요에 따라 제거 가능) */
+            border-radius: 5px; /* 둥근 모서리 */
+        }
+
+        /* 프로그레스 바 */
+        #progress-bar {
+            height: 100%; /* 부모 요소의 높이를 100% 차지 */
+            background-color: #ff99ff;
+            width: 0%; /* 초기 너비 */
+            transition: width 0.4s ease; /* 너비 애니메이션 */
+            border-radius: 5px; /* 둥근 모서리 */
+        }
 
         .back-icon {
             font-size: 1.1rem; /* 아이콘 크기 조정 */
@@ -177,34 +224,36 @@
             <hr style="border-top: 0.8px solid #bababa; width: 100%; margin: 7px 0;"><br>
 
             <div class="user-box">    
-                <p style="color:white; margin-bottom: 2px;"><b>업로드된 파일 목록:</b> </p>            
+                <p style="color:white; margin-bottom: 2px;"><b>업로드된 파일 목록:</b> </p>
                 <div class="uploaded_file_list-container">
-                    <ul>
-                        {% for file in uploaded_files %}
-                            <li style="display: flex; justify-content: space-between; align-items: center;">
-                                <!-- 파일 제목 왼쪽 정렬 -->
-                                <a href="{{ file.file_name.url }}" class="link-effect2">
-                                    {{ file.file_title }}
-                                </a>
-                                
-                                <!-- 다운로드와 삭제 아이콘 오른쪽 정렬 -->
-                                <div>
-                                    <a href="{{ file.file_name.url }}" class="link-effect2" download="{{ file.file_name.name }}">
-                                        다운로드
-                                    </a> 
-                    
-                                    <form id="delete-form-{{ file.id }}" method="post" action="{% url 'summary:delete_file_summary' file.id %}" style="display:inline;">
-                                        {% csrf_token %}
-                                        <button type="button" onclick="confirmDelete('{{ file.id }}')" class="link-effect" style="margin-left: 17px;">
-                                            삭제
-                                        </button>
-                                    </form>
-                                </div>
-                            </li>
-                        {% endfor %} 
-                    </ul>
-                    
-                    
+                <ul>
+                    {% for file in uploaded_files %}
+                    <li style="display: flex; justify-content: space-between; align-items: center;">
+                        <!-- 파일 제목 왼쪽 정렬 -->
+                        <a href="{{ file.file_name.url }}" class="link-effect2">
+                            {{ file.file_title }}
+                        </a>
+                        <!-- 다운로드와 삭제 아이콘 오른쪽 정렬 -->
+                        <div>
+                            <a href="{% url 'summary:stt_view' lecture_name=chapter.lecture.title chapter_name=chapter.chapter_name file_id=file.pk %}" class="link-effect2"
+                                data-action="텍스트 변환" data-file-id="{{ file.id }}" onclick="showLoader(event)">
+                                텍스트 변환
+                            </a>
+                            <a href="{% url 'summary:show_summary_view' lecture_name=chapter.lecture.title chapter_name=chapter.chapter_name file_id=file.pk %}" class="link-effect2"
+                                data-action="AI 요약하기" data-file-id="{{ file.id }}" onclick="showLoader(event)" style="margin-left: 17px;">
+                                AI 요약하기
+                            </a> 
+            
+                            <form id="delete-form-{{ file.id }}" method="post" action="{% url 'summary:delete_file_summary' file.id %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="button" onclick="confirmDelete('{{ file.id }}')" class="link-effect" style="margin-left: 17px;">
+                                    삭제
+                                </button>
+                            </form>
+                        </div>
+                    </li>
+                    {% endfor %} 
+                </ul>
                 </div>
             </div><br>
             <hr style="border-top: 0.8px solid #bababa; width: 100%; margin: 7px 0;">
