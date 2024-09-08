@@ -120,7 +120,7 @@ def private_chat_room(request, user_id):
         'messages': messages  # 기존 메시지를 컨텍스트에 추가
     }
     
-    return render(request, "chatting/chatting_test.html", context)
+    return render(request, "chatting/chatting_room.html", context)
 
 
 
@@ -223,7 +223,7 @@ def chatting_test_view(request, user_id):
         'messages': messages  # 기존 메시지를 컨텍스트에 추가
     }
     
-    return render(request, 'chatting/chatting_room.html', context)
+    return render(request, 'chatting/chatting_test.html', context)
 
 
 # 채팅 삭제
