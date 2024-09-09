@@ -1,0 +1,247 @@
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>{{ chapter.lecture.title }} {{ chapter.chapter_name }} Quiz 페이지</title>
+
+    <style>
+        .back-icon {
+            font-size: 1.1rem; /* 아이콘 크기 조정 */
+            color: #000; /* 아이콘 색상 조정 */
+            float: right; /* 아이콘을 오른쪽으로 배치 */
+        }
+
+        .back-link {
+            padding: 10px; /* 클릭 영역 확대 */
+            float: right; /* 아이콘을 오른쪽으로 배치 */
+        }
+
+        /* 커스터마이즈된 파일 선택 버튼 스타일 */
+        .custom-file-upload {
+            border: 1px solid #cce5ff;
+            display: inline-block;
+            padding: 6px 12px;
+            cursor: pointer;
+            background-color: #ac1aef;
+            color: white;
+            border-radius: 7px;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        /* 파일 선택 버튼과 파일 이름 표시를 수평으로 배치하는 컨테이너 */
+        .file-upload-container {
+            display: flex;
+            align-items: center;
+            gap: 10px; /* 버튼과 텍스트 사이의 간격 */
+        }
+
+        .file-name {
+            color: #cce5ff;
+            font-size: 14px;
+        }
+
+        .form-container {
+            margin-top: 20px;
+        }
+
+        .uploaded_file_list-container {
+            max-height: 120px; /* 최대 높이 설정 */
+            overflow-y: auto; /* 수직 스크롤 추가 */
+            overflow-x: auto; /* 수평 스크롤 추가 */
+            /* border: 1px solid #bababa; */
+            padding: 10px; /* 내부 여백 추가 */
+            margin-top: 10px; /* 상단 여백 추가 */
+        }
+
+        /* 스크롤바 스타일 */
+        .uploaded_file_list-container::-webkit-scrollbar {
+            width: 7px; /* 스크롤바 너비 */
+        }
+
+        .uploaded_file_list-container::-webkit-scrollbar-thumb:hover {
+            background-color: #b0f2c2; /* hover 시 색상 변경 */
+        }
+
+        .uploaded_file_list-container::-webkit-scrollbar-thumb {
+            background-color: #d8f8e1; /* 스크롤바 색상 */
+            border-radius: 4px; /* 스크롤바 둥글게 */
+        }
+
+        .chrome_font {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        .index_studypartner_buttonlist {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2px;
+            margin-top: 10px;
+            margin-right: 2px;
+        }
+        .link-effect {
+            color: #24d1f0;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: bold;
+            position: relative;
+            overflow: hidden;
+            transition: color 0.3s ease;
+        }
+        .link-effect2 {
+            color: #e8ef6e;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: bold;
+            position: relative;
+            overflow: hidden !important;
+            transition: color 0.3s ease;
+        }
+        .link-effect::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 2px;
+            background: #60bffe; /* 텍스트 색상과 동일 */
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        .link-effect2::after {
+            content: "";
+            position: relative;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 2px;
+            background: #e3ec38; /* 텍스트 색상과 동일 */
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        .link-effect:hover {
+            color: #2eed71; /* 텍스트 hover 색상 */
+        }
+        .link-effect2:hover {
+            color: #fe8b07; /* 텍스트 hover 색상 */
+        }
+
+
+        .link-effect:hover::after {
+            transform: translateX(0);
+        }
+        .link-effect3:hover::after {
+            transform: translateX(0);
+        }
+        .tip-effect1 {
+            color: #333; /* 기본 글씨 색상 */
+            padding: 5px; /* 충분한 여백 */
+            margin: 7px 0; /* 위아래 여백 */
+            background-color: #f9f9f9; /* 부드러운 회색 배경 */
+            border-left: 5px solid #007bff; /* 왼쪽에 강조를 위한 색상 있는 테두리 */
+            border-radius: 10px; /* 모서리를 둥글게 */
+            font-size: 13.5px; /* 폰트 크기 */
+            line-height: 1.5; /* 줄 높이 */
+            margin-bottom: 10px;
+        }
+        .tip-effect2 {
+            color: #333; /* 기본 글씨 색상 */
+            padding: 5px; /* 충분한 여백 */
+            margin: 7px 0; /* 위아래 여백 */
+            background-color: #f9f9f9; /* 부드러운 회색 배경 */
+            border-left: 5px solid #03c0ef; /* 왼쪽에 강조를 위한 색상 있는 테두리 */
+            border-radius: 10px; /* 모서리를 둥글게 */
+            font-size: 13.5px; /* 폰트 크기 */
+            line-height: 1.5; /* 줄 높이 */
+            margin-bottom: 10px;
+        }
+        .tip-effect3 {
+            color: #333; /* 기본 글씨 색상 */
+            padding: 5px; /* 충분한 여백 */
+            margin: 7px 0; /* 위아래 여백 */
+            background-color: #f9f9f9; /* 부드러운 회색 배경 */
+            border-left: 5px solid #08ff14; /* 왼쪽에 강조를 위한 색상 있는 테두리 */
+            border-radius: 10px; /* 모서리를 둥글게 */
+            font-size: 13.5px; /* 폰트 크기 */
+            line-height: 1.5; /* 줄 높이 */
+            margin-bottom: 10px;
+        }
+
+    </style>
+
+    <title>{{ chapter.lecture.title }} 챕터 상세 정보</title>
+</head>
+<body id="body-pd">
+
+    <!-- 강의실 사이드 네비게이터 & 타이머 포함할 부분 -->
+    {% include "user/lecture_sidebar.html" %}
+    <!-- 강의실 사이드 네비게이터 & 타이머 포함할 끝 부분 -->
+
+    <!-- 친구 간 최고기록 순위 포함할 부분 --><br>
+    {% include "user/friend_record.html" %}
+    <!-- 친구 간 최고기록 순위 포함할 끝 부분 -->
+
+    <!-- 사용자의 챕터 상세정보 -->
+    <div class="custom-body chrome_font">
+        <div class="lecture-box6 p-3 rounded-lg shadow-md" style="background: darkslategray">
+            <h2 style="text-align: center;"><br>
+                <span style="color: white;">Study Partner</span>
+                <a href="{% url 'upload:chapter_detail' lecture_name=chapter.lecture.title chapter_name=chapter.chapter_name %}">
+                    <ion-icon name="arrow-back-outline" class="lecture_urllink2 nav__toggle2 study-partner-backion" id="back-toggle"></ion-icon>
+                </a>
+            </h2><br>
+
+            <div class="user-box">
+                <p style="color:white"><b>사용자:</b> &nbsp;&nbsp;{{ user.username }} 님</p>
+            </div>
+            <div class="user-box">
+                <p style="color:white"><b>강의 및 챕터명:</b> &nbsp;&nbsp;{{ chapter.lecture.title }} - {{ chapter.chapter_name }}</p><br>
+            </div>
+            <hr style="border-top: 0.8px solid #bababa; width: 100%; margin: 7px 0;"><br>
+
+            <div class="user-box">    
+                <p style="color:white; margin-bottom: 2px;"><b>업로드된 파일 목록:</b> </p>
+                <div class="uploaded_file_list-container">
+                <ul>
+                    {% for file in uploaded_files %}
+                    <li style="display: flex; justify-content: space-between; align-items: center;">
+                        <!-- 파일 제목 왼쪽 정렬 -->
+                        <a href="{{ file.file_name.url }}" class="link-effect">
+                            {{ file.file_title }}
+                        </a>
+                        <!-- 다운로드와 삭제 아이콘 오른쪽 정렬 -->
+                        <div>
+                            <a href="#" class="link-effect2">
+                                Quiz 시작하기
+                            </a>
+                        </div>
+                    </li>
+                    {% endfor %} 
+                </ul>
+                </div>
+            </div><br>
+            <hr style="border-top: 0.8px solid #bababa; width: 100%; margin: 7px 0; padding-bottom: 12px;">
+            <p class="tip-effect1">TIP1 : 내용을 입력하세요.</p>
+            <p class="tip-effect2">TIP2 : 내용을 입력하세요.</p>
+            <p class="tip-effect3">TIP3 : 내용을 입력하세요.</p>
+        </div>
+    </div>
+    <!-- 사용자의 챕터 상세정보 끝부분-->
+
+    <!-- 친구 시스템 포함할 부분 -->
+    <div class="lecture-box2">
+        {% include "user/friend.html" %}
+    </div>
+    <!-- 친구 시스템 포함할 끝 부분-->
+
+    
+
+</body>
+</html>
+{% endblock %}

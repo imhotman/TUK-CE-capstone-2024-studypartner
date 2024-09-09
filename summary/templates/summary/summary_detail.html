@@ -8,6 +8,7 @@
 
     <!-- Font Awesome CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>{{ chapter.lecture.title }} {{ chapter.chapter_name }} 파일업로드 페이지</title>
 
     <!-- 로딩 스피너와 프로그레스 바 CSS -->
     <style>
@@ -106,6 +107,15 @@
             overflow: hidden !important;
             transition: color 0.3s ease;
         }
+        .link-effect3 {
+            color: #e29118;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: bold;
+            position: relative;
+            overflow: hidden !important;
+            transition: color 0.3s ease;
+        }
 
         .link-effect::after {
             content: "";
@@ -129,6 +139,17 @@
             transform: translateX(-100%);
             transition: transform 0.3s ease;
         }
+        .link-effect3::after {
+            content: "";
+            position: relative;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 2px;
+            background: #60bffe; /* 텍스트 색상과 동일 */
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
 
         .link-effect:hover {
             color: #e6305b; /* 텍스트 hover 색상 */
@@ -136,17 +157,21 @@
         .link-effect2:hover {
             color: #cf59f6; /* 텍스트 hover 색상 */
         }
-
+        .link-effect3:hover {
+            color: #eb0ac9; /* 텍스트 hover 색상 */
+        }
         .link-effect:hover::after {
             transform: translateX(0);
         }
         .link-effect2:hover::after {
             transform: translateX(0);
         }
+        .link-effect3:hover::after {
+            transform: translateX(0);
+        }
 
     </style>
 
-    <title>{{ chapter.lecture.title }} 챕터 상세 정보</title>
 </head>
 <body id="body-pd">
 
@@ -189,13 +214,13 @@
                                 
                                 <!-- 다운로드와 삭제 아이콘 오른쪽 정렬 -->
                                 <div>
-                                    <a href="{{ file.file_name.url }}" class="link-effect2" download="{{ file.file_name.name }}">
+                                    <a href="{{ file.file_name.url }}" class="link-effect3" download="{{ file.file_name.name }}">
                                         다운로드
                                     </a> 
                     
                                     <form id="delete-form-{{ file.id }}" method="post" action="{% url 'summary:delete_file_summary' file.id %}" style="display:inline;">
                                         {% csrf_token %}
-                                        <button type="button" onclick="confirmDelete('{{ file.id }}')" class="link-effect" style="margin-left: 17px;">
+                                        <button type="button" onclick="confirmDelete('{{ file.id }}')" class="link-effect" style="margin-left: 20px; margin-right: 12px;">
                                             삭제
                                         </button>
                                     </form>

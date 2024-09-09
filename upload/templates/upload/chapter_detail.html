@@ -77,7 +77,7 @@
                 <a style="background-color: #FFA500;" class="lecture_urllink" href="{% url 'summary:AI_summarypage' lecture_name=chapter.lecture.title chapter_name=chapter.chapter_name %}">
                     AI 요약하기
                 </a>&nbsp;&nbsp;
-                <a style="background-color: #2C952C" class="lecture_urllink" href="#">
+                <a style="background-color: #2C952C" class="lecture_urllink" href="{% url 'summary:AI_quizpage' lecture_name=chapter.lecture.title chapter_name=chapter.chapter_name %}">
                     QUIZ
                 </a>
             </div> 
